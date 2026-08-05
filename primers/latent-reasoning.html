@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Latent Reasoning</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">foundation</p>
+  <h1>Latent Reasoning</h1>
+  <p class="lede">Latent reasoning means reasoning behavior that the base model can produce but does not reliably expose under ordinary prompting or decoding.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Pretraining can install many partial algorithms and reasoning traces. These behaviors may live as low-probability paths. Post-training, prompting, search, or sampling can make them easier to access.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A base model may rarely generate a correct backtracking strategy. A reasoning-tuned model may use backtracking frequently at the right time.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>It explains why inference-time methods and RL can produce large apparent gains without necessarily adding new knowledge.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Latent does not mean fake. A low-probability skill can still be a real skill if the model can execute it coherently.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="base-model-capability.html">Base Model Capability</a><a class="chip" href="mechanisms-vs-heuristics.html">Mechanisms Versus Heuristics</a><a class="chip" href="rlvr.html">RLVR</a><a class="chip" href="power-sampling.html">Power Sampling</a></p>
+</section>
+</main>
+</body>
+</html>

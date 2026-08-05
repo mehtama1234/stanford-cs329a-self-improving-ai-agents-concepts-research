@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synthetic Data</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">data</p>
+  <h1>Synthetic Data</h1>
+  <p class="lede">Synthetic data is training or evaluation data generated programmatically, often by another model.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>If high-quality real examples are scarce, a model or simulator can generate prompts, answers, reasoning traces, unit tests, tool trajectories, or adversarial cases. The hard part is verifying that generated data is useful and not merely fluent.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A strong model generates 100,000 coding problems, solutions, and unit tests. Only solutions that pass tests are kept for training.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Synthetic data enables scale in post-training, but it can amplify bias, cause contamination, or teach imitation without real capability if not verified.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Synthetic data is not automatically low quality. Verified synthetic data can be extremely valuable; unverified synthetic data can be harmful.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="distillation.html">Distillation</a><a class="chip" href="data-progress.html">Data Progress</a><a class="chip" href="sft.html">Supervised Finetuning</a><a class="chip" href="verifiers.html">Verifiers</a></p>
+</section>
+</main>
+</body>
+</html>

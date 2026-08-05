@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workflow Orchestration</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">systems</p>
+  <h1>Workflow Orchestration</h1>
+  <p class="lede">Workflow orchestration is the system design around the model: chains, routers, parallel workers, managers, tools, judges, and verifiers.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>Real tasks are too large or varied for one undifferentiated model call.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>One large prompt should handle planning, tools, checking, and synthesis.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Different subtasks need different routes, tools, budgets, and checks.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>Expose the workflow structure. Once steps are explicit, they can be routed, parallelized, verified, retried, and debugged.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>The agent becomes opaque: you cannot tell where it failed or how to improve it.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 1 introduces orchestration patterns that later lectures deepen.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Chains, routing, parallelization, orchestration</h3>
+  <p><a href="https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2747s">https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2747s</a></p>
+  <blockquote>the simplest workflow here would be prompt chaining</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The overview lecture names the basic engineering structures that turn LLM calls into agent workflows.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic Evaluations</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">evaluation</p>
+  <h1>Agentic Evaluations</h1>
+  <p class="lede">Agentic evaluations test systems that act over time, use tools, manage state, and recover from failures.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A single QA metric does not show whether an agent can complete a real workflow.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Evaluate each LLM response independently, as if every message were a standalone answer.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Agent failures happen across steps: wrong tool call, lost state, repeated loop, weak recovery, or premature stopping.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>The evaluation unit should match the task unit. For agents, that unit is often a trajectory or completed workflow, not a single message.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>Benchmarks overstate capability because they miss long-horizon failure modes.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 8 focuses on this evaluation shift from isolated answers to trajectories and long-horizon workflows.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Agentic evaluations differ from ordinary evals</h3>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=26s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=26s</a></p>
+  <blockquote>agentic evaluations</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>Part 8 focuses on evaluating systems that act across steps, rather than isolated model responses.</p>
+</article><article class="evidence-item">
+  <h3>Agent loops can fail repetitively</h3>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=1424s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=1424s</a></p>
+  <blockquote>get into a repetitive loop</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>This gives a concrete failure mode for long-horizon agents: they may cycle without progressing.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

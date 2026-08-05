@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Optimization For Agents</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">planning</p>
+  <h1>Trajectory Optimization For Agents</h1>
+  <p class="lede">Trajectory optimization means improving the whole path an agent takes, not just a single action or final answer.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A task can fail because the sequence of steps is wrong even when some individual steps look reasonable.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Optimize each step locally and the full task will work.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>A locally good action can lead to a dead end, miss information, or make later verification impossible.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>Agent work has path dependence. The quality object is the trajectory: state, action, observation, revised state, and final result.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>The agent makes short-sighted moves that look useful but damage the long-run task.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 5 discusses refining plans and trajectories after feedback.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Search updates trajectories</h3>
+  <p><a href="https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=262s">https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=262s</a></p>
+  <blockquote>update the search space, or the trajectory</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>Planning quality depends on revising the path after feedback, not merely producing an initial plan.</p>
+</article><article class="evidence-item">
+  <h3>Multi-step tasks need reasoning and action</h3>
+  <p><a href="https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=43s">https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=43s</a></p>
+  <blockquote>target in multi-step tasks</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The transcript identifies the target task shape: not one answer, but a sequence of reasoning, acting, and refinement.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

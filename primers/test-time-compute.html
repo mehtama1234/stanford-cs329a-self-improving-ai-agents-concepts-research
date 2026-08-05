@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test-Time Compute</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">inference</p>
+  <h1>Test-Time Compute</h1>
+  <p class="lede">Test-time compute means spending more computation when answering a question, without changing the model weights.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>If a model has a distribution containing both weak and strong paths, extra runtime computation can search that distribution, generate multiple candidates, revise intermediate work, or verify outputs. The model stays fixed, but the inference procedure becomes stronger.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Instead of asking for one answer to a coding problem, generate 50 programs, run unit tests, and keep the one that passes.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>This is central to reasoning models and agents because many hard tasks are not solved by one forward pass. They require search, checking, retries, and budget allocation.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Test-time compute is not free intelligence. It only helps when there is a way to select better outputs or use feedback.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="sampling.html">Sampling</a><a class="chip" href="verifiers.html">Verifiers</a><a class="chip" href="agentic-evaluations.html">Agentic Evaluations</a></p>
+</section>
+</main>
+</body>
+</html>

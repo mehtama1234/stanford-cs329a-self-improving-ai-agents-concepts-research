@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Concept Primers</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="index.html">Overview</a>
+      <a href="primers.html">Primers</a>
+      <a href="concepts.html">Concepts</a>
+      <a href="lectures.html">Lectures</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Concept primer track</p>
+  <h1>AI Reasoning Concepts, One By One</h1>
+  <p class="lede">A standalone sequence for the ideas we discussed around base models, sampling, RLVR, data progress, architecture, and agent evaluation.</p>
+</section>
+<div class="grid"><article class="card">
+  <p class="quiet">#01 · foundation</p>
+  <h3><a href="primers/pretraining.html">Pretraining</a></h3>
+  <p>Pretraining is the broad learning phase where a model predicts the next token across a huge corpus and absorbs language, facts, patterns, styles, and many weak forms of reasoning.</p>
+</article><article class="card">
+  <p class="quiet">#02 · foundation</p>
+  <h3><a href="primers/base-model-capability.html">Base Model Capability</a></h3>
+  <p>A base model is often more capable than one ordinary sample suggests because its probability distribution contains many possible reasoning paths, including rare good ones.</p>
+</article><article class="card">
+  <p class="quiet">#03 · inference</p>
+  <h3><a href="primers/sampling.html">Sampling</a></h3>
+  <p>Sampling is the process of choosing tokens from the model&#x27;s probability distribution during generation.</p>
+</article><article class="card">
+  <p class="quiet">#04 · inference</p>
+  <h3><a href="primers/test-time-compute.html">Test-Time Compute</a></h3>
+  <p>Test-time compute means spending more computation when answering a question, without changing the model weights.</p>
+</article><article class="card">
+  <p class="quiet">#05 · post-training</p>
+  <h3><a href="primers/sft.html">Supervised Finetuning</a></h3>
+  <p>Supervised finetuning trains a model on examples of desired input-output behavior.</p>
+</article><article class="card">
+  <p class="quiet">#06 · post-training</p>
+  <h3><a href="primers/distillation.html">Distillation</a></h3>
+  <p>Distillation trains one model to imitate another model, usually to transfer capability into a cheaper, smaller, or more specialized model.</p>
+</article><article class="card">
+  <p class="quiet">#07 · post-training</p>
+  <h3><a href="primers/rlhf.html">RLHF</a></h3>
+  <p>RLHF means reinforcement learning from human feedback, usually used to align model outputs with human preferences.</p>
+</article><article class="card">
+  <p class="quiet">#08 · post-training</p>
+  <h3><a href="primers/rlvr.html">RLVR</a></h3>
+  <p>RLVR is reinforcement learning with verifiable rewards: the model gets rewarded when an answer can be automatically checked as correct.</p>
+</article><article class="card">
+  <p class="quiet">#09 · reinforcement learning</p>
+  <h3><a href="primers/grpo.html">GRPO</a></h3>
+  <p>GRPO is a group-relative RL method that compares multiple answers to the same prompt and rewards answers that are better than the group average.</p>
+</article><article class="card">
+  <p class="quiet">#10 · reinforcement learning</p>
+  <h3><a href="primers/dapo.html">DAPO</a></h3>
+  <p>DAPO is a refinement of group-relative RL that focuses training on prompts where the sampled group contains both successes and failures, while also managing exploration and response length.</p>
+</article><article class="card">
+  <p class="quiet">#11 · evaluation</p>
+  <h3><a href="primers/pass-at-k.html">Pass@1 And Pass@k</a></h3>
+  <p>Pass@1 measures whether the first answer is correct. Pass@k measures whether at least one of k sampled answers is correct.</p>
+</article><article class="card">
+  <p class="quiet">#12 · evaluation</p>
+  <h3><a href="primers/diversity-collapse.html">Diversity Collapse</a></h3>
+  <p>Diversity collapse happens when training makes a model repeat a narrower set of output patterns, even if those patterns are often good.</p>
+</article><article class="card">
+  <p class="quiet">#13 · evaluation</p>
+  <h3><a href="primers/reasoning-boundary.html">Reasoning Boundary</a></h3>
+  <p>The reasoning boundary is the set of problems a model can solve at least sometimes under some sampling or inference procedure.</p>
+</article><article class="card">
+  <p class="quiet">#14 · foundation</p>
+  <h3><a href="primers/latent-reasoning.html">Latent Reasoning</a></h3>
+  <p>Latent reasoning means reasoning behavior that the base model can produce but does not reliably expose under ordinary prompting or decoding.</p>
+</article><article class="card">
+  <p class="quiet">#15 · interpretability</p>
+  <h3><a href="primers/mechanisms-vs-heuristics.html">Mechanisms Versus Heuristics</a></h3>
+  <p>Mechanisms are reasoning moves the model can perform; heuristics decide when to use them.</p>
+</article><article class="card">
+  <p class="quiet">#16 · verification</p>
+  <h3><a href="primers/process-vs-outcome-rewards.html">Process Rewards Versus Outcome Rewards</a></h3>
+  <p>Outcome rewards score the final answer. Process rewards score intermediate reasoning steps.</p>
+</article><article class="card">
+  <p class="quiet">#17 · verification</p>
+  <h3><a href="primers/verifiers.html">Verifiers</a></h3>
+  <p>A verifier is a system that checks whether an answer, step, action, or trajectory is correct or acceptable.</p>
+</article><article class="card">
+  <p class="quiet">#18 · data</p>
+  <h3><a href="primers/data-progress.html">Data Progress</a></h3>
+  <p>Data progress means model improvement caused by better data, not necessarily by better architecture or optimizer algorithms.</p>
+</article><article class="card">
+  <p class="quiet">#19 · data</p>
+  <h3><a href="primers/synthetic-data.html">Synthetic Data</a></h3>
+  <p>Synthetic data is training or evaluation data generated programmatically, often by another model.</p>
+</article><article class="card">
+  <p class="quiet">#20 · training</p>
+  <h3><a href="primers/mid-training.html">Mid-Training</a></h3>
+  <p>Mid-training is an intermediate training phase between broad pretraining and final post-training, often used to specialize the model toward important domains or long-context behavior.</p>
+</article><article class="card">
+  <p class="quiet">#21 · architecture</p>
+  <h3><a href="primers/moe.html">Mixture Of Experts</a></h3>
+  <p>MoE models contain many expert subnetworks but activate only a subset for each token.</p>
+</article><article class="card">
+  <p class="quiet">#22 · architecture</p>
+  <h3><a href="primers/expert-balancing.html">Expert Balancing</a></h3>
+  <p>Expert balancing keeps an MoE model from overusing a few experts while ignoring others.</p>
+</article><article class="card">
+  <p class="quiet">#23 · architecture</p>
+  <h3><a href="primers/qk-norm.html">QK-Norm</a></h3>
+  <p>QK-norm normalizes query and key vectors in attention to improve training stability.</p>
+</article><article class="card">
+  <p class="quiet">#24 · architecture</p>
+  <h3><a href="primers/deepseek-mla.html">DeepSeek MLA</a></h3>
+  <p>MLA, or Multi-Head Latent Attention, compresses attention key-value information into latent representations to make long-context inference more efficient.</p>
+</article><article class="card">
+  <p class="quiet">#25 · optimization</p>
+  <h3><a href="primers/muon-optimizer.html">Muon Optimizer</a></h3>
+  <p>Muon is an optimizer family explored as an alternative or complement to AdamW for more efficient neural network training.</p>
+</article><article class="card">
+  <p class="quiet">#26 · evaluation</p>
+  <h3><a href="primers/agentic-evaluations.html">Agentic Evaluations</a></h3>
+  <p>Agentic evaluations test systems that act over many steps using tools, memory, planning, and feedback.</p>
+</article><article class="card">
+  <p class="quiet">#27 · agents</p>
+  <h3><a href="primers/continual-learning.html">Continual Learning</a></h3>
+  <p>Continual learning is the ability of a deployed system to improve from ongoing experience without forgetting or corrupting previous capabilities.</p>
+</article><article class="card">
+  <p class="quiet">#28 · inference</p>
+  <h3><a href="primers/power-sampling.html">Power Sampling</a></h3>
+  <p>Power sampling is an inference-time method that sharpens the base model&#x27;s distribution over whole completions rather than retraining the model.</p>
+</article><article class="card">
+  <p class="quiet">#29 · reinforcement learning</p>
+  <h3><a href="primers/rl-information-inefficiency.html">RL Information Inefficiency</a></h3>
+  <p>RL information inefficiency means RL often gives very little learning signal per unit of compute, especially on long tasks with sparse final rewards.</p>
+</article><article class="card">
+  <p class="quiet">#30 · forecasting</p>
+  <h3><a href="primers/algorithmic-progress-categories.html">Algorithmic Progress Categories</a></h3>
+  <p>Algorithmic progress is not one thing. It mixes architecture, optimizers, systems work, data improvements, distillation, long-context methods, RL, tools, and evaluation design.</p>
+</article></div>
+</main>
+</body>
+</html>

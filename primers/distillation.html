@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Distillation</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">post-training</p>
+  <h1>Distillation</h1>
+  <p class="lede">Distillation trains one model to imitate another model, usually to transfer capability into a cheaper, smaller, or more specialized model.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>A teacher model produces outputs, reasoning traces, labels, preferences, or demonstrations. A student model trains on those artifacts. The student may learn behavior that would be expensive to discover from raw data alone.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A strong reasoning model solves many math problems step by step. A smaller model is finetuned on those solutions and becomes much better at similar math tasks.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Distillation can expand a student&#x27;s practical reasoning boundary more than RL alone because it supplies explicit high-quality trajectories rather than only final reward bits.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Distillation is not always about making a smaller clone. A larger student can also improve by learning from generated data from a different teacher.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="sft.html">Supervised Finetuning</a><a class="chip" href="synthetic-data.html">Synthetic Data</a><a class="chip" href="data-progress.html">Data Progress</a><a class="chip" href="reasoning-boundary.html">Reasoning Boundary</a></p>
+</section>
+</main>
+</body>
+</html>

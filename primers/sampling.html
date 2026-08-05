@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sampling</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">inference</p>
+  <h1>Sampling</h1>
+  <p class="lede">Sampling is the process of choosing tokens from the model&#x27;s probability distribution during generation.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>At each step, the model gives probabilities for possible next tokens. Decoding rules decide whether to pick the most likely token, sample randomly, sharpen the distribution, truncate low-probability tokens, or search across multiple possible futures.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>With high temperature, the model may explore more unusual solution paths. With low temperature, it becomes more predictable but may get stuck in a common flawed path.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Reasoning quality depends heavily on how the model is sampled. Different sampling methods trade off reliability, diversity, cost, and exploration.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Sampling is not a cosmetic output setting. For reasoning tasks, sampling can determine which internal strategy the model follows.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="test-time-compute.html">Test-Time Compute</a><a class="chip" href="pass-at-k.html">Pass@1 And Pass@k</a><a class="chip" href="diversity-collapse.html">Diversity Collapse</a><a class="chip" href="power-sampling.html">Power Sampling</a></p>
+</section>
+</main>
+</body>
+</html>
