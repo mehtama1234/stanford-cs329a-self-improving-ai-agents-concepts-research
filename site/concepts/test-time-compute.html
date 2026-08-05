@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test-Time Compute</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">inference</p>
+  <h1>Test-Time Compute</h1>
+  <p class="lede">Test-time compute means spending extra computation while using a fixed model to improve the final answer.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A model may know how to solve a problem sometimes, but one attempt may land on a weak path.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>One model call measures the model&#x27;s full ability.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Generation is variable. A single answer may miss correct paths that appear under repeated attempts, search, or refinement.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>If the model&#x27;s answer distribution contains good candidates, then more inference can sample or search that distribution. The gain appears only if the system can choose or verify better candidates.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>You underuse capable models or waste runtime compute without a selection rule.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 2 develops this as a major self-improvement mechanism.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Improvement at inference time</h3>
+  <p><a href="https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=58s">https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=58s</a></p>
+  <blockquote>at inference time, we can make</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>Part 2 states the core test-time scaling premise: improve usefulness while using the model, without another training run.</p>
+</article><article class="evidence-item">
+  <h3>Course recap: self-improvement loop</h3>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s</a></p>
+  <blockquote>test-time scaling and train-time scaling</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The final lecture explicitly ties test-time and train-time scaling together as parts of the course&#x27;s self-improvement story.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

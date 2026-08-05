@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DAPO</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">reinforcement learning</p>
+  <h1>DAPO</h1>
+  <p class="lede">DAPO is a refinement of group-relative RL that focuses training on prompts where the sampled group contains both successes and failures, while also managing exploration and response length.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>RL needs contrast. If all samples are wrong, the model does not know what worked. If all samples are correct, the task is too easy. DAPO keeps the model in the useful middle region where reward differences reveal which reasoning paths should be reinforced.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>If eight attempts produce four correct and four wrong answers, DAPO trains on that prompt. If all eight are wrong or all eight are correct, it may skip or downweight the prompt.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>DAPO directly addresses the practical problem of sparse or uninformative rewards in RLVR. It is a curriculum and filtering idea as much as an optimizer detail.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>DAPO is not magic reasoning. It is a way to choose training examples where RL has useful information.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="grpo.html">GRPO</a><a class="chip" href="rlvr.html">RLVR</a><a class="chip" href="rl-information-inefficiency.html">RL Information Inefficiency</a><a class="chip" href="pass-at-k.html">Pass@1 And Pass@k</a></p>
+</section>
+</main>
+</body>
+</html>

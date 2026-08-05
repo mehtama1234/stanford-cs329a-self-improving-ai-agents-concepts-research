@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mixture Of Experts</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">architecture</p>
+  <h1>Mixture Of Experts</h1>
+  <p class="lede">MoE models contain many expert subnetworks but activate only a subset for each token.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Dense models spend compute through the whole network for every token. MoE separates total capacity from active compute: the model can have many parameters, but the router selects a few experts per token.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A model may have hundreds of experts, but for a coding token it routes through code-specialized experts while using only a small fraction of total parameters.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>MoE increases capacity per unit of inference compute, but introduces routing instability, load balancing problems, and expert specialization questions.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>A 600B-parameter MoE model does not necessarily use 600B parameters of compute for each token.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="expert-balancing.html">Expert Balancing</a><a class="chip" href="rlvr.html">RLVR</a><a class="chip" href="algorithmic-progress-categories.html">Algorithmic Progress Categories</a><a class="chip" href="deepseek-mla.html">DeepSeek MLA</a></p>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Repeated Sampling And Coverage</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">inference</p>
+  <h1>Repeated Sampling And Coverage</h1>
+  <p class="lede">Repeated sampling asks the model many times and checks whether at least one attempt solves the problem.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>Some hard problems have rare correct outputs. You need a way to expose those rare successes.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Sampling more is just randomness and therefore not principled.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Sampling is useful when the model&#x27;s distribution already contains correct candidates but does not reliably place them first.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>Coverage asks whether the correct solution exists somewhere in the sampled set. Selection asks whether we can find it after sampling.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>You either stop too early after one miss or sample heavily without knowing how to identify success.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>This explains why test-time scaling and verification are inseparable.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Repeated sampling exposes hidden capability</h3>
+  <p><a href="https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=121s">https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=121s</a></p>
+  <blockquote>by doing this repeated sampling</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The lecture explains why one answer is a weak measurement of model capability: sampling more attempts can reveal correct solutions.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

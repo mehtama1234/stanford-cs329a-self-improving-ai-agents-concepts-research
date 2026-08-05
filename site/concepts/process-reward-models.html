@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Process Reward Models</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">training</p>
+  <h1>Process Reward Models</h1>
+  <p class="lede">A process reward model scores intermediate reasoning steps so training can reward good process, not just good final answers.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A final reward is sparse and may arrive too late to show which step helped or hurt.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Reward only the final output because that is the result users ultimately care about.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Long chains contain many opportunities for small errors. A final reward does not locate them.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>Dense step-level rewards give the training algorithm a clearer gradient toward valid reasoning behavior.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>RL can become unstable or teach superficial answer formatting instead of robust reasoning.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 6 names process reward models as part of long-chain reasoning training.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Process reward models</h3>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=1312s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=1312s</a></p>
+  <blockquote>process-reward model</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The transcript supports the idea that training can reward intermediate reasoning quality, not only final success.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

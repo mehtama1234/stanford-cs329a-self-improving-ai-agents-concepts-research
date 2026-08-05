@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GRPO</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">reinforcement learning</p>
+  <h1>GRPO</h1>
+  <p class="lede">GRPO is a group-relative RL method that compares multiple answers to the same prompt and rewards answers that are better than the group average.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Instead of needing a separate critic model to estimate value, GRPO samples a group of completions for one problem, scores them, and uses relative performance inside the group as the learning signal.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>For one math problem, the model generates eight answers. Three are correct and five are wrong. The correct ones are reinforced relative to the wrong ones.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>GRPO helped make RLVR practical for reasoning because it reduces infrastructure complexity and uses the natural contrast among sampled attempts.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>GRPO does not learn from a problem if every sampled answer is equally good or equally bad. The useful signal comes from contrast.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="rlvr.html">RLVR</a><a class="chip" href="dapo.html">DAPO</a><a class="chip" href="pass-at-k.html">Pass@1 And Pass@k</a><a class="chip" href="process-vs-outcome-rewards.html">Process Rewards Versus Outcome Rewards</a></p>
+</section>
+</main>
+</body>
+</html>

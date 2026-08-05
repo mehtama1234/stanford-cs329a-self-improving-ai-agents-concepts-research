@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Muon Optimizer</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">optimization</p>
+  <h1>Muon Optimizer</h1>
+  <p class="lede">Muon is an optimizer family explored as an alternative or complement to AdamW for more efficient neural network training.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Optimizers decide how parameter updates are shaped from gradients. Matrix-aware or orthogonalized update rules can sometimes move weights through parameter space more efficiently or stably than standard elementwise adaptive methods.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>For certain transformer components, Muon-style updates may produce better training progress for the same compute budget.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>If robust at scale, optimizer improvements can be real algorithmic efficiency gains rather than only data or hardware progress.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>An optimizer gain in one setting does not automatically translate to all frontier training runs. Scale, architecture, and implementation details matter.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="algorithmic-progress-categories.html">Algorithmic Progress Categories</a><a class="chip" href="mid-training.html">Mid-Training</a><a class="chip" href="qk-norm.html">QK-Norm</a><a class="chip" href="moe.html">Mixture Of Experts</a></p>
+</section>
+</main>
+</body>
+</html>

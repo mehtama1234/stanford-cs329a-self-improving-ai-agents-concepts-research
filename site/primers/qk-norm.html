@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QK-Norm</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">architecture</p>
+  <h1>QK-Norm</h1>
+  <p class="lede">QK-norm normalizes query and key vectors in attention to improve training stability.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Attention scores come from interactions between query and key vectors. If their magnitudes become unstable, attention can become too sharp, too noisy, or prone to training spikes. Normalization controls the scale of those interactions.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Instead of letting query-key dot products grow without control, qk-norm keeps the attention comparison in a more stable range.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Stable attention is especially important for large models, long contexts, and MoE systems where instability can compound.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>QK-norm is not a reasoning method by itself. It is an architectural stabilization method that can support better reasoning indirectly.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="deepseek-mla.html">DeepSeek MLA</a><a class="chip" href="moe.html">Mixture Of Experts</a><a class="chip" href="algorithmic-progress-categories.html">Algorithmic Progress Categories</a><a class="chip" href="mid-training.html">Mid-Training</a></p>
+</section>
+</main>
+</body>
+</html>

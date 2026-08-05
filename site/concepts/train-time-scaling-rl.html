@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Train-Time Scaling With RL</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">training</p>
+  <h1>Train-Time Scaling With RL</h1>
+  <p class="lede">Train-time scaling improves the model itself using rationales, rewards, verifiers, and reinforcement learning instead of only spending more compute at inference.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>Inference tricks can help a fixed model, but you may want the model&#x27;s default behavior to improve over time.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Self-improvement only happens during runtime search after the model has already been trained.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Runtime successes and verifier feedback can become training data or rewards that change future model behavior.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>Feedback can be used in two places: at inference to select an answer, or during training to shift the model&#x27;s policy toward better reasoning trajectories.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>You repeatedly pay for the same correction at inference time instead of teaching the model to avoid it.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 6 connects reasoning rationales, DeepSeek-style math training, and RL for long chains.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>STaR uses rationales to improve reasoning</h3>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=44s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=44s</a></p>
+  <blockquote>This paper is called STaR</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>Part 6 moves from using reasoning at inference time to using rationales and feedback during training.</p>
+</article><article class="evidence-item">
+  <h3>RL must handle long reasoning chains</h3>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=60s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=60s</a></p>
+  <blockquote>reinforcement learning</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The lecture explicitly connects train-time scaling to reinforcement learning for long reasoning trajectories.</p>
+</article><article class="evidence-item">
+  <h3>Course recap: self-improvement loop</h3>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s</a></p>
+  <blockquote>test-time scaling and train-time scaling</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The final lecture explicitly ties test-time and train-time scaling together as parts of the course&#x27;s self-improvement story.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

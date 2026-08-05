@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Process Supervision</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">verification</p>
+  <h1>Process Supervision</h1>
+  <p class="lede">Process supervision evaluates intermediate reasoning steps instead of only the final answer.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A final answer can be right for the wrong reason or wrong because of one local step.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Only the final answer matters because users usually see the final answer.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Final-answer labels do not tell the model which step was valid, invalid, missing, or unsupported.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>If reasoning is a chain, feedback should attach to links in the chain. Step-level labels create a denser learning and debugging signal.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>Models learn to imitate final-answer style while leaving hidden reasoning errors untouched.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 3 uses process supervision to explain stronger verification for reasoning.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Process supervision checks intermediate steps</h3>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1487s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1487s</a></p>
+  <blockquote>this is called process supervision</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The lecture distinguishes judging the final answer from judging the chain of reasoning that produced it.</p>
+</article><article class="evidence-item">
+  <h3>Outcome supervision is weaker for reasoning</h3>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1519s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1519s</a></p>
+  <blockquote>way better than we can do with just outcome supervision</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The transcript directly supports the claim that step-level feedback can outperform final-answer-only feedback.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

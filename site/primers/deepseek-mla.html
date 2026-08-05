@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeepSeek MLA</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">architecture</p>
+  <h1>DeepSeek MLA</h1>
+  <p class="lede">MLA, or Multi-Head Latent Attention, compresses attention key-value information into latent representations to make long-context inference more efficient.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Long context is expensive largely because models must store and read key-value cache entries for many tokens. MLA reduces that memory burden by representing key-value information more compactly while preserving useful attention behavior.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A model analyzing a long repository or research corpus can keep more context available without KV-cache costs exploding as quickly.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>MLA is one of the long-context unlockers that changes what tasks are practical at inference time.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>MLA does not make attention free. It changes the memory and compute tradeoff so long context becomes more practical.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="qk-norm.html">QK-Norm</a><a class="chip" href="moe.html">Mixture Of Experts</a><a class="chip" href="test-time-compute.html">Test-Time Compute</a><a class="chip" href="algorithmic-progress-categories.html">Algorithmic Progress Categories</a></p>
+</section>
+</main>
+</body>
+</html>

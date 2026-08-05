@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Base Model Capability</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">foundation</p>
+  <h1>Base Model Capability</h1>
+  <p class="lede">A base model is often more capable than one ordinary sample suggests because its probability distribution contains many possible reasoning paths, including rare good ones.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>A language model defines a distribution over completions. One answer is only one draw from that distribution. Capability is therefore not just what appears in the first sample; it also includes what can be found through repeated sampling, search, or better decoding.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A base model may answer a math problem incorrectly on its first attempt, but among 100 attempts it may produce a fully correct solution. The skill was present, but not reliably selected.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>This explains why pass@k, power sampling, best-of-k, and test-time compute can make base models look much stronger without changing weights.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>A bad first answer does not prove the model lacks the ability. It may prove that the default sampling method failed to elicit the ability.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="sampling.html">Sampling</a><a class="chip" href="pass-at-k.html">Pass@1 And Pass@k</a><a class="chip" href="power-sampling.html">Power Sampling</a><a class="chip" href="reasoning-boundary.html">Reasoning Boundary</a></p>
+</section>
+</main>
+</body>
+</html>

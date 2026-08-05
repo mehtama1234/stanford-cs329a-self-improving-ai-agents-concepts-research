@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReAct: Reason, Act, Observe</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">tools</p>
+  <h1>ReAct: Reason, Act, Observe</h1>
+  <p class="lede">ReAct is a pattern where the model alternates between thinking about what to do, taking an action, observing the result, and continuing.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A multi-step task needs both reasoning and new information from actions.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Reasoning and acting are separate phases that can be planned once and then executed.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Actions change what the model knows. Reasoning must adapt after every observation.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>The agent&#x27;s state is updated by observations. A good next action depends on both the original goal and the latest observed result.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>The model plans blindly and fails to revise when the environment responds differently than expected.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 4 presents ReAct as an early tool-augmented agent pattern.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>ReAct combines reasoning and acting</h3>
+  <p><a href="https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=55s">https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=55s</a></p>
+  <blockquote>called ReAct</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>ReAct is presented as an early pattern for alternating model reasoning with external actions.</p>
+</article>
+</section>
+</main>
+</body>
+</html>

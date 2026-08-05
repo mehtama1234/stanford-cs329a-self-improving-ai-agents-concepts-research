@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mid-Training</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">training</p>
+  <h1>Mid-Training</h1>
+  <p class="lede">Mid-training is an intermediate training phase between broad pretraining and final post-training, often used to specialize the model toward important domains or long-context behavior.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>Pretraining gives general capability. Final post-training shapes interaction behavior. Mid-training changes the base distribution with targeted data such as code, math, multilingual data, long-context documents, or domain corpora before alignment and RL.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A model is pretrained on broad web text, then mid-trained on high-quality code and math, then instruction-tuned and RL-trained.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Mid-training is one reason modern models can improve substantially without obvious architectural changes.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Mid-training is not just more pretraining. Its data mix and objective are chosen to move the model toward desired capabilities.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="pretraining.html">Pretraining</a><a class="chip" href="data-progress.html">Data Progress</a><a class="chip" href="synthetic-data.html">Synthetic Data</a><a class="chip" href="rlvr.html">RLVR</a></p>
+</section>
+</main>
+</body>
+</html>

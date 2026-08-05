@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evidence</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="index.html">Overview</a>
+      <a href="primers.html">Primers</a>
+      <a href="concepts.html">Concepts</a>
+      <a href="lectures.html">Lectures</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Evidence ledger</p>
+  <h1>Transcript Anchors</h1>
+  <p class="lede">Short timestamped transcript spans supporting the concept atlas. Quotes are kept brief; the explanation is synthesis.</p>
+</section>
+<article class="evidence-item" id="ev01-scaling-laws">
+  <h2>Scaling laws as the old improvement path</h2>
+  <p><a href="https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=411s">https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=411s</a></p>
+  <blockquote>we have this predictive scaling laws property</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The course begins with the base-model story: more compute, data, and parameters made models better before reasoning and agents became the main focus.</p>
+  <p><a class="chip" href="concepts/scaling-to-reasoning.html">From Scaling To Reasoning</a></p>
+</article><article class="evidence-item" id="ev01-chain-of-thought">
+  <h2>Reasoning appears as chain-of-thought behavior</h2>
+  <p><a href="https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=438s">https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=438s</a></p>
+  <blockquote>one of those behaviors is the chain of thought behavior</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture treats reasoning traces as the bridge from raw prediction to visible intermediate problem solving.</p>
+  <p><a class="chip" href="concepts/reasoning-traces.html">Reasoning Traces</a></p>
+</article><article class="evidence-item" id="ev01-agent-loop">
+  <h2>Goal, actions, feedback, and stopping</h2>
+  <p><a href="https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2560s">https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2560s</a></p>
+  <blockquote>can be given a goal</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>This span gives the lecture&#x27;s compact definition of an agent: it pursues a goal through actions, feedback, and a stopping condition.</p>
+  <p><a class="chip" href="concepts/agent-loop.html">The Agent Loop</a> <a class="chip" href="concepts/task-specification.html">Task Specification</a></p>
+</article><article class="evidence-item" id="ev01-workflow-patterns">
+  <h2>Chains, routing, parallelization, orchestration</h2>
+  <p><a href="https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2747s">https://www.youtube.com/watch?v=6YnLB0XbTnI&amp;t=2747s</a></p>
+  <blockquote>the simplest workflow here would be prompt chaining</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The overview lecture names the basic engineering structures that turn LLM calls into agent workflows.</p>
+  <p><a class="chip" href="concepts/workflow-orchestration.html">Workflow Orchestration</a></p>
+</article><article class="evidence-item" id="ev02-inference-time">
+  <h2>Improvement at inference time</h2>
+  <p><a href="https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=58s">https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=58s</a></p>
+  <blockquote>at inference time, we can make</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 2 states the core test-time scaling premise: improve usefulness while using the model, without another training run.</p>
+  <p><a class="chip" href="concepts/test-time-compute.html">Test-Time Compute</a></p>
+</article><article class="evidence-item" id="ev02-repeated-sampling">
+  <h2>Repeated sampling exposes hidden capability</h2>
+  <p><a href="https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=121s">https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=121s</a></p>
+  <blockquote>by doing this repeated sampling</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture explains why one answer is a weak measurement of model capability: sampling more attempts can reveal correct solutions.</p>
+  <p><a class="chip" href="concepts/repeated-sampling-coverage.html">Repeated Sampling And Coverage</a> <a class="chip" href="concepts/test-time-compute.html">Test-Time Compute</a></p>
+</article><article class="evidence-item" id="ev02-budget">
+  <h2>Inference compute has a budget</h2>
+  <p><a href="https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=1835s">https://www.youtube.com/watch?v=-Ggc37xLj_Y&amp;t=1835s</a></p>
+  <blockquote>we have a budget of four samples</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Test-time scaling is not free. The system must decide how many attempts to spend and where that compute is worth it.</p>
+  <p><a class="chip" href="concepts/inference-budgeting.html">Inference Budgeting</a></p>
+</article><article class="evidence-item" id="ev03-verification">
+  <h2>Verification closes the generation-selection gap</h2>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=5s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=5s</a></p>
+  <blockquote>lecture three is about verification</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 3 makes verification the central answer to the question of selecting correct outputs from many generated candidates.</p>
+  <p><a class="chip" href="concepts/verifier-selection-gap.html">The Verifier Selection Gap</a></p>
+</article><article class="evidence-item" id="ev03-process-supervision">
+  <h2>Process supervision checks intermediate steps</h2>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1487s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1487s</a></p>
+  <blockquote>this is called process supervision</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture distinguishes judging the final answer from judging the chain of reasoning that produced it.</p>
+  <p><a class="chip" href="concepts/process-supervision.html">Process Supervision</a></p>
+</article><article class="evidence-item" id="ev03-outcome-supervision">
+  <h2>Outcome supervision is weaker for reasoning</h2>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1519s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=1519s</a></p>
+  <blockquote>way better than we can do with just outcome supervision</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The transcript directly supports the claim that step-level feedback can outperform final-answer-only feedback.</p>
+  <p><a class="chip" href="concepts/process-supervision.html">Process Supervision</a></p>
+</article><article class="evidence-item" id="ev03-ensemble">
+  <h2>Verifier ensembles for robustness</h2>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=3155s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=3155s</a></p>
+  <blockquote>using an ensemble of verifiers</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture points toward robustness problems in verification: a single checker can fail, so ensembles and calibration matter.</p>
+  <p><a class="chip" href="concepts/verifier-robustness.html">Verifier Robustness</a></p>
+</article><article class="evidence-item" id="ev04-tool-calling">
+  <h2>Tool calling moves beyond text-only reasoning</h2>
+  <p><a href="https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=42s">https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=42s</a></p>
+  <blockquote>the notion of tool calling</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 4 shifts from internal reasoning to external action: agents call tools, run code, and use the results.</p>
+  <p><a class="chip" href="concepts/tool-calling.html">Tool Calling</a></p>
+</article><article class="evidence-item" id="ev04-react">
+  <h2>ReAct combines reasoning and acting</h2>
+  <p><a href="https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=55s">https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=55s</a></p>
+  <blockquote>called ReAct</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>ReAct is presented as an early pattern for alternating model reasoning with external actions.</p>
+  <p><a class="chip" href="concepts/react-reason-act-observe.html">ReAct: Reason, Act, Observe</a></p>
+</article><article class="evidence-item" id="ev04-execution-feedback">
+  <h2>Execution feedback grounds code models</h2>
+  <p><a href="https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=65s">https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=65s</a></p>
+  <blockquote>grounding code LLMs in execution feedback</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture uses code execution as a concrete feedback source for improving generated programs.</p>
+  <p><a class="chip" href="concepts/execution-feedback.html">Execution Feedback</a></p>
+</article><article class="evidence-item" id="ev04-constitutional-ai">
+  <h2>Constitutional AI as self-critique</h2>
+  <p><a href="https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=82s">https://www.youtube.com/watch?v=Lxh9RF5S-K0&amp;t=82s</a></p>
+  <blockquote>constitutional AI</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture includes model critique as another feedback path, especially when external execution is not the only signal.</p>
+  <p><a class="chip" href="concepts/constitutional-self-critique.html">Constitutional Self-Critique</a></p>
+</article><article class="evidence-item" id="ev05-lats">
+  <h2>Language Agent Tree Search</h2>
+  <p><a href="https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=26s">https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=26s</a></p>
+  <blockquote>Language Agent Tree Search</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 5 frames planning as a search problem over possible reasoning and action trajectories.</p>
+  <p><a class="chip" href="concepts/planning-as-search.html">Planning As Search</a></p>
+</article><article class="evidence-item" id="ev05-multistep">
+  <h2>Multi-step tasks need reasoning and action</h2>
+  <p><a href="https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=43s">https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=43s</a></p>
+  <blockquote>target in multi-step tasks</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The transcript identifies the target task shape: not one answer, but a sequence of reasoning, acting, and refinement.</p>
+  <p><a class="chip" href="concepts/trajectory-optimization.html">Trajectory Optimization For Agents</a> <a class="chip" href="concepts/planning-as-search.html">Planning As Search</a></p>
+</article><article class="evidence-item" id="ev05-trajectory">
+  <h2>Search updates trajectories</h2>
+  <p><a href="https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=262s">https://www.youtube.com/watch?v=Ml_fp9XkB8Y&amp;t=262s</a></p>
+  <blockquote>update the search space, or the trajectory</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Planning quality depends on revising the path after feedback, not merely producing an initial plan.</p>
+  <p><a class="chip" href="concepts/trajectory-optimization.html">Trajectory Optimization For Agents</a></p>
+</article><article class="evidence-item" id="ev06-star">
+  <h2>STaR uses rationales to improve reasoning</h2>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=44s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=44s</a></p>
+  <blockquote>This paper is called STaR</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 6 moves from using reasoning at inference time to using rationales and feedback during training.</p>
+  <p><a class="chip" href="concepts/train-time-scaling-rl.html">Train-Time Scaling With RL</a> <a class="chip" href="concepts/rationale-bootstrapping.html">Rationale Bootstrapping</a></p>
+</article><article class="evidence-item" id="ev06-deepseek-math">
+  <h2>DeepSeek Math as reasoning training case</h2>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=50s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=50s</a></p>
+  <blockquote>DeepSeek math</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture uses mathematical reasoning as a domain where targeted data and training loops can improve capability.</p>
+  <p><a class="chip" href="concepts/domain-reasoning-data.html">Domain Reasoning Data</a></p>
+</article><article class="evidence-item" id="ev06-rl-long-chains">
+  <h2>RL must handle long reasoning chains</h2>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=60s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=60s</a></p>
+  <blockquote>reinforcement learning</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture explicitly connects train-time scaling to reinforcement learning for long reasoning trajectories.</p>
+  <p><a class="chip" href="concepts/train-time-scaling-rl.html">Train-Time Scaling With RL</a></p>
+</article><article class="evidence-item" id="ev06-process-reward">
+  <h2>Process reward models</h2>
+  <p><a href="https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=1312s">https://www.youtube.com/watch?v=yVnmHSAy3ck&amp;t=1312s</a></p>
+  <blockquote>process-reward model</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The transcript supports the idea that training can reward intermediate reasoning quality, not only final success.</p>
+  <p><a class="chip" href="concepts/process-reward-models.html">Process Reward Models</a></p>
+</article><article class="evidence-item" id="ev07-alphacode">
+  <h2>AlphaCode as search over code candidates</h2>
+  <p><a href="https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=24s">https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=24s</a></p>
+  <blockquote>AlphaCode and AlphaCode 2</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 7 uses competitive programming systems to show how sampling plus filtering can find strong solutions.</p>
+  <p><a class="chip" href="concepts/search-space-curation.html">Search-Space Curation</a></p>
+</article><article class="evidence-item" id="ev07-curate-answer">
+  <h2>Curation from the model search space</h2>
+  <p><a href="https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=61s">https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=61s</a></p>
+  <blockquote>curate the answer out</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture&#x27;s key question is selection: the answer may be in the model&#x27;s output space, but the system must extract it reliably.</p>
+  <p><a class="chip" href="concepts/search-space-curation.html">Search-Space Curation</a></p>
+</article><article class="evidence-item" id="ev07-deep-research">
+  <h2>Deep research as agent search</h2>
+  <p><a href="https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=17s">https://www.youtube.com/watch?v=Uni9dqyuuDM&amp;t=17s</a></p>
+  <blockquote>deep research style search</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The course treats deep research as a search-and-synthesis workflow, not just long-form summarization.</p>
+  <p><a class="chip" href="concepts/deep-research-agents.html">Deep Research Agents</a></p>
+</article><article class="evidence-item" id="ev08-agentic-evals">
+  <h2>Agentic evaluations differ from ordinary evals</h2>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=26s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=26s</a></p>
+  <blockquote>agentic evaluations</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Part 8 focuses on evaluating systems that act across steps, rather than isolated model responses.</p>
+  <p><a class="chip" href="concepts/agentic-evaluations.html">Agentic Evaluations</a></p>
+</article><article class="evidence-item" id="ev08-long-horizon">
+  <h2>Long-horizon tasks</h2>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=8s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=8s</a></p>
+  <blockquote>long horizon tasks</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The lecture names horizon length as a core difficulty for agent evaluation: errors can accumulate over many steps.</p>
+  <p><a class="chip" href="concepts/long-horizon-state-memory.html">Long-Horizon State And Memory</a></p>
+</article><article class="evidence-item" id="ev08-memory">
+  <h2>State and memory in long tasks</h2>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=973s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=973s</a></p>
+  <blockquote>state of or memory</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>Long-horizon work requires remembering what happened, what was tried, and what state the task is now in.</p>
+  <p><a class="chip" href="concepts/long-horizon-state-memory.html">Long-Horizon State And Memory</a></p>
+</article><article class="evidence-item" id="ev08-loop-failure">
+  <h2>Agent loops can fail repetitively</h2>
+  <p><a href="https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=1424s">https://www.youtube.com/watch?v=8JAqLnTaZu4&amp;t=1424s</a></p>
+  <blockquote>get into a repetitive loop</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>This gives a concrete failure mode for long-horizon agents: they may cycle without progressing.</p>
+  <p><a class="chip" href="concepts/agentic-evaluations.html">Agentic Evaluations</a> <a class="chip" href="concepts/long-horizon-state-memory.html">Long-Horizon State And Memory</a></p>
+</article><article class="evidence-item" id="ev09-course-loop">
+  <h2>Course recap: self-improvement loop</h2>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=21s</a></p>
+  <blockquote>test-time scaling and train-time scaling</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The final lecture explicitly ties test-time and train-time scaling together as parts of the course&#x27;s self-improvement story.</p>
+  <p><a class="chip" href="concepts/self-improvement-loop.html">The Self-Improvement Loop</a> <a class="chip" href="concepts/test-time-compute.html">Test-Time Compute</a> <a class="chip" href="concepts/train-time-scaling-rl.html">Train-Time Scaling With RL</a></p>
+</article><article class="evidence-item" id="ev09-verifier-loop">
+  <h2>Verifiers and rewards drive the loop</h2>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=25s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=25s</a></p>
+  <blockquote>fundamental loop is driven by verifiers</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The recap states the course&#x27;s central mechanism: feedback from verifiers and rewards drives self-improvement.</p>
+  <p><a class="chip" href="concepts/self-improvement-loop.html">The Self-Improvement Loop</a> <a class="chip" href="concepts/verifier-selection-gap.html">The Verifier Selection Gap</a></p>
+</article><article class="evidence-item" id="ev09-open-endedness">
+  <h2>Open-endedness beyond reward loops</h2>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=48s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=48s</a></p>
+  <blockquote>a whole class on open-endedness</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The final lecture broadens self-improvement beyond fixed rewards toward exploration when the search space can be defined.</p>
+  <p><a class="chip" href="concepts/open-ended-self-improvement.html">Open-Ended Self-Improvement</a></p>
+</article><article class="evidence-item" id="ev09-tool-use">
+  <h2>End-to-end workflows use tools</h2>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=70s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=70s</a></p>
+  <blockquote>end-to-end workflows for agents using tool-use</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The recap confirms that tool use is part of the course&#x27;s end-to-end agent workflow story.</p>
+  <p><a class="chip" href="concepts/tool-calling.html">Tool Calling</a> <a class="chip" href="concepts/agent-loop.html">The Agent Loop</a></p>
+</article><article class="evidence-item" id="ev09-retrieval-memory">
+  <h2>Retrieval and memory support agents</h2>
+  <p><a href="https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=92s">https://www.youtube.com/watch?v=AyO6wyu4DEg&amp;t=92s</a></p>
+  <blockquote>requires retrieval and memory</blockquote>
+  <p><strong>Source tier:</strong> youtube-caption · <strong>Type:</strong> direct transcript support</p>
+  <p>The final lecture connects memory and retrieval to long-running agent workflows and research agents.</p>
+  <p><a class="chip" href="concepts/long-horizon-state-memory.html">Long-Horizon State And Memory</a> <a class="chip" href="concepts/deep-research-agents.html">Deep Research Agents</a></p>
+</article>
+</main>
+</body>
+</html>

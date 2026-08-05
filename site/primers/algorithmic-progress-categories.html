@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Algorithmic Progress Categories</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<p><a href="../primers.html">Back to primers</a></p>
+<section class="page-head">
+  <p class="eyebrow">forecasting</p>
+  <h1>Algorithmic Progress Categories</h1>
+  <p class="lede">Algorithmic progress is not one thing. It mixes architecture, optimizers, systems work, data improvements, distillation, long-context methods, RL, tools, and evaluation design.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>First Principles</h2><p>If model performance improves at fixed compute, the cause could be a better learning algorithm, better data, better implementation, better hardware utilization, better inference strategy, or a new post-training paradigm. Lumping all of these together obscures what actually changed.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A newer model may beat an older model because it used better synthetic math data, not because its transformer block is fundamentally better.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>This matters for forecasting and engineering. The next bottleneck depends on which source of progress is actually driving gains.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Calling everything algorithmic progress can double-count gains and hide the role of data and systems engineering.</p></section>
+</div>
+<section class="detail">
+  <h2>Connects To</h2>
+  <p><a class="chip" href="data-progress.html">Data Progress</a><a class="chip" href="moe.html">Mixture Of Experts</a><a class="chip" href="deepseek-mla.html">DeepSeek MLA</a><a class="chip" href="muon-optimizer.html">Muon Optimizer</a></p>
+</section>
+</main>
+</body>
+</html>

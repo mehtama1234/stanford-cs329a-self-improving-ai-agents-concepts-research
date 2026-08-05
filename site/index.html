@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS329A Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="index.html">Overview</a>
+      <a href="primers.html">Primers</a>
+      <a href="concepts.html">Concepts</a>
+      <a href="lectures.html">Lectures</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main>
+<section class="hero">
+  <p class="eyebrow">Transcript-backed first-principles notes</p>
+  <h1>Stanford CS329A Self-Improving AI Agents</h1>
+  <p class="lede">This package turns the 9-lecture playlist into a concept map: scaling, reasoning traces, test-time compute, verifiers, tool feedback, planning, train-time RL, search, deep research, agent evaluation, memory, and future self-improvement directions.</p>
+</section>
+<section class="stats">
+  <article><strong>9</strong><span>source video</span></article>
+  <article><strong>9</strong><span>available transcript</span></article>
+  <article><strong>96,428</strong><span>transcript words</span></article>
+  <article><strong>27</strong><span>concepts</span></article>
+  <article><strong>34</strong><span>evidence anchors</span></article>
+</section>
+<section>
+  <h2>First-Principles Thesis</h2>
+  <p>An AI agent is not just a larger chatbot. Across the playlist, the move from LLMs to agents is a systems move: give the model a goal, let it act through tools, observe feedback, preserve memory, verify intermediate work, and revise until it either completes the task or knows it cannot.</p>
+  <p>The core pressure is feedback. Scaling gives base capability. Reasoning traces expose intermediate process. Test-time compute samples or searches more paths. Verifiers select, reject, or reward paths. Train-time RL can then use those signals to change future behavior.</p>
+</section>
+<section>
+  <h2>New Primer Track</h2>
+  <p>The primer track collects the concepts we discussed after the lectures: pretraining, base-model latent capability, sampling, SFT, distillation, RLHF, RLVR, GRPO, DAPO, pass@k, diversity collapse, data progress, MoE, MLA, Muon, power sampling, and RL information inefficiency.</p>
+  <p><a class="button" href="primers.html">Open the primer track</a></p>
+</section>
+<section>
+  <h2>Concept Route</h2>
+  <div class="grid">
+    <article class="card"><h3><a href="concepts/scaling-to-reasoning.html">From Scaling To Reasoning</a></h3><p>The course begins with the old recipe for better LLMs: more compute, more data, and more parameters. It then shifts to methods that make models reason, verify, act, and improve.</p></article><article class="card"><h3><a href="concepts/reasoning-traces.html">Reasoning Traces</a></h3><p>A reasoning trace is the visible or supervised path between the problem and the answer: steps, calculations, decisions, tool calls, and justifications.</p></article><article class="card"><h3><a href="concepts/test-time-compute.html">Test-Time Compute</a></h3><p>Test-time compute means spending extra computation while using a fixed model to improve the final answer.</p></article><article class="card"><h3><a href="concepts/repeated-sampling-coverage.html">Repeated Sampling And Coverage</a></h3><p>Repeated sampling asks the model many times and checks whether at least one attempt solves the problem.</p></article><article class="card"><h3><a href="concepts/inference-budgeting.html">Inference Budgeting</a></h3><p>Inference budgeting is deciding how much runtime compute to spend on a problem and where to spend it.</p></article><article class="card"><h3><a href="concepts/verifier-selection-gap.html">The Verifier Selection Gap</a></h3><p>The verifier selection gap is the difference between generating possible answers and knowing which one is correct.</p></article><article class="card"><h3><a href="concepts/process-supervision.html">Process Supervision</a></h3><p>Process supervision evaluates intermediate reasoning steps instead of only the final answer.</p></article><article class="card"><h3><a href="concepts/verifier-robustness.html">Verifier Robustness</a></h3><p>Verifier robustness asks whether the checker itself remains reliable across prompts, tasks, adversarial candidates, and distribution shifts.</p></article><article class="card"><h3><a href="concepts/tool-calling.html">Tool Calling</a></h3><p>Tool calling lets the model request work from outside itself: search, code execution, calculators, APIs, files, databases, or other services.</p></article><article class="card"><h3><a href="concepts/react-reason-act-observe.html">ReAct: Reason, Act, Observe</a></h3><p>ReAct is a pattern where the model alternates between thinking about what to do, taking an action, observing the result, and continuing.</p></article><article class="card"><h3><a href="concepts/execution-feedback.html">Execution Feedback</a></h3><p>Execution feedback means running generated code or actions and using the result as a correction signal.</p></article><article class="card"><h3><a href="concepts/constitutional-self-critique.html">Constitutional Self-Critique</a></h3><p>Constitutional self-critique uses model-generated critique against a set of principles to improve or filter outputs.</p></article><article class="card"><h3><a href="concepts/planning-as-search.html">Planning As Search</a></h3><p>Planning as search treats an agent&#x27;s future as a tree or graph of possible thoughts, actions, observations, and next states.</p></article><article class="card"><h3><a href="concepts/trajectory-optimization.html">Trajectory Optimization For Agents</a></h3><p>Trajectory optimization means improving the whole path an agent takes, not just a single action or final answer.</p></article><article class="card"><h3><a href="concepts/train-time-scaling-rl.html">Train-Time Scaling With RL</a></h3><p>Train-time scaling improves the model itself using rationales, rewards, verifiers, and reinforcement learning instead of only spending more compute at inference.</p></article><article class="card"><h3><a href="concepts/rationale-bootstrapping.html">Rationale Bootstrapping</a></h3><p>Rationale bootstrapping uses generated or curated explanations to help a model learn better reasoning behavior.</p></article><article class="card"><h3><a href="concepts/domain-reasoning-data.html">Domain Reasoning Data</a></h3><p>Domain reasoning data is targeted data from areas like math or code where reasoning steps and correctness can be checked.</p></article><article class="card"><h3><a href="concepts/process-reward-models.html">Process Reward Models</a></h3><p>A process reward model scores intermediate reasoning steps so training can reward good process, not just good final answers.</p></article><article class="card"><h3><a href="concepts/search-space-curation.html">Search-Space Curation</a></h3><p>Search-space curation is the work of sampling many possible outputs and filtering, clustering, testing, or ranking them into a final answer.</p></article><article class="card"><h3><a href="concepts/deep-research-agents.html">Deep Research Agents</a></h3><p>Deep research agents search across sources, decide what is relevant, synthesize evidence, and produce a structured answer or report.</p></article><article class="card"><h3><a href="concepts/agentic-evaluations.html">Agentic Evaluations</a></h3><p>Agentic evaluations test systems that act over time, use tools, manage state, and recover from failures.</p></article><article class="card"><h3><a href="concepts/long-horizon-state-memory.html">Long-Horizon State And Memory</a></h3><p>Long-horizon state and memory are the mechanisms that let an agent remember goals, prior actions, observations, and unfinished constraints over many steps.</p></article><article class="card"><h3><a href="concepts/self-improvement-loop.html">The Self-Improvement Loop</a></h3><p>The self-improvement loop is the course&#x27;s central mechanism: generate attempts, get feedback, verify or reward them, and use that signal to improve the next attempt or future model.</p></article><article class="card"><h3><a href="concepts/open-ended-self-improvement.html">Open-Ended Self-Improvement</a></h3><p>Open-ended self-improvement lets agents explore new possibilities rather than only optimizing a fixed reward on a fixed benchmark.</p></article><article class="card"><h3><a href="concepts/agent-loop.html">The Agent Loop</a></h3><p>An agent receives a goal, plans actions, uses tools or environments, observes feedback, tracks memory, and decides when to stop.</p></article><article class="card"><h3><a href="concepts/workflow-orchestration.html">Workflow Orchestration</a></h3><p>Workflow orchestration is the system design around the model: chains, routers, parallel workers, managers, tools, judges, and verifiers.</p></article><article class="card"><h3><a href="concepts/task-specification.html">Task Specification</a></h3><p>Task specification turns a vague user request into a concrete goal, constraints, success criteria, and verification plan.</p></article>
+  </div>
+</section>
+</main>
+</body>
+</html>

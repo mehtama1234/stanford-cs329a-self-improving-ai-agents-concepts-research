@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verifier Robustness</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../primers.html">Primers</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../lectures.html">Lectures</a>
+      <a href="../evidence.html">Evidence</a>
+      <a href="../transcripts.html">Transcripts</a>
+    </nav>
+  </header>
+  <main><p><a href="../concepts.html">Back to concepts</a></p>
+<section class="page-head">
+  <p class="eyebrow">verification</p>
+  <h1>Verifier Robustness</h1>
+  <p class="lede">Verifier robustness asks whether the checker itself remains reliable across prompts, tasks, adversarial candidates, and distribution shifts.</p>
+</section>
+<div class="two-col">
+  <section class="detail"><h2>Ordinary Problem</h2><p>A weak verifier can approve wrong work or reject good work, causing the whole loop to optimize the wrong signal.</p></section>
+  <section class="detail"><h2>Naive Picture</h2><p>Add a verifier and the system is now safe.</p></section>
+  <section class="detail"><h2>Why It Fails</h2><p>Verifiers are models or programs with their own blind spots. They can be fooled, miscalibrated, or too narrow.</p></section>
+  <section class="detail"><h2>First-Principles Move</h2><p>A verifier is part of the system under evaluation. It needs calibration, ensembles, objective checks where possible, and fallback paths when confidence is weak.</p></section>
+  <section class="detail"><h2>What Breaks Without It</h2><p>The agent reward-hacks the verifier or learns to produce answers that look checkable without being correct.</p></section>
+  <section class="detail"><h2>Course Role</h2><p>Part 3 treats robust verification as its own research topic.</p></section>
+</div>
+<section>
+  <h2>Transcript Evidence</h2>
+  <article class="evidence-item">
+  <h3>Verifier ensembles for robustness</h3>
+  <p><a href="https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=3155s">https://www.youtube.com/watch?v=p7TdPUcPoik&amp;t=3155s</a></p>
+  <blockquote>using an ensemble of verifiers</blockquote>
+  <p><strong>Evidence type:</strong> direct transcript support</p>
+  <p>The lecture points toward robustness problems in verification: a single checker can fail, so ensembles and calibration matter.</p>
+</article>
+</section>
+</main>
+</body>
+</html>
