@@ -26,9 +26,9 @@
   <p class="lede">Diversity collapse happens when training makes a model repeat a narrower set of output patterns, even if those patterns are often good.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>RL increases probability mass on rewarded trajectories. If the reward does not explicitly preserve variety, the model may over-concentrate on common winning strategies and suppress rare but useful alternatives.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>RL shifts probability toward rewarded trajectories — it makes those answers more likely to be produced. If the reward does not explicitly preserve variety, the model may over-concentrate on common winning strategies and suppress rare but useful alternatives.</p></section>
   <section class="detail"><h2>Concrete Example</h2><p>After RL, a model may solve common algebra problems more reliably but stop trying unusual proof strategies that occasionally solved hard problems.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>This explains why RL models can improve pass@1 while hurting pass@k. It also matters for creative, open-ended, and out-of-distribution tasks.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>This explains why RL models can improve pass@1 while hurting pass@k. It also matters for creative, open-ended, and out-of-distribution tasks (inputs unlike anything seen in training).</p></section>
   <section class="detail"><h2>Common Misunderstanding</h2><p>Collapse is not always bad. For safety or routine tasks, narrowing the output distribution can be useful. The problem is losing valuable rare reasoning paths.</p></section>
 </div>
 <section class="detail">
