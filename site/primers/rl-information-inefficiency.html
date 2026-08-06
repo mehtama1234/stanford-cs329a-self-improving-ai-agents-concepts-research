@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">reinforcement learning</p>
   <h1>RL Information Inefficiency</h1>
-  <p class="lede">RL information inefficiency means RL often gives very little learning signal per unit of compute, especially on long tasks with sparse final rewards.</p>
+  <p class="lede">When an AI learns by trial and error (reinforcement learning), it often gets very little useful feedback per attempt, especially on long tasks. A single pass-or-fail grade at the end tells the model almost nothing about where its work went wrong along the way, making learning slow and costly.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>Pretraining gives token-level feedback on every token. RL may generate thousands or millions of tokens before receiving one success/failure bit. If the pass rate is near zero or near one, even that bit carries little useful information.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>A model works for an hour on a coding task and only learns that the final solution failed. It does not automatically know which step caused the failure.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>This explains why curriculum design, process rewards, verifiers, DAPO-style filtering, and task generation near the model&#x27;s frontier are so important.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>RL being inefficient does not mean RL is useless. It means the reward bits are expensive and must be aimed carefully.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>During pretraining, the model reads text and gets told the right answer on nearly every chunk—like a student who sees the answer key after each sentence. In reinforcement learning, the model might generate thousands of chunks of text before finding out if it succeeded. If success is rare, even a single &#x27;yes&#x27; or &#x27;no&#x27; carries very little real information about how to do better next time.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A model spends an hour working through a coding problem—writing functions, testing them, debugging—and at the very end, it learns only &#x27;your solution does not work.&#x27; It never learns which line of code was wrong, whether the logic was flawed early on, or what would have been a better approach halfway through.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Because reward signals are sparse and expensive, humans must design curricula (break problems into easier steps), build checkers that score progress along the way, filter weak solutions out early, and generate new practice problems that match the model&#x27;s current ability. These techniques aim the learning signals carefully so nothing goes to waste.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Saying RL is information-inefficient does not mean RL does not work. It means the learning signals are precious and must be shaped carefully. A model can still learn to do hard things via RL—it just requires smart design of what problems to try and what feedback to give.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

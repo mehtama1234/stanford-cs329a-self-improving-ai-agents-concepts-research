@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">post-training</p>
   <h1>RLVR</h1>
-  <p class="lede">RLVR is reinforcement learning with verifiable rewards: the model gets rewarded when an answer can be automatically checked as correct.</p>
+  <p class="lede">RLVR means teaching a model to get better at reasoning by automatically checking whether its answers are correct. When an answer is right, the model learns that path worked. When an answer is wrong, the model learns to avoid that path next time. The key: the computer can judge correctness itself — no human needed for every single try.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>For tasks like math, code, theorem proving, and tool use, correctness can often be checked by rules, tests, execution, or exact answers. RLVR uses those checks as reward signals to increase the probability of successful reasoning trajectories (a trajectory is one full attempt, from first step to final answer).</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>A model generates code. Unit tests pass or fail. Passing trajectories are reinforced; failing trajectories are discouraged.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>RLVR is central to modern reasoning models because it gives scalable feedback without requiring humans to label every step.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>RLVR does not necessarily create brand-new reasoning machinery. It may mostly make successful existing paths more likely.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>Some tasks have built-in test answers. Math has a right result you can compute. Code has unit tests that pass or fail. Theorem proofs can be verified by a checker. Tool use can check whether the tool did what was asked. RLVR treats each of these checks as a report card: if a full attempt (from start to finish) reaches the right answer, boost the odds that the model takes those same steps again. If an attempt fails, lower the odds. The model learns by rewinding its mistakes and strengthening its hits.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Imagine a model writing a Python function. It tries a solution. A unit test suite runs it: does it handle all the test cases correctly? If yes, the model marks &#x27;that line-by-line path worked&#x27; and will favor similar strategies. If no, it marks &#x27;that strategy failed, try something different.&#x27; After thousands of attempts, the model has learned which kinds of steps and shortcuts tend to pass the tests.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Modern reasoning models think step by step — breaking hard problems into smaller pieces. Without RLVR, you&#x27;d need a human expert to label every attempt as good or bad, which costs money and time. With RLVR, the computer does the grading automatically (run the test, check the proof, compute the answer). This lets the model improve on billions of attempts without human help. It is the reason reasoning models got powerful enough to solve hard math and coding problems.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>RLVR does not invent new problem-solving tricks. It finds existing good paths through reasoning and makes them more likely. If a model already knows how to think step by step, RLVR tunes which steps it prefers. If the model has never seen a useful strategy, RLVR alone will not create it.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

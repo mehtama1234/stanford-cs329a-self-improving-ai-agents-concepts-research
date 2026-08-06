@@ -3,480 +3,480 @@
     "id": "pretraining",
     "title": "Pretraining",
     "theme": "foundation",
-    "plain_meaning": "Pretraining is the broad learning phase where a model predicts the next token (a token is a chunk of text, usually a word or a word-piece) across a huge corpus and absorbs language, facts, patterns, styles, and many weak forms of reasoning.",
-    "first_principles": "The model is not directly taught to be helpful or to solve tasks. It is repeatedly asked: given this context, what token is likely next? To reduce error, it must build internal representations of grammar, concepts, procedures, facts, code, mathematical patterns, and the distribution of human-written reasoning.",
-    "example": "If the text says 'To solve 2x + 3 = 7, subtract 3 from both sides...', the model learns that algebra explanations often continue with a transformation step. Across many examples, this creates latent algebraic behavior.",
-    "why_it_matters": "Most later alignment, reasoning, RL, and agentic behavior sits on top of pretraining. If the base model does not already contain useful representations, post-training has little to elicit.",
+    "plain_meaning": "Pretraining is the first, enormous learning phase. A model — a program with billions of dials (numbers) it can adjust — reads through mountains of books, articles, websites, and code. For each piece of text, it plays a guessing game: given what came before, predict the next word. It repeats this game millions of times, tweaking its dials whenever it guesses wrong, until it becomes very good at guessing what comes next. Through this simple game, it sponges up language, facts, how things are explained, and patterns in how people think and write.",
+    "first_principles": "Nobody tells the model 'be helpful' or 'solve algebra problems' during pretraining. Instead, the model only sees one rule: predict the next word given the words before it. To win this game, it must build internal shortcuts and patterns — a model of grammar, of what makes sense, of how concepts fit together, of mathematical tricks, of how code works, of when arguments are strong or weak. Think of it like learning a language by reading millions of books: you never memorize them, but you internalize how language works. The model does this with numbers instead of intuition, but the principle is the same.",
+    "example": "Imagine the model reads '2x + 3 = 7. To solve, subtract 3 from both sides to get 2x = 4. Then divide by 2 to get x = 2.' This appears thousands of times in math explanations across the internet. The model starts to notice a pattern: when you see an algebra problem, the next words often describe a transformation step. After reading many examples, the model has internalized a hidden understanding of how algebra works — not because it memorized one lesson, but because it saw the pattern repeated across contexts.",
+    "why_it_matters": "Everything that comes later — teaching the model to be helpful, training it to reason step-by-step, rewarding it for good answers, building it into an agent that learns from its own mistakes — all of that sits on top of pretraining. If pretraining has not already built useful internal patterns and structure, later training has almost nothing to work with. Pretraining is the foundation. Without a strong foundation, no amount of fine-tuning fixes a weak base.",
     "connections": [
       "base-model-capability",
       "latent-reasoning",
       "data-progress",
       "mid-training"
     ],
-    "misunderstanding": "Pretraining is not just memorization. It includes memorization, but the useful part is compression: learning reusable structure that generalizes across contexts."
+    "misunderstanding": "Many people think pretraining is just memorizing text — the model reads a book and stores it. That is partly true, but it misses the point. Pretraining does include some memorization (names, famous quotes), but the real value is learning to compress: finding the repeating structure underneath. A child does not memorize every conversation but learns the rules of grammar and speech from hearing many examples. The model does the same — it keeps the patterns and rules, and discards the exact words. This compression is what lets the model handle new situations it has never seen."
   },
   {
     "id": "base-model-capability",
     "title": "Base Model Capability",
     "theme": "foundation",
-    "plain_meaning": "A base model is often more capable than one ordinary sample suggests because its probability distribution contains many possible reasoning paths, including rare good ones.",
-    "first_principles": "A language model defines a probability distribution over completions — a ranked spread of possible answers, each with its own likelihood. One answer is only one draw from that distribution. Capability is therefore not just what appears in the first sample; it also includes what can be found through repeated sampling, search, or better decoding.",
-    "example": "A base model may answer a math problem incorrectly on its first attempt, but among 100 attempts it may produce a fully correct solution. The skill was present, but not reliably selected.",
-    "why_it_matters": "This explains why pass@k, power sampling, best-of-k, and test-time compute can make base models look much stronger without changing weights.",
+    "plain_meaning": "When you ask an AI language model — a program with billions of dials it tunes by trial and error — to solve a hard problem, one attempt might look bad. But the model actually contains many different ways it could have answered. If you ask it the same question 100 times, it picks differently each time (like rolling dice), and some attempts will be completely right. The model's real skill is hiding in those other paths it could take, not just the first answer it gives.",
+    "first_principles": "A language model learns by guessing the next word over and over until it gets good at it. What it really learns is not a single right answer, but a ranked list — a spread of possibilities, each with a score for how likely it is. When you ask a question, the model doesn't pick the #1 answer every time; it treats the list like weighted dice. Roll once, you might get a mediocre answer. Roll 100 times, you might hit the correct one that was always possible but just rare. Capability lives in the whole ranked list, not just the top pick.",
+    "example": "Imagine the model sees a math problem: 'A train leaves at 3 PM going 60 miles per hour.' On its first answer, it makes an arithmetic slip and gets 180 miles. You ask again (with dice-roll randomness), and this time it carefully works through it step by step and gets 240 miles correctly. On 100 attempts, maybe 35 are right, 40 are close, and 25 are wrong. The skill to solve it correctly was always in the model; it just didn't come out first.",
+    "why_it_matters": "This idea shows why you don't need to retrain or redesign the model to make it smarter. You can ask it many times and pick the best answer, or use a checker that grades answers and keeps only the good ones (called 'test-time compute' — spending more thinking time at the moment you ask, not earlier). The model's weights stay the same; you just extract the hidden good paths that were already there. It's like having a player who can make a tricky shot one-in-three times, and discovering that instead of asking for one shot, you let them try five times and keep the best one.",
     "connections": [
       "sampling",
       "pass-at-k",
       "power-sampling",
       "reasoning-boundary"
     ],
-    "misunderstanding": "A bad first answer does not prove the model lacks the ability. It may prove that the default sampling method failed to elicit the ability."
+    "misunderstanding": "If the model gives you a wrong answer, it does not mean the model cannot do the task. It might just mean the dice roll came up unlucky, or the default way it picks answers (always the #1 option) missed the rare good one. Testing the real skill takes patience — asking many times, or using a checker — not just one try."
   },
   {
     "id": "sampling",
     "title": "Sampling",
     "theme": "inference",
-    "plain_meaning": "Sampling is the process of choosing tokens from the model's probability distribution during generation.",
-    "first_principles": "At each step, the model gives probabilities for possible next tokens. Decoding rules decide whether to pick the most likely token, sample randomly, sharpen the distribution, truncate low-probability tokens, or search across multiple possible futures.",
-    "example": "With high temperature, the model may explore more unusual solution paths. With low temperature, it becomes more predictable but may get stuck in a common flawed path.",
-    "why_it_matters": "Reasoning quality depends heavily on how the model is sampled. Different sampling methods trade off reliability, diversity, cost, and exploration.",
+    "plain_meaning": "When an AI model writes its answer one word at a time, it needs a way to pick each new word. Sampling is how it makes that choice. At each step, the model ranks all possible next words by confidence (a score from 0 to 1 that shows how likely each word is). Sampling is the rule for which word it actually picks — sometimes the top choice, sometimes a random pick from the high-scoring ones, sometimes something in between.",
+    "first_principles": "Here's what happens under the hood. After seeing your question, the model outputs a number for every word in its vocabulary — those numbers tell you the odds of each word being next. Now you need to pick one. The model itself doesn't choose; you do, using a sampling rule. The simplest rule: take the highest-scoring word every time (greedy). A more playful rule: roll loaded dice where each word's weight is its score (random sampling). Between the two: you can turn up the heat on the scores to flatten them (making the model more reckless) or turn down the heat to sharpen them (making it more conservative). You can also trim away words with very low scores before rolling the dice, so the model only considers plausible options.",
+    "example": "You ask the model 'What is 2+2?' At the last step, it has given high scores to '4' (score 0.8), '5' (score 0.15), and 'four' (score 0.03). With a greedy rule, it picks '4' always. With a random rule, it might pick '4' 80% of the time, '5' 15% of the time, and 'four' 3% of the time. If you add heat (increase temperature), those scores spread out flatter — maybe '4' drops to 0.5 and the others rise, so '5' becomes likelier. If you remove heat (decrease temperature), '4' climbs toward 0.95 and the others shrink, making '4' almost guaranteed. On harder reasoning questions, a mix of heat and random sampling lets the model wander through different solution paths instead of always following one worn trail.",
+    "why_it_matters": "Which sampling rule you use shapes everything about the model's answer. If you always take the top word, the model will follow the same path every time — and if that path leads to a wrong answer, you're stuck. If you use random sampling with the right heat level, the model can explore different reasoning chains. Some paths work; some don't. You can run it many times and pick the best answer. Sampling is not a dial you turn after the model is done — it changes which internal path the model actually follows while thinking, so it changes the final answer itself. For reasoning tasks that need multiple attempts or careful exploration, sampling is the difference between getting stuck and finding a solution.",
     "connections": [
       "test-time-compute",
       "pass-at-k",
       "diversity-collapse",
       "power-sampling"
     ],
-    "misunderstanding": "Sampling is not a cosmetic output setting. For reasoning tasks, sampling can determine which internal strategy the model follows."
+    "misunderstanding": "Many people think sampling is just a cosmetic choice about formatting or randomness in the output. It's not. For a reasoning task, sampling doesn't just add noise — it determines which problem-solving path the model walks through. Changing sampling can make the model give a completely different answer to the same question. It's not decoration; it's part of the thinking process."
   },
   {
     "id": "test-time-compute",
     "title": "Test-Time Compute",
     "theme": "inference",
-    "plain_meaning": "Test-time compute means spending more computation when answering a question, without changing the model weights.",
-    "first_principles": "If a model has a distribution containing both weak and strong paths, extra runtime computation can search that distribution, generate multiple candidates, revise intermediate work, or verify outputs. The model stays fixed, but the inference procedure becomes stronger.",
-    "example": "Instead of asking for one answer to a coding problem, generate 50 programs, run unit tests, and keep the one that passes.",
-    "why_it_matters": "This is central to reasoning models and agents because many hard tasks are not solved by one forward pass. They require search, checking, retries, and budget allocation.",
+    "plain_meaning": "Test-time compute means spending more effort when the model answers a question—not by changing what the model learned, but by giving it more time to try, retry, or check its work. Think of it like redoing a math problem three times and picking the right answer, instead of writing down your first guess and moving on.",
+    "first_principles": "When a model answers a question, it always picks from a ranked list of possibilities it learned during training. For hard questions, the best answer may not be at the very top of that list, or the model may need to explore several paths to find it. Test-time compute lets you stay with the same model but change how you use it—generate many attempts, check which ones work, refine rough ideas, test answers against rules. The model's learning does not change; only the way you run it gets smarter.",
+    "example": "You ask an AI to write a program that sorts numbers. Instead of writing one program and hoping it works, you tell it to write 50 different versions. You test each one with sample numbers. You keep the one that gets them right every time. One model, same brain, but by spending time to generate and test many answers, you get a much better result.",
+    "why_it_matters": "Reasoning models are designed to think step by step, and agents learn by trying and adjusting. Most hard problems—coding, math, planning—are not solved by thinking just once. They need you to explore possibilities, double-check work, catch mistakes, and steer effort to the hardest parts. Test-time compute is how you get a fixed model to solve harder problems by giving it time to do that work at answer-time instead of requiring it to learn it all during training.",
     "connections": [
       "sampling",
       "verifiers",
       "agentic-evaluations",
       "inference-budgeting"
     ],
-    "misunderstanding": "Test-time compute is not free intelligence. It only helps when there is a way to select better outputs or use feedback."
+    "misunderstanding": "Test-time compute is not giving the model superpowers it did not have before. It only works if you have a way to tell good answers from bad ones—a test that passes, a rule that the answer must follow, or another checker you trust. If you just generate 50 answers and pick randomly, you get nowhere. The extra thinking only buys you better results when you can spot the better result."
   },
   {
     "id": "sft",
     "title": "Supervised Finetuning",
     "theme": "post-training",
-    "plain_meaning": "Supervised finetuning trains a model on examples of desired input-output behavior.",
-    "first_principles": "After pretraining learns broad representations, SFT changes how the model responds to a prompt. It shows the model what kind of answer should follow: concise answer, chain of reasoning, tool call, JSON format, safety refusal, or domain-specific response.",
-    "example": "A dataset of customer support questions and ideal responses teaches the model to answer in the company's support style.",
-    "why_it_matters": "SFT is the easiest way to teach format, style, task behavior, and teacher-model reasoning traces. Distillation is often implemented as SFT on synthetic outputs from a stronger model.",
+    "plain_meaning": "Supervised finetuning is the phase where you take a model that has already learned language basics and show it hundreds or thousands of specific examples: here is a customer question — here is the perfect answer you should give. After seeing many pairs like this, the model learns to copy that style and reasoning pattern.",
+    "first_principles": "Before finetuning, a model learns from reading billions of words in any order — just getting good at the next-word guessing game (this is pretraining). Finetuning comes next: instead of random text, you feed it pairs of prompt-and-response you wrote or collected, with a label saying 'this response is right.' The model then nudges its dials to make responses like that more likely. Over time, it stops acting like a generic text-guesser and starts acting like a helper — or a reasoner, or a coder, depending on what pairs you showed it.",
+    "example": "Say you work at a pizza restaurant and want to train a helper chatbot. You collect 500 real customer messages ('Can I order gluten-free pizza?', 'What's your delivery time?') paired with ideal replies your manager wrote ('Yes, we offer gluten-free crust...', 'We deliver in 30-45 minutes...'). You show the model these 500 pairs. After seeing thousands of similar pairs (your team writes more), the bot starts answering new questions in that exact style — factual, friendly, specific to pizza.",
+    "why_it_matters": "Finetuning is the simplest and cheapest way to teach a model a job. Want it to write essays in short sentences? Give it essays written that way. Want it to show its working on a math problem? Give it math problems with step-by-step solutions, and it learns to do that. Want it to refuse dangerous requests? Give it dangerous requests paired with refusals. You can also use finetuning to copy reasoning traces from a smarter model into a smaller one — a technique called distillation, which uses finetuning as its engine.",
     "connections": [
       "distillation",
       "synthetic-data",
       "mid-training",
       "mechanisms-vs-heuristics"
     ],
-    "misunderstanding": "SFT is not only about making a model polite. It can transfer procedural traces and sometimes install reasoning patterns the base model did not naturally use."
+    "misunderstanding": "People often think finetuning is just for manners — making a model say 'please' and 'thank you.' That is wrong. Finetuning copies whatever pattern you show it: a step-by-step reasoning process, a code-writing style, a specific language, even a new kind of thinking the base model never learned. If your finetuning pairs contain 'think hard, list your reasoning, then answer,' the model adopts that reasoning habit, not just word choice."
   },
   {
     "id": "distillation",
     "title": "Distillation",
     "theme": "post-training",
-    "plain_meaning": "Distillation trains one model to imitate another model, usually to transfer capability into a cheaper, smaller, or more specialized model.",
-    "first_principles": "A teacher model produces outputs, reasoning traces, labels, preferences, or demonstrations. A student model trains on those artifacts. The student may learn behavior that would be expensive to discover from raw data alone.",
-    "example": "A strong reasoning model solves many math problems step by step. A smaller model is finetuned on those solutions and becomes much better at similar math tasks.",
-    "why_it_matters": "Distillation can expand a student's practical reasoning boundary more than RL alone because it supplies explicit high-quality worked solutions rather than only a final right-or-wrong score.",
+    "plain_meaning": "Distillation is teaching one AI model to copy what another AI model does — the goal is to move a skill from one model into a new model that is cheaper to run, smaller, or better at one specific task. Instead of learning from scratch with raw text, the new model learns by watching how the skilled model solves problems.",
+    "first_principles": "Imagine a student who watches a tutor solve hard problems step-by-step. The student doesn't just get told \"right\" or \"wrong\" — they see the whole reasoning path: the mistakes the tutor notices, the approach the tutor picks, the checks the tutor does. The student trains by copying and memorizing these observed steps. The original model (the tutor) generates outputs, shows its work, writes down its preferences (this path was better than that one), or gives full worked solutions. The new model (the student) tunes its dials by trial and error until its own answers match what it saw the teacher produce. The student may end up doing things it could never find on its own from raw data alone.",
+    "example": "A powerful reasoning model learns to solve hard math by trying thousands of problems and getting rewarded when it finds the right answer. A smaller, faster model is then trained to copy that reasoning: the smaller model reads many solved problems, watches the reasoning traces (the step-by-step work), and adjusts itself to produce similar reasoning. Now the smaller model is much better at math tasks than it would be if trained from scratch, because it saw explicit, high-quality solutions instead of having to discover them.",
+    "why_it_matters": "Teaching a model by showing it worked solutions is faster and often more effective than only rewarding it with \"right\" or \"wrong\" scores. With a score alone, the model has to guess how to get there; with a full solution, the model sees the path. Distillation also lets you shrink a large, expensive model down to a small one that runs fast on a phone or embedded device, so the reasoning and step-by-step thinking that once required a server can now happen anywhere. This matters for reasoning models because the step-by-step work is the whole point — you want that detailed reasoning available even in a smaller, deployed system.",
     "connections": [
       "sft",
       "synthetic-data",
       "data-progress",
       "reasoning-boundary"
     ],
-    "misunderstanding": "Distillation is not always about making a smaller clone. A larger student can also improve by learning from generated data from a different teacher."
+    "misunderstanding": "Many think distillation means the student model must be smaller than the teacher. That is not true. A larger model can also learn and improve by studying the outputs and reasoning traces a different teacher model made, even if the teacher is smaller. The goal is not shrinkage — the goal is transferring a skill. The student gets better at a task because it learned from high-quality examples, not because it was made compact."
   },
   {
     "id": "rlhf",
     "title": "RLHF",
     "theme": "post-training",
-    "plain_meaning": "RLHF means reinforcement learning from human feedback, usually used to align model outputs with human preferences.",
-    "first_principles": "Humans compare or rate model outputs. A reward model learns those preferences. The language model is then optimized to produce outputs the reward model scores highly.",
-    "example": "Given two answers, humans prefer the answer that is more helpful and less evasive. The model is trained to increase the probability of answers like that.",
-    "why_it_matters": "RLHF made chat models more usable, but it can also produce over-optimization, sycophancy (telling people what they want to hear), mode collapse (falling back on a few safe responses), or responses that look good to the reward model without being truly better.",
+    "plain_meaning": "RLHF stands for Reinforcement Learning from Human Feedback. After a model learns to predict words by reading text, RLHF teaches it to prefer certain answers over others by showing it which answers humans liked. It is the tuning step that makes a model behave the way people want — answering helpfully instead of just guessing the next word.",
+    "first_principles": "Start with a model that has learned language by predicting the next word in billions of texts. Now show it pairs of answers — one answer it made, and another answer to the same question. Ask humans: which is better? Those humans mark their votes. Next, train a separate checker (called a reward model) to predict what humans will vote for: does it sound clear? helpful? honest? Then, nudge the main model's dials so it becomes more likely to produce answers the reward checker gives high scores to. The model learns to chase the reward checker's approval.",
+    "example": "A model answers 'What is 2+2?' with 'I do not know.' and also generates 'The answer is 4.' Humans vote: the second is better. A reward checker learns this pattern from thousands of votes. Now during training, every time the model writes 'The answer is 4,' the reward goes up. The model's dials shift to make that sentence more likely. After many examples, it reliably picks useful answers.",
+    "why_it_matters": "Without RLHF, a model is just guessing the next word based on patterns it saw in training text — it might be rude, evasive, or make up facts because all those patterns existed somewhere in the training data. RLHF steers the model toward human preferences: answering directly, helping the person, staying honest. This made AI chat models actually useful to talk to. However, RLHF has tradeoffs: the reward checker can be fooled, the model might say things that sound right without being true, or it might avoid hard questions and only give safe answers. The model chases what the reward checker sees, not what is actually good.",
     "connections": [
       "rlvr",
       "diversity-collapse",
       "verifiers",
       "process-vs-outcome-rewards"
     ],
-    "misunderstanding": "RLHF is not the same as RLVR. RLHF uses human preference signals; RLVR uses automatically checkable correctness signals."
+    "misunderstanding": "RLHF uses human judgment as the signal: people decide which answer is better. This is different from RLVR (Reinforcement Learning from Verification), which uses a rule or automatic checker to grade answers (e.g., does the math work out?). RLHF says humans voted; RLVR says the answer passed a test. RLHF works for subjective goals (being friendly, clear) but struggles with hidden mistakes. RLVR works only where you can write a checker, but it catches objective mistakes RLHF might miss."
   },
   {
     "id": "rlvr",
     "title": "RLVR",
     "theme": "post-training",
-    "plain_meaning": "RLVR is reinforcement learning with verifiable rewards: the model gets rewarded when an answer can be automatically checked as correct.",
-    "first_principles": "For tasks like math, code, theorem proving, and tool use, correctness can often be checked by rules, tests, execution, or exact answers. RLVR uses those checks as reward signals to increase the probability of successful reasoning trajectories (a trajectory is one full attempt, from first step to final answer).",
-    "example": "A model generates code. Unit tests pass or fail. Passing trajectories are reinforced; failing trajectories are discouraged.",
-    "why_it_matters": "RLVR is central to modern reasoning models because it gives scalable feedback without requiring humans to label every step.",
+    "plain_meaning": "RLVR means teaching a model to get better at reasoning by automatically checking whether its answers are correct. When an answer is right, the model learns that path worked. When an answer is wrong, the model learns to avoid that path next time. The key: the computer can judge correctness itself — no human needed for every single try.",
+    "first_principles": "Some tasks have built-in test answers. Math has a right result you can compute. Code has unit tests that pass or fail. Theorem proofs can be verified by a checker. Tool use can check whether the tool did what was asked. RLVR treats each of these checks as a report card: if a full attempt (from start to finish) reaches the right answer, boost the odds that the model takes those same steps again. If an attempt fails, lower the odds. The model learns by rewinding its mistakes and strengthening its hits.",
+    "example": "Imagine a model writing a Python function. It tries a solution. A unit test suite runs it: does it handle all the test cases correctly? If yes, the model marks 'that line-by-line path worked' and will favor similar strategies. If no, it marks 'that strategy failed, try something different.' After thousands of attempts, the model has learned which kinds of steps and shortcuts tend to pass the tests.",
+    "why_it_matters": "Modern reasoning models think step by step — breaking hard problems into smaller pieces. Without RLVR, you'd need a human expert to label every attempt as good or bad, which costs money and time. With RLVR, the computer does the grading automatically (run the test, check the proof, compute the answer). This lets the model improve on billions of attempts without human help. It is the reason reasoning models got powerful enough to solve hard math and coding problems.",
     "connections": [
       "grpo",
       "dapo",
       "verifiers",
       "rl-information-inefficiency"
     ],
-    "misunderstanding": "RLVR does not necessarily create brand-new reasoning machinery. It may mostly make successful existing paths more likely."
+    "misunderstanding": "RLVR does not invent new problem-solving tricks. It finds existing good paths through reasoning and makes them more likely. If a model already knows how to think step by step, RLVR tunes which steps it prefers. If the model has never seen a useful strategy, RLVR alone will not create it."
   },
   {
     "id": "grpo",
     "title": "GRPO",
     "theme": "reinforcement learning",
-    "plain_meaning": "GRPO is a group-relative RL method that compares multiple answers to the same prompt and rewards answers that are better than the group average.",
-    "first_principles": "Instead of needing a separate 'critic' model — a helper trained to predict how good an answer will turn out — GRPO samples a group of completions for one problem, scores them, and uses relative performance inside the group as the learning signal.",
-    "example": "For one math problem, the model generates eight answers. Three are correct and five are wrong. The correct ones are reinforced relative to the wrong ones.",
-    "why_it_matters": "GRPO helped make RLVR practical for reasoning because it reduces infrastructure complexity and uses the natural contrast among sampled attempts.",
+    "plain_meaning": "GRPO is a technique that helps a reasoning model get better at solving hard problems by having it generate multiple answers to the same question, scoring each one, and then strengthening the ones that worked better than average. Think of it like taking a test five times, keeping track of which answers you got right more often than not, and learning from that contrast.",
+    "first_principles": "When a model learns to reason better, it needs a signal about which attempts were actually good. Normally, you'd use a separate checker program to score each answer — that costs extra resources. GRPO cuts out that middle layer: it has the model generate several tries for one problem all at once, ranks them by whether they're correct or incorrect, and uses the gap between the good ones and bad ones as the learning nudge. The nudge says: make answers like those good ones more likely, and answers like those bad ones less likely.",
+    "example": "A reasoning model is learning to solve math problems. For one problem it generates eight different solutions in a row. Three of them compute the right answer. Five compute wrong answers. GRPO looks at that set: it sees 'these three worked, these five didn't,' and adjusts the model so that on the next try, it leans toward solutions that look more like the three that worked. The model doesn't need anyone to tell it what 'right' means — it figures it out from the natural difference between its attempts.",
+    "why_it_matters": "Reasoning models need to learn to spend time thinking carefully on hard questions. Teaching them to do that usually requires complex machinery: a separate scorer, careful setup, and lots of bookkeeping. GRPO is simpler — one model, one question, a batch of tries — and it actually works because trying many times on the same problem naturally separates the good solutions from the bad ones. This simplicity is why GRPO helped make learning-to-reason affordable and fast enough for real systems.",
     "connections": [
       "rlvr",
       "dapo",
       "pass-at-k",
       "process-vs-outcome-rewards"
     ],
-    "misunderstanding": "GRPO does not learn from a problem if every sampled answer is equally good or equally bad. The useful signal comes from contrast."
+    "misunderstanding": "A common trap: thinking GRPO learns something useful from every problem. It doesn't. If the model generates eight answers and all eight are equally correct, or all eight are equally wrong, there is no pattern to learn from — GRPO has nothing to do. The learning only happens when there's a real split: some answers work, others fail. The power comes from that difference, not just from sampling multiple attempts."
   },
   {
     "id": "dapo",
     "title": "DAPO",
     "theme": "reinforcement learning",
-    "plain_meaning": "DAPO is a refinement of group-relative RL that focuses training on prompts where the sampled group contains both successes and failures, while also managing exploration and response length.",
-    "first_principles": "RL needs contrast. If all samples are wrong, the model does not know what worked. If all samples are correct, the task is too easy. DAPO keeps the model in the useful middle region where reward differences reveal which reasoning paths should be reinforced.",
-    "example": "If eight attempts produce four correct and four wrong answers, DAPO trains on that prompt. If all eight are wrong or all eight are correct, it may skip or downweight the prompt.",
-    "why_it_matters": "DAPO directly addresses the practical problem of sparse or uninformative rewards in RLVR. It is a curriculum and filtering idea as much as an optimizer detail.",
+    "plain_meaning": "DAPO is a method that teaches a reasoning model to improve itself by picking the right training examples — specifically, prompts where some of the model's attempts worked and some failed. It also manages how long the model's reasoning steps are and how much it should explore different answer paths. By training on examples where the model can see the difference between good and bad reasoning, DAPO helps the model learn which thinking patterns to repeat.",
+    "first_principles": "When a model learns to reason better, it needs clear signals about what went right and what went wrong. Imagine trying to learn tennis: if every swing you make is terrible, you don't know what to avoid; if every swing is perfect, the game is too easy and you're not learning anything. DAPO stays in the useful middle: it focuses on prompts where roughly half the model's attempts succeed and half fail. This makes the reward signal (the feedback about which reasoning paths are good) clear enough to learn from. It's a form of choosing your training battles wisely — practice the problems that challenge you and teach you the most.",
+    "example": "Suppose the model tries to solve a math problem eight times. Four solutions are correct; four are wrong. That's a perfect example for DAPO to train on, because the model can see the difference between reasoning paths that work and ones that don't. Now suppose instead that all eight attempts are wrong, or all eight are correct. DAPO might skip that prompt or reduce how much it learns from it, because either there's no useful contrast (all wrong), or the problem is already easy (all correct). The model learns fastest when it's in the zone where success and failure are both visible.",
+    "why_it_matters": "In real reasoning problems, rewards are often sparse — meaning they give feedback only when the model fully solves something, not along the way. DAPO solves two problems at once. First, it filters out unhelpful training data (prompts where the model either fails completely or succeeds completely), so the model spends effort on examples that actually teach. Second, it controls how long the model's reasoning gets and how much it should try different paths, so the model doesn't grow bloated or stuck. This is not just a technical tweak — it's a curriculum, a way of saying 'practice these harder examples first, skip the trivial ones.'",
     "connections": [
       "grpo",
       "rlvr",
       "rl-information-inefficiency",
       "pass-at-k"
     ],
-    "misunderstanding": "DAPO is not magic reasoning. It is a way to choose training examples where RL has useful information."
+    "misunderstanding": "DAPO does not make reasoning happen by itself. It is not a new thinking capability. It is a filter and a guide that decides which training examples the model should learn from. A model trained with DAPO still needs good initial training (learning from text), still needs a way to check if its answers are right (a verifier), and still needs many attempts to improve. DAPO just makes that improvement smarter by choosing the hardest and most informative examples."
   },
   {
     "id": "pass-at-k",
     "title": "Pass@1 And Pass@k",
     "theme": "evaluation",
-    "plain_meaning": "Pass@1 measures whether the first answer is correct. Pass@k measures whether at least one of k sampled answers is correct.",
-    "first_principles": "Single-shot accuracy measures reliability under one draw. Multi-shot accuracy measures whether the model's distribution contains a correct solution somewhere within repeated attempts.",
-    "example": "A model with 40% pass@1 but 90% pass@100 is unreliable but capable. A model with 70% pass@1 and 75% pass@100 is reliable but less diverse.",
-    "why_it_matters": "The gap between pass@1 and pass@k reveals whether training improved reliability, expanded capability, or collapsed diversity.",
+    "plain_meaning": "Imagine you ask an AI model to solve a hard math problem. Pass@1 is: you get exactly one answer and check if it's right. Pass@k is: you tell the model to generate k different answers (say 5, or 100), then check if ANY of them are right. Pass@k shows whether the model *can* find the right answer if given more tries, even if its first attempt fails.",
+    "first_principles": "When you give a model the same problem twice, it usually answers differently—sometimes it picks the right path, sometimes wrong. Pass@1 measures: how often does the first attempt happen to work? Pass@k measures: if we give the model many separate attempts, what fraction of the time does at least one path lead to the right answer? The gap between them tells you whether the model has the answer buried inside—just not always on the surface.",
+    "example": "Suppose a model solves a coding problem with pass@1 = 40% (gets it right 4 out of 10 times) but pass@100 = 90% (at least one correct solution in 100 tries, 90 out of 100 times). This means: the model *knows* how to solve it most of the time, but its first guess often picks a dead-end path. Now imagine another model with pass@1 = 70% and pass@100 = 71%. This model is reliable—most first tries work—but it thinks the same narrow way every time.",
+    "why_it_matters": "In reasoning models, we're trying to build AI that thinks step by step and improves itself. Pass@k tells us something pass@1 alone hides: is the model stuck in one rigid way of thinking, or does it have multiple solutions it could pick from? If pass@k jumps much higher than pass@1, we know the model is *capable* but just needs better guidance on which path to take first. If they're close, the model has already locked in its best behavior. This gap is how we know whether a model needs more reasoning time (more attempts) or needs training that teaches a better first instinct.",
     "connections": [
       "base-model-capability",
       "diversity-collapse",
       "reasoning-boundary",
       "power-sampling"
     ],
-    "misunderstanding": "Higher pass@1 does not always mean the model has a broader reasoning boundary. It may simply sample a narrower set of good common paths."
+    "misunderstanding": "People sometimes think: higher pass@1 means the model is smarter. But pass@1 and pass@k measure different things. A model could have low pass@1 but high pass@k (thinks many different ways; needs to try more to land on the answer) or high pass@1 with nearly the same pass@100 (stuck in one confident way, even if wrong). The number that matters depends on your question: How much effort can you spend (one answer vs. 100)? And what's the real failure: Is the model unable to solve it at all, or just not sure which of its solutions is best?"
   },
   {
     "id": "diversity-collapse",
     "title": "Diversity Collapse",
     "theme": "evaluation",
-    "plain_meaning": "Diversity collapse happens when training makes a model repeat a narrower set of output patterns, even if those patterns are often good.",
-    "first_principles": "RL shifts probability toward rewarded trajectories — it makes those answers more likely to be produced. If the reward does not explicitly preserve variety, the model may over-concentrate on common winning strategies and suppress rare but useful alternatives.",
-    "example": "After RL, a model may solve common algebra problems more reliably but stop trying unusual proof strategies that occasionally solved hard problems.",
-    "why_it_matters": "This explains why RL models can improve pass@1 while hurting pass@k. It also matters for creative, open-ended, and out-of-distribution tasks (inputs unlike anything seen in training).",
+    "plain_meaning": "Imagine a model that can solve a problem 10 different ways. During training, if you reward only the way that works most often, the model gradually forgets the other 9 ways — even if some of them sometimes solve harder versions of the problem. Diversity collapse is when a model learns to repeat fewer and fewer answer patterns, because it got trained to copy what was rewarded most. The model becomes narrower, more predictable, and stops trying anything unusual.",
+    "first_principles": "Here is how this happens: the training process nudges the dials (those billions of little numbers inside the model) to make rewarded answers more likely to appear next time. The catch: the training signal only says 'good' or 'bad' for the answers it sees. If only one type of answer gets marked 'good', the model turns up the dial that leads to that type, and turns down all the others. If no reward signal says 'try something different', the model has no reason to keep the rare paths alive. Over time, the model concentrates its probability onto a smaller set of familiar winning strategies and forgets the rare ones.",
+    "example": "A math solver learns to prove algebra problems in 10 different ways. For 6 months, only one proof style gets marked correct in training (say, substitution). The model's training nudges it to do substitution more and more. By the end, the model almost always tries substitution first — and forgets how to do the other 9 styles. Then you test it on a twisted problem where substitution doesn't work, but factoring (which the model has now forgotten) would work. The model fails, even though it knew factoring before.",
+    "why_it_matters": "This matters because it explains a real trade-off in reasoning models. You can make a model more reliable at one type of problem (better pass@1: more correct on the first try) but worse at solving rare or unusual cases (lower pass@k: worse if you ask for many attempts and pick the best). It also breaks models on new kinds of problems they have not seen before. A reasoning model that only knows one path is brittle — it works until the problem changes slightly. Keeping diversity means keeping options in reserve.",
     "connections": [
       "rlhf",
       "rlvr",
       "pass-at-k",
       "reasoning-boundary"
     ],
-    "misunderstanding": "Collapse is not always bad. For safety or routine tasks, narrowing the output distribution can be useful. The problem is losing valuable rare reasoning paths."
+    "misunderstanding": "Not all narrowing is bad. For repetitive or high-stakes tasks, having the model do the same safe thing every time can be exactly what you want. Surgeons do not want robots to experiment. The real problem is throwing away the rare paths that were actually useful. The goal is to stay narrow where narrowness is safe and wide where width solves harder problems."
   },
   {
     "id": "reasoning-boundary",
     "title": "Reasoning Boundary",
     "theme": "evaluation",
-    "plain_meaning": "The reasoning boundary is the set of problems a model can solve at least sometimes under some sampling or inference procedure.",
-    "first_principles": "A model's practical ability has two parts: what solutions exist in its distribution and how often those solutions are sampled. RL can increase sampling frequency without necessarily expanding the set of possible solutions.",
-    "example": "If a base model can solve a problem once in 500 attempts, that problem is inside its broad boundary but outside its reliable one-shot behavior.",
-    "why_it_matters": "This concept separates reliability from capability. It helps interpret papers claiming that RL mostly elicits existing reasoning rather than creating new reasoning.",
+    "plain_meaning": "A reasoning boundary is the outer edge of what a model is actually able to do. Imagine a model as a student with specific skills from studying: some problems it can solve, some it cannot. The reasoning boundary is the widest circle of problems it could solve if given many, many attempts and different ways of working through them. Not the problems it solves right away, but the ones it gets right at least once if you let it try fifty times.",
+    "first_principles": "Every model learns patterns from text and ends up with a set of possible answers it can pull from — like a student who studied certain topics. A model's real ability has two layers: (1) which solutions are actually buried in what the model learned, and (2) how easily the model pulls those solutions out. When we use tricks to make a model think step-by-step or guide it with rewards, we're often just making it pull out solutions it already has, not inventing brand new ones. The boundary shows what's possible inside the model; the tricks just make those possibilities happen more often.",
+    "example": "A math model might solve a tricky algebra problem correctly 1 time out of 500 attempts, but fail the other 499 times. That problem sits right at the edge of the model's boundary—it can solve it, but unreliably. A different problem it never solves, even in 500 tries, sits outside the boundary. If you give the model step-by-step hints and make it think longer, you might push that 1-in-500 success up to 10-in-500, but you probably haven't crossed the boundary into brand new problems.",
+    "why_it_matters": "This idea separates two different things that get confused: does a model actually understand something new, or is it just getting better at finding answers it already had? When a research paper says 'reinforcement learning helped the model solve harder problems,' we need to ask: did RL expand the boundary (teach it truly new reasoning), or just coax out answers that were already hiding in there? The boundary helps us read those papers correctly and understand what the model really learned versus what it simply got better at showing us.",
     "connections": [
       "latent-reasoning",
       "pass-at-k",
       "distillation",
       "power-sampling"
     ],
-    "misunderstanding": "The boundary is not identical to normal benchmark accuracy. Benchmark accuracy usually measures only a narrow inference setup."
+    "misunderstanding": "The reasoning boundary is NOT the same as benchmark accuracy—the score you see on a test. A benchmark usually runs the model once per question, under one setup. The boundary is much wider than that because it asks: if we tried everything the model could possibly do, what would we find? Two models can have the same benchmark score but very different boundaries—one might solve hard problems rarely but correctly, the other might handle only easy questions reliably. The boundary is the true measure of ability; the benchmark is just a narrow peek at it."
   },
   {
     "id": "latent-reasoning",
     "title": "Latent Reasoning",
     "theme": "foundation",
-    "plain_meaning": "Latent reasoning means reasoning behavior that the base model can produce but does not reliably expose under ordinary prompting or decoding.",
-    "first_principles": "Pretraining can install many partial algorithms and reasoning traces. These behaviors may live as low-probability paths. Post-training, prompting, search, or sampling can make them easier to access.",
-    "example": "A base model may rarely generate a correct backtracking strategy. A reasoning-tuned model may use backtracking frequently at the right time.",
-    "why_it_matters": "It explains why inference-time methods and RL can produce large apparent gains without necessarily adding new knowledge.",
+    "plain_meaning": "Latent reasoning is reasoning behavior that a model already knows how to do, but doesn't show unless you know how to draw it out. The model learned it during training by reading text, but the reasoning stays hidden unless you ask the right way or give the model enough time to think.",
+    "first_principles": "During pretraining, a model absorbs patterns from mountains of text—including examples of people thinking step by step, correcting mistakes, and working through hard problems. These reasoning patterns get stored as internal dials and connections. But when you ask a quick question, the model might rush to the first guess instead of using those stored reasoning steps. Prompting tricks, letting the model think longer, or using randomness when picking words can wake up the reasoning that's already there.",
+    "example": "Imagine a student who has studied backtracking (going back to fix a wrong turn in a problem). Normally, when asked a tricky question under time pressure, the student blurts out a guess. But if you say \"think out loud about what you'd try first, then what you'd do if that fails,\" the student starts using backtracking. The knowledge was there the whole time—you just had to ask the right way.",
+    "why_it_matters": "This idea explains why spending more time thinking or trying multiple attempts can make a model much better at hard problems, even when you don't teach the model anything new. If reasoning is already built in during training, then inference-time tricks (letting it think longer, trying 50 times and picking the best) and even reward training can unlock what's sleeping. This saves time and money—you don't always need to rebuild the model; sometimes you just need to ask better.",
     "connections": [
       "base-model-capability",
       "mechanisms-vs-heuristics",
       "rlvr",
       "power-sampling"
     ],
-    "misunderstanding": "Latent does not mean fake. A low-probability skill can still be a real skill if the model can execute it coherently."
+    "misunderstanding": "Latent does not mean the reasoning is pretend or not really there. A skill that is hard to trigger is still a real skill. If you ask the model to show its work and it reasons correctly step by step, that reasoning is genuine—it's not a copy pasted from the training data, it's the model actually doing the thinking."
   },
   {
     "id": "mechanisms-vs-heuristics",
     "title": "Mechanisms Versus Heuristics",
     "theme": "interpretability",
-    "plain_meaning": "Mechanisms are reasoning moves the model can perform; heuristics decide when to use them.",
-    "first_principles": "A model may already contain mechanisms like calculation, restatement, checking, decomposition, and backtracking. Training may primarily improve the internal decision (the control policy) about when to activate these mechanisms.",
-    "example": "The model already knows how to verify an equation, but RL teaches it to verify before finalizing the answer on math problems.",
-    "why_it_matters": "This distinction clarifies claims that base models know how to reason while thinking models learn when to reason.",
+    "plain_meaning": "A model's reasoning has two separate parts: the *tools it knows how to use* (mechanisms), and the *decision about which tool to pull out when* (heuristics). A calculator is a mechanism—it can add and divide. Knowing *when* to add versus divide is the heuristic. Training might not teach the model new tools; it might just teach the model to pick the right tool at the right time.",
+    "first_principles": "A large language model is a program with billions of tuning dials that predicts the next word. Inside, it can already perform certain operations: it can restate a problem differently, check if an answer makes sense, split a hard question into smaller pieces, or erase a mistake and try again. These built-in moves are mechanisms. When you train the model further with examples of good reasoning (a process called reinforcement learning, where a score rewards correct answers), the model may not learn *new* ways to think—instead, it learns to use its existing toolkit more often, or to pick the right tool for the right moment. This is the heuristic: the internal choice of when to activate which mechanism.",
+    "example": "Imagine a student who already knows how to check their math by plugging the answer back into the problem. At first, they rarely do this check—they just write down an answer and move on. Then, after doing practice problems and seeing which checking moves save them from mistakes, they get better at *remembering to check* on the types of problems where it matters. They didn't learn a new skill (the checking mechanism was already there). They learned a heuristic: *when to apply what they already know*. The same model is true for AI reasoning. A base model (the model before extra training) may already know how to verify equations. Reinforcement learning can teach it to verify *before finalizing the answer on math problems*—not because verification is new, but because the model learned the heuristic: *verify when solving math*.",
+    "why_it_matters": "This distinction splits into two competing ideas about how reasoning models improve: (1) the model learns entirely new reasoning moves (new mechanisms), or (2) the model already has the reasoning moves built in, and training teaches it *when and how often to use them* (the heuristic). The answer changes how we think about what base models can do, what training does, and whether a reasoning model is mostly discovering hidden skills or mostly learning to coordinate known skills. If most improvement comes from better heuristics, not new mechanisms, then base models are smarter than they appear—they just need practice picking the right move for the right moment.",
     "connections": [
       "latent-reasoning",
       "rlvr",
       "sft",
       "verifiers"
     ],
-    "misunderstanding": "A behavior becoming more frequent after RL does not prove the mechanism was newly created by RL."
+    "misunderstanding": "When RL training makes a behavior happen more often (for example, the model checks its work twice as often as before), it is easy to assume RL *invented* that behavior—that the model couldn't check before. But an increase in frequency does not prove a mechanism is new. The model may have always been able to check; it just learned when checking pays off. Mistaking a frequency shift for a new ability can lead to false claims about what base models know and what training teaches."
   },
   {
     "id": "process-vs-outcome-rewards",
     "title": "Process Rewards Versus Outcome Rewards",
     "theme": "verification",
-    "plain_meaning": "Outcome rewards score the final answer. Process rewards score intermediate reasoning steps.",
-    "first_principles": "Many wrong solutions look plausible until the end, and some correct answers come from invalid reasoning. Outcome rewards are cheap when final correctness is checkable, but process rewards can provide denser guidance about where reasoning went right or wrong.",
-    "example": "For a math proof, an outcome reward checks the final answer. A process reward checks each algebraic transformation.",
-    "why_it_matters": "Process rewards can reduce error propagation and improve training signal density, but they are harder to build and easier to miscalibrate.",
+    "plain_meaning": "When training AI to reason step-by-step, you can reward it in two ways. An outcome reward gives a score only at the very end — did you get the final answer right or wrong? A process reward gives scores all along the way — was your second step correct? Your third? Both approaches try to make good reasoning more likely, but they look at different moments in the chain.",
+    "first_principles": "Imagine a student solving a hard math problem on paper. If you only grade the final answer, a lucky guess looks the same as careful work — and careless mistakes in the middle hide until they blow up at the end. If you grade each step, you catch wrong moves immediately and reward the student for sound reasoning even if a small slip ruins the finale. Outcome rewards are easier to check because the final answer is often simple to verify (right or wrong). Process rewards are harder because you must build a judge smart enough to evaluate intermediate work — but if you get that judge right, it can give clearer guidance for what good reasoning looks like.",
+    "example": "Say you're training a model to solve geometry proofs. An outcome reward waits until the proof is finished, then marks it correct or incorrect — one score for the whole thing. A process reward evaluates each logical step: Does step 2 follow from step 1? Is that angle calculation valid? That check, that check, then the final answer check. For training, process rewards let the model learn what correct reasoning looks like in the middle, before a small mistake at the end erase all the good work.",
+    "why_it_matters": "Process rewards are part of how reasoning models become better at thinking. When a model gets denser feedback — scores for each step, not just the end — it can learn finer patterns in what sound reasoning looks like. This matters because bad reasoning can hide inside a correct answer (maybe the model guessed right despite wrong steps), and good reasoning can be punished by a single error at the end. By grading the journey and not just the destination, you give the model a clearer map of what to do next time.",
     "connections": [
       "verifiers",
       "rlvr",
       "grpo",
       "rl-information-inefficiency"
     ],
-    "misunderstanding": "A process reward is not automatically more truthful. A bad process judge can reward polished but invalid reasoning."
+    "misunderstanding": "Process rewards sound like they always give better guidance, but that is not true. If your step-checker is wrong — if it rewards polished-sounding nonsense or punishes valid shortcuts — it teaches the model bad lessons. A process reward is only as good as the judge you build for it. A sloppy process judge can make training worse than just grading the final answer, because the model learns to chase the wrong target. The hard part is not having a process judge; the hard part is making sure that judge actually knows what it is checking."
   },
   {
     "id": "verifiers",
     "title": "Verifiers",
     "theme": "verification",
-    "plain_meaning": "A verifier is a system that checks whether an answer, step, action, or trajectory is correct or acceptable.",
-    "first_principles": "Generation creates candidates; verification selects among them or turns them into training signal. The verifier can be symbolic, executable, rule-based, learned, or another language model.",
-    "example": "Unit tests verify code. A theorem checker verifies a proof. A rubric-based judge checks whether a support answer follows policy.",
-    "why_it_matters": "Verifiers are the bridge between sampling and learning. Without verification, more samples may just produce more noise.",
+    "plain_meaning": "A verifier is a checker — it looks at an answer the model produces and says yes or no (right or wrong). Think of it like a test that tells you if the model's guess actually works. The verifier can be a rule written by hand, code you run to check the answer, or another AI system acting as a judge.",
+    "first_principles": "When a model tries to solve a hard problem, it often tries many different paths. A verifier is the gate that looks at each try and decides which ones are actually good. Those good attempts then become the examples the model learns from. Without a verifier, the model has no way to know which of its own guesses to learn from — it just learns from noise. So the verifier is what turns wild guessing into actual learning.",
+    "example": "If a model writes code, a verifier can run that code — if it produces the right output, the verifier says yes. If a model solves a math proof, a verifier can check the logic step by step. If a model writes a support reply, a verifier can check if it follows the company's policies. In each case, the verifier is answering one question: does this actually work?",
+    "why_it_matters": "A verifier is the bridge between trying many things and learning from the best tries. Without it, you could generate a million answers and have no way to tell good ones from bad ones. With a verifier, you can spot the winners and train the model to do more of what works. This is how reasoning models learn to think better — not by luck, but by repeated cycles of trying and checking.",
     "connections": [
       "test-time-compute",
       "rlvr",
       "process-vs-outcome-rewards",
       "agentic-evaluations"
     ],
-    "misunderstanding": "An LLM judge is not automatically a reliable verifier. It needs calibration, adversarial testing, and fallback paths."
+    "misunderstanding": "Many people think that if you use another AI system as a verifier (an 'LLM judge'), it will always be right. But AI judges make mistakes too. They need testing against cases you know the answer to, backup checks for hard cases, and ways to fall back to a different method if the judge fails. An AI verifier is useful, but only if you build in safeguards to catch when it is wrong."
   },
   {
     "id": "data-progress",
     "title": "Data Progress",
     "theme": "data",
-    "plain_meaning": "Data progress means model improvement caused by better data, not necessarily by better architecture or optimizer algorithms.",
-    "first_principles": "Training teaches the model the distribution it sees. If the data shifts from noisy web text to expert demonstrations, synthetic reasoning traces, code, math, and realistic task environments, the learned behavior shifts toward the capabilities people measure.",
-    "example": "A model trained on curated math and code examples can outperform a similarly sized model trained mostly on generic web text.",
-    "why_it_matters": "Many gains attributed to algorithmic progress may actually come from data curation, data synthesis, filtering, distillation, and benchmark-aligned task design.",
+    "plain_meaning": "Data progress means a model gets better because you feed it better information to learn from — not because you rewired the model itself or tweaked how it learns. A kitchen scale that learns from 1000 correct weight measurements will outweigh one that learned from 1000 wrong ones, even if both scales have the same springs inside.",
+    "first_principles": "When you train a model, it absorbs the patterns baked into the data it sees. Feed it garbage, it learns garbage. Feed it curated examples — a human solving a math problem step-by-step, real code that works, or traces of reasoning that get the right answer — and the model learns to mimic what it saw. Change the diet, change what the model becomes.",
+    "example": "Take two models identical in size and wiring. One learns from a random soup of web pages. The other learns from hand-picked math textbooks, working code snippets, and reasoning walkthroughs. When you test both on a hard math problem, the second one wins — not because it has more dials or a better learning rule, but because it memorized better examples.",
+    "why_it_matters": "Many people assume AI progress comes from smarter algorithms or bigger models. But a lot of recent gains actually come from smarter data: picking which examples to show the model, filtering out the bad ones, even using a working model to generate useful synthetic examples for a smaller model to learn from, or designing tasks that match real problems. This flips the focus from tinkering with the engine to feeding it better fuel.",
     "connections": [
       "pretraining",
       "synthetic-data",
       "mid-training",
       "distillation"
     ],
-    "misunderstanding": "Data progress is not less technical than algorithm progress. Designing data pipelines, verifiers, and task environments is a core engineering challenge."
+    "misunderstanding": "Do not mistake data progress for something simple or non-technical. Building a good data pipeline — deciding what examples matter, writing checkers that say right-from-wrong, creating synthetic reasoning traces that actually help — requires deep engineering skill. It is not less rigorous than inventing a new algorithm; it is a different kind of hard."
   },
   {
     "id": "synthetic-data",
     "title": "Synthetic Data",
     "theme": "data",
-    "plain_meaning": "Synthetic data is training or evaluation data generated programmatically, often by another model.",
-    "first_principles": "If high-quality real examples are scarce, a model or simulator can generate prompts, answers, reasoning traces, unit tests, tool trajectories, or adversarial cases. The hard part is verifying that generated data is useful and not merely fluent.",
-    "example": "A strong model generates 100,000 coding problems, solutions, and unit tests. Only solutions that pass tests are kept for training.",
-    "why_it_matters": "Synthetic data enables scale in post-training, but it can amplify bias, cause contamination, or teach imitation without real capability if not verified.",
+    "plain_meaning": "Synthetic data means examples — like coding problems, solutions, explanations — made by a computer program instead of collected from humans. In the reasoning-model arc, after the model learns to predict text, it needs thousands or millions of new examples to learn how to think and explain answers step-by-step. Creating these examples by hand would take forever, so a strong model generates them automatically.",
+    "first_principles": "Real human examples are expensive and slow to gather. A model or simulator can make new training examples in three ways: (1) generate a question or task, (2) solve it, and (3) write reasoning steps along the way. For example, a program can ask 'write a Python function that sorts a list,' then run the solution to confirm it works, then keep only correct answers. The real work is checking that these made-up examples are actually useful for teaching — that the generated reasoning teaches real problem-solving, not just fluent-sounding nonsense.",
+    "example": "Take a strong coding model. Feed it a prompt: 'Generate 100 unique coding problems with solutions and test cases.' It produces 100 tasks, writes Python code for each, and runs the tests. Some solutions fail their tests — those get thrown out. The 80 passing solutions become training data. Later, a smaller model trains on those 80 examples, learning both how to code and how to explain its reasoning by showing the steps it took.",
+    "why_it_matters": "Synthetic data is how modern reasoning models scale up their training. A model like GPT or Qwen starts by reading mountains of text and learning to predict the next word — that is pretraining, the first learning phase. Then it needs to learn reasoning and problem-solving through thousands of step-by-step examples. Without synthetic data, you would need to hire thousands of people to write those examples. Synthetic data lets you generate them in minutes. But the catch is real: if the synthetic data is sloppy or full of mistakes, the model learns those mistakes. If it copies patterns without understanding, the model copies, not thinks. So you have to be very careful to verify that what you generate is actually correct and teaches thinking, not imitation.",
     "connections": [
       "distillation",
       "data-progress",
       "sft",
       "verifiers"
     ],
-    "misunderstanding": "Synthetic data is not automatically low quality. Verified synthetic data can be extremely valuable; unverified synthetic data can be harmful."
+    "misunderstanding": "Many people think synthetic data is a shortcut and produces weak results. The truth is more precise: unverified synthetic data often is weak or harmful — it teaches wrong answers and bad reasoning. But synthetic data that is carefully checked (answers tested, reasoning traced, mistakes rejected) can be better than real human examples. The difference is verification. A model generating 1 million coding problems sounds great; 1 million problems with every solution tested against a suite of unit tests is powerful; 1 million problems where someone just eyeballed 50 of them is dangerous."
   },
   {
     "id": "mid-training",
     "title": "Mid-Training",
     "theme": "training",
-    "plain_meaning": "Mid-training is an intermediate training phase between broad pretraining and final post-training, often used to specialize the model toward important domains or long-context behavior.",
-    "first_principles": "Pretraining gives general capability. Final post-training shapes interaction behavior. Mid-training changes the base distribution with targeted data such as code, math, multilingual data, long-context documents, or domain corpora before alignment and RL.",
-    "example": "A model is pretrained on broad web text, then mid-trained on high-quality code and math, then instruction-tuned and RL-trained.",
-    "why_it_matters": "Mid-training is one reason modern models can improve substantially without obvious architectural changes.",
+    "plain_meaning": "Mid-training is a training phase that sits between two big stages: first, the model reads a mountain of general text and learns to predict the next word well; second, it gets tuned to follow instructions and respond helpfully. Mid-training is the step in between where you feed it a specific diet of data — like lots of code examples, math problems, or documents in different languages — to make it especially strong in those areas before the final tuning happens.",
+    "first_principles": "In the first huge learning phase, a model soaks up broad internet text and gets good at guessing the next word. That gives it general knowledge and reasoning. Then in mid-training, you deliberately steer it toward specific strengths — by showing it high-quality code repeatedly, or dense math papers, or long complicated documents — so it tunes its internal dials to handle those domains better. Only after that does the final phase begin: teaching it to follow human instructions and rewarding it for helpful, harmless answers.",
+    "example": "Imagine training a student. First, they read many subjects and learn general knowledge. Mid-training is like then saying: 'Now spend months on programming and calculus so you get really sharp at those.' Finally, you teach them how to write clear essays and give good presentations. A large language model follows the same pattern: first broad reading, then focused deep-dives into code and math, then learning to respond as a helpful assistant.",
+    "why_it_matters": "Modern AI models get dramatically better at certain skills without anyone redesigning how they work — no new parts, no new architecture. Mid-training is a big reason why: you can take a general model and, by feeding it the right specialized data for weeks, make it much stronger at coding, math, reasoning over long texts, or other domains. It is one of the simplest and most powerful levers for improvement, because it works with the model's existing dials and structure.",
     "connections": [
       "pretraining",
       "data-progress",
       "synthetic-data",
       "rlvr"
     ],
-    "misunderstanding": "Mid-training is not just more pretraining. Its data mix and objective are chosen to move the model toward desired capabilities."
+    "misunderstanding": "Mid-training is not just 'more of the same pretraining.' It is deliberately different. Pretraining means reading random web text to learn language basics. Mid-training means carefully curating your data — selecting code, math, or domain-specific documents — and using a focused training process to shift the model toward those areas. The data mix and the training objective are chosen to move the needle on specific capabilities, not to spread learning thin across everything."
   },
   {
     "id": "moe",
     "title": "Mixture Of Experts",
     "theme": "architecture",
-    "plain_meaning": "MoE models contain many expert subnetworks but activate only a subset for each token.",
-    "first_principles": "Dense models spend compute through the whole network for every token. MoE separates total capacity from active compute: the model can have many parameters, but the router selects a few experts per token.",
-    "example": "A model may have hundreds of experts, but for a coding token it routes through code-specialized experts while using only a small fraction of total parameters.",
-    "why_it_matters": "MoE increases capacity per unit of inference compute, but introduces routing instability, load balancing problems, and expert specialization questions.",
+    "plain_meaning": "A Mixture of Experts (MoE) model has many small neural networks inside it — think of them as different specialist programs. Each specialist is trained to get good at one kind of task. When the model sees a new piece of text (a 'token'), it doesn't run all the specialists. Instead, a router — a separate program that learned which specialist to pick — sends the token to just a few relevant specialists. Those specialists process it together and send their answer back.",
+    "first_principles": "A normal model dials all its parameter dials (thousands of millions of them) for every single token. A Mixture of Experts model splits those dials into groups — one group per specialist. For each token, it only adjusts the dials in the few specialists the router picks. This means: the model can have way more total dials than a normal model of the same size, but it only 'turns on' some of them at a time. Fewer dials turning on means less compute needed per token — the model can stay fast even with all those extra specialists packed inside.",
+    "example": "Imagine a model with 100 specialists inside. One specialist learned by reading lots of code. Another learned from poetry. A third from math. When the model sees the token 'function', the router says 'send it to the code specialist and the math specialist' — they process it and vote on the answer. When it sees 'rhyme', the router sends it to poetry and language specialists instead. The model does not use all 100 specialists for every token; it picks the right ones based on what the text is about.",
+    "why_it_matters": "A normal model with billions of dials is very slow to run — every dial touches every token. A Mixture of Experts model with the same number of total dials can run much faster because only a few specialists activate for each token. This lets builders make larger, smarter models that do not cost as much compute to run. But MoE also has new problems: the router sometimes sends too many tokens to popular specialists and forgets to use others; experts can drift and specialize in useless ways; and if the router makes bad picks, the model gets confused.",
     "connections": [
       "expert-balancing",
       "rlvr",
       "algorithmic-progress-categories",
       "deepseek-mla"
     ],
-    "misunderstanding": "A 600B-parameter MoE model does not necessarily use 600B parameters of compute for each token."
+    "misunderstanding": "A model with 600 billion total dials does not use all 600 billion dials to process each token. If the router picks 4 specialists out of 200, the model uses only the dials in those 4 specialists — maybe 12 billion. The 600 billion number is the storage size, not the compute cost per token. This is why MoE can scale to huge models without needing huge compute at run time — you pay for specialists you actually use, not for all of them."
   },
   {
     "id": "expert-balancing",
     "title": "Expert Balancing",
     "theme": "architecture",
-    "plain_meaning": "Expert balancing keeps an MoE model from overusing a few experts while ignoring others.",
-    "first_principles": "If the router always chooses the same experts, unused experts do not learn well and busy experts become bottlenecks. Balancing methods encourage healthier distribution of tokens across experts.",
-    "example": "During training, a bias or auxiliary objective can push the router away from overloaded experts and toward underused ones.",
-    "why_it_matters": "Poor balancing wastes capacity and can destabilize reasoning because similar prompts may route through inconsistent expert paths.",
+    "plain_meaning": "Some reasoning models use many smaller 'experts' — little specialist programs that each handle different kinds of questions — and route each question to the ones most useful for it. Expert balancing is a rule to keep the model from always picking the same few experts. Without it, a few popular experts get overloaded and do all the work, while others sit idle and never learn anything.",
+    "first_principles": "A reasoning model with many experts works like a team of specialists. If the model's router (the part that decides which experts to send each question to) always favors the same experts, it's like always asking the same two people on a team to solve every problem. Those two get tired and bottlenecked; the others never get practice and fall behind. Balancing rules nudge the router to spread the load — send different types of questions to different experts, so each one gets trained on the problems it can help with.",
+    "example": "Imagine a model trained on both code and poetry. Without balancing, the router might always send code to Expert A and poetry to Expert B, ignoring Expert C and D. During training, balancing adds a small penalty if too many tokens go to A and B, and a small bonus if C and D get used. Over time, the router learns to say: 'Hmm, maybe I should try C on this code pattern' — and C actually learns something useful instead of staying frozen.",
+    "why_it_matters": "Wasteful capacity: if four experts exist but only two are used, you're paying for four but using two. Unstable reasoning: because if the router breaks or changes slightly, similar questions might suddenly route through different experts and give different answers. Training falters: unused experts stay random and weak, and overloaded experts train on everything rather than specializing. A well-balanced model reasoning becomes both faster and more reliable.",
     "connections": [
       "moe",
       "algorithmic-progress-categories",
       "rlvr",
       "agentic-evaluations"
     ],
-    "misunderstanding": "Expert balancing is not only a hardware efficiency trick. It affects what experts learn and how stable routing becomes."
+    "misunderstanding": "Many people think expert balancing is only a trick to save GPU memory and hardware cost. It is not. Balancing shapes how experts actually learn and what each one becomes good at. It also affects whether the routing stays consistent — whether the same type of reasoning follows the same expert path each time. Skip balancing and you do not just waste chips; you get a model that reasons less predictably."
   },
   {
     "id": "qk-norm",
     "title": "QK-Norm",
     "theme": "architecture",
-    "plain_meaning": "QK-norm normalizes query and key vectors in attention to improve training stability.",
-    "first_principles": "Attention scores come from interactions between query and key vectors. If their magnitudes become unstable, attention can become too sharp, too noisy, or prone to training spikes. Normalization controls the scale of those interactions.",
-    "example": "Instead of letting query-key dot products grow without control, qk-norm keeps the attention comparison in a more stable range.",
-    "why_it_matters": "Stable attention is especially important for large models, long contexts, and MoE systems where instability can compound.",
+    "plain_meaning": "In an attention system — the part of a model that decides which words matter most for each answer — we compare a query (what you are looking for) to keys (labels on available clues). These comparisons are dot products: a way of measuring how much two things line up numerically. QK-norm is a technique that keeps these comparison numbers from getting too big or too small, so the model stays steady while learning.",
+    "first_principles": "Attention works by scoring how similar a query is to each key. The bigger the score, the more that key's information gets used. But if the query and key vectors get large (many dimensions with big numbers), the dot product explodes. An exploding dot product makes the model's decisions very sharp and brittle — it picks one answer almost always and ignores others, or the numbers swing wildly during training. Normalizing the query and key vectors — dividing them by their own length — keeps the dot products in a predictable range. This keeps the model's learning smooth instead of chaotic.",
+    "example": "Imagine you are scoring how well 100 different applicants match a job opening. You could score each on a scale of 1–1000, but then small tweaks in the scoring numbers flip who wins. Instead, if you always keep scores in a 0–10 range, the rankings stay steady as you adjust your criteria. QK-norm is like keeping that 0–10 scale: it divides query and key vectors by their length so the dot product stays in a tame range, even if the vectors have many numbers.",
+    "why_it_matters": "When a model reads long text or handles many tasks at once (especially in systems with many expert sub-models), attention can become unstable: rankings flip, the model trains slower, or training can crash. QK-norm is a small change that prevents this. Without it, reasoning models — which need to think through many steps — can stumble when trying to reason about complex problems or when reasoning over many words in context. Stable attention means the model's thinking process stays on track.",
     "connections": [
       "deepseek-mla",
       "moe",
       "algorithmic-progress-categories",
       "mid-training"
     ],
-    "misunderstanding": "QK-norm is not a reasoning method by itself. It is an architectural stabilization method that can support better reasoning indirectly."
+    "misunderstanding": "QK-norm looks like it helps the model think better, but it is not a thinking method. It is a plumbing fix: it keeps the pipes clean so the model can focus learning effort on actual reasoning patterns instead of fighting numerical turbulence. The reasoning comes from other parts — the rest of the attention system, the layers that build ideas, and the learning signal from right and wrong answers."
   },
   {
     "id": "deepseek-mla",
     "title": "DeepSeek MLA",
     "theme": "architecture",
-    "plain_meaning": "MLA, or Multi-Head Latent Attention, compresses attention key-value information into latent representations to make long-context inference more efficient.",
-    "first_principles": "Long context is expensive largely because models must store and read key-value cache entries for many tokens. MLA reduces that memory burden by representing key-value information more compactly while preserving useful attention behavior.",
-    "example": "A model analyzing a long repository or research corpus can keep more context available without KV-cache costs exploding as quickly.",
-    "why_it_matters": "MLA is one of the long-context unlockers that changes what tasks are practical at inference time.",
+    "plain_meaning": "MLA (Multi-Head Latent Attention) is a trick to make an AI model's memory work better when reading long texts. Normally, when a model reads a book or a long email, it has to keep detailed notes on every word it has seen so far — those notes take up a lot of space in the computer's memory. MLA squashes those notes down into a more compact form, like writing a summary instead of copying the whole text, so the model can hold more context without running out of memory.",
+    "first_principles": "When a model reads text, it pays attention to earlier words to understand the current word. To do this, it stores a detailed record (called a key-value cache) for every single word it has seen. For a long document with thousands of words, these records pile up and consume memory fast — eventually the computer runs out of space and has to forget old words. MLA works by storing a compressed version of those records instead. Picture packing a suitcase: instead of bringing your full wardrobe for a long trip, you bring versatile pieces that work together. The model learns which parts of each record matter for paying attention, and throws away the rest. This keeps the useful information while cutting the memory cost.",
+    "example": "Imagine a model analyzing a 50-page research paper. Normally it would maintain full memory notes for all 10,000 words. If you tried to analyze 100 pages, the memory needed would double, and 500 pages might break the system entirely. With MLA, the model compresses those notes by a factor of, say, 4 or 8 to 1. Now 100 pages costs less memory than the old system would have used for 25 pages, and the model can still answer questions about the full 100 pages because the compressed notes keep the parts that matter for understanding.",
+    "why_it_matters": "Reasoning models and long-context reasoning agents need to hold entire documents, conversations, or code repositories in memory while they think step by step. If memory becomes the bottleneck, you can only handle short context, which breaks many real-world problems — analyzing a full codebase to debug it, reading an entire research corpus to extract patterns, or reasoning over a full conversation history. MLA unlocks practical long-context reasoning by making the memory cost much lower, so models can think about bigger, more complex problems without hardware walls stopping them.",
     "connections": [
       "qk-norm",
       "moe",
       "test-time-compute",
       "algorithmic-progress-categories"
     ],
-    "misunderstanding": "MLA does not make attention free. It changes the memory and compute tradeoff so long context becomes more practical."
+    "misunderstanding": "MLA does not make the model faster or cheaper to run — it trades memory for compute in a specific way. It also does not let a model remember infinitely long context; compression always loses some detail. The real win is that MLA shifts the bottleneck: instead of running out of memory at 10,000 tokens, you might run out at 100,000 tokens, using the same hardware. The model still has to do the work of reading and reasoning; MLA just lets it do more of that work before hitting a hard memory wall."
   },
   {
     "id": "muon-optimizer",
     "title": "Muon Optimizer",
     "theme": "optimization",
-    "plain_meaning": "Muon is an optimizer family explored as an alternative or complement to AdamW for more efficient neural network training.",
-    "first_principles": "Optimizers decide how parameter updates are shaped from gradients. Matrix-aware or orthogonalized update rules can sometimes move weights through parameter space more efficiently or stably than standard elementwise adaptive methods.",
-    "example": "For certain transformer components, Muon-style updates may produce better training progress for the same compute budget.",
-    "why_it_matters": "If robust at scale, optimizer improvements can be real algorithmic efficiency gains rather than only data or hardware progress.",
+    "plain_meaning": "When a neural network learns, it adjusts billions of tiny dials (called parameters or weights) by looking at how wrong its guesses are. An optimizer is a recipe that decides which dials to turn and by how much. Muon is one such recipe — it treats the dials like a grid of numbers (a matrix) and rotates or stretches updates together, instead of fiddling with each dial separately like the popular AdamW method does.",
+    "first_principles": "Start with the core problem: after each training step, you measure how wrong the model was (the gradient tells you which direction to nudge each dial). A naive approach is to nudge each dial a little bit in the direction that reduces error. But dials are not independent — some form groups that work together (like the weights in a layer of a transformer that processes words). Muon notices this: instead of tuning each dial alone, it treats groups as rigid units and rotates or scales them together. This can be smoother and more stable — like steering a car by turning the wheels together rather than jiggling each one.",
+    "example": "Imagine training a transformer on a large text dataset. In one experiment, Muon-style updates — which respect the grid structure of weight matrices — let the model reach the same quality in fewer training steps than AdamW, which treats each weight as a separate thing to adjust. Or imagine a layer with 1,000 weights: AdamW might learn different step sizes for weight 1, weight 2, weight 3, etc.; Muon might say all weights in that layer move together in a coordinated rotation, which sometimes reduces wasted effort.",
+    "why_it_matters": "Training a big model costs millions of dollars in computer time and energy. If a smarter optimizer recipe lets you reach the same model quality with fewer steps or less compute, that saves real money and carbon. Muon is interesting because it is not just tuning data or buying faster hardware — it is a new idea about how to nudge dials more wisely. If it works at the giant scale where real frontier models train, it could be an algorithmic win: a better idea, not a better GPU.",
     "connections": [
       "algorithmic-progress-categories",
       "mid-training",
       "qk-norm",
       "moe"
     ],
-    "misunderstanding": "An optimizer gain in one setting does not automatically translate to all frontier training runs. Scale, architecture, and implementation details matter."
+    "misunderstanding": "A better optimizer in one setting does not mean it will work everywhere. Maybe Muon shines when training a specific kind of model or dataset, but fails on another. Scale matters too: an optimizer that works well on a small experiment might break or give no gain when training a model with 100 billion dials. Architecture, the exact implementation, even the random seed — all of these affect whether Muon's coordinate-together idea actually helps. Calling Muon 'better than AdamW' without saying where and why is premature."
   },
   {
     "id": "agentic-evaluations",
     "title": "Agentic Evaluations",
     "theme": "evaluation",
-    "plain_meaning": "Agentic evaluations test systems that act over many steps using tools, memory, planning, and feedback.",
-    "first_principles": "A one-question benchmark measures static answer quality. Agentic tasks measure whether the system can preserve goals, choose actions, use tools correctly, recover from errors, and complete long-horizon work.",
-    "example": "Instead of asking for a code snippet, an agentic evaluation asks the model to inspect a repository, modify files, run tests, debug failures, and finish the task.",
-    "why_it_matters": "Modern AI systems increasingly fail or succeed as workflows, not as single messages. Evaluation must measure the whole trajectory.",
+    "plain_meaning": "Agentic evaluations test whether an AI system can work over many steps to finish a real task. Think of it this way: instead of asking a model one question and checking its answer, you give it a goal (like 'fix this broken code') and watch it take multiple actions — read files, run tests, try fixes, learn from failures — until the job is done. It measures whether the system can keep track of where it is, use its tools correctly, and recover when something goes wrong.",
+    "first_principles": "A simple test asks one question and scores the answer right or wrong — like a quiz. An agentic test is different: it starts with a goal and watches the system over many steps. The system must remember what it is trying to do, pick the right action at each step, use a tool (read a file, run a command) correctly, notice when something failed, and try again. Success means finishing the whole job, not just giving a smart-sounding response to one prompt.",
+    "example": "A simple test says 'write me a code snippet that sorts a list.' An agentic test says 'there is a broken sorting function in a repository — find the bug, fix the code, run the test suite, and make sure all tests pass.' The system must search through files, read the error messages, change the code, re-run tests, and keep going until it actually works. A single guess is not enough.",
+    "why_it_matters": "Modern AI systems are built to work like this: they think step by step (reasoning), they use tools (code, search, memory), and they learn from mistakes (feedback). A one-question test does not measure any of that. Agentic evaluations check if a system can actually do real work — keep a goal in mind, make choices, recover from errors, and finish. If you want to know whether an AI can improve itself, you need to measure whether it can handle a task that takes multiple tries and course corrections.",
     "connections": [
       "test-time-compute",
       "verifiers",
       "continual-learning",
       "rlvr"
     ],
-    "misunderstanding": "Agentic evaluation is not just a longer prompt. It requires state, tools, success criteria, and failure analysis."
+    "misunderstanding": "Agentic evaluation is not just writing a longer prompt or asking for more detail. It requires three things to work: the system needs memory or state (to know where it is and what it tried), access to real tools (not just text output), and a way to measure success beyond 'did it sound smart.' A test that gives the system 10 tries to answer one question is longer, but it is not agentic unless the system can use those tries to do real work — like actually running code, seeing what breaks, and fixing it."
   },
   {
     "id": "continual-learning",
     "title": "Continual Learning",
     "theme": "agents",
-    "plain_meaning": "Continual learning is the ability of a deployed system to improve from ongoing experience without forgetting or corrupting previous capabilities.",
-    "first_principles": "Humans learn from tasks while doing them. Current LLM agents mostly use fixed weights plus temporary context or external memory. Turning experience into durable, reliable improvement is difficult because updates can overfit, conflict, leak data, or degrade older behavior.",
-    "example": "A coding agent repeatedly sees the same project conventions. Continual learning would let it internalize those conventions safely instead of rediscovering them every session.",
-    "why_it_matters": "Self-improving agents need more than test-time retries. They need mechanisms for storing, validating, and reusing lessons across tasks.",
+    "plain_meaning": "Continual learning is a system's ability to improve as it keeps working — learning from new situations it encounters after deployment — without forgetting what it already knew or breaking what used to work. Imagine a tutoring app that gets smarter from students' questions each day, but never forgets how to do basic math.",
+    "first_principles": "A person who learns on the job picks up new patterns from each task: you write code in a new team, notice their style, and start matching it. But AI systems today are frozen after training — they read something fresh during a conversation but then forget it the next day. To learn continuously like a person does, a system needs to store what it learns and modify its behavior in a way that sticks, without accidentally undoing old correct behavior or letting new lessons break other skills.",
+    "example": "A coding assistant works with the same team for months. It keeps seeing the same naming rules (like 'use_snake_case for variables'). Right now, it rediscovers this rule each conversation because it cannot update itself. Continual learning would let it notice the pattern once and update its internal dials so that in future conversations it already knows this team's conventions — but checked carefully so it does not break its knowledge of other coding styles.",
+    "why_it_matters": "Self-improving agents — the core topic of reasoning models and learning systems — need more than just trying harder. A single retry or a longer think often fails on a hard problem. Real improvement requires the system to absorb lessons from its attempts, store them safely, and apply them next time. This turns scattered experience into durable skill, which is how you go from trial-and-error to actual growth.",
     "connections": [
       "agentic-evaluations",
       "data-progress",
       "synthetic-data",
       "self-improvement-loop"
     ],
-    "misunderstanding": "Adding memory is not the same as continual learning. Memory retrieves past facts; continual learning changes future behavior in a validated way."
+    "misunderstanding": "Many people mix up memory with learning. Memory means: store a fact or example and retrieve it later when needed. Learning means: update your future behavior based on new information. A chatbot with a fact database has memory but no learning — it cannot get smarter. Continual learning requires the system to actually change its decision-making process based on what it has done."
   },
   {
     "id": "power-sampling",
     "title": "Power Sampling",
     "theme": "inference",
-    "plain_meaning": "Power sampling is an inference-time method that sharpens the base model's distribution over whole completions rather than retraining the model.",
-    "first_principles": "The method upweights high-likelihood full sequences under a powered version of the base distribution and uses iterative MCMC-style resampling to approximate samples from that sharper distribution.",
-    "example": "A base model generates an answer, then resamples blocks of the answer and keeps changes that better fit the sharpened likelihood landscape.",
-    "why_it_matters": "It suggests that better decoding can recover much of the one-shot reasoning benefit of RL while preserving pass@k diversity.",
+    "plain_meaning": "Power sampling is a way to get better answers from a language model without retraining it. Instead of asking the model once and trusting the first answer, power sampling asks the model to generate multiple answers and then picks the best ones using a sharper version of the model's own confidence rankings — like turning up the contrast on what the model thinks is good versus bad.",
+    "first_principles": "A language model always assigns a confidence score to every word or phrase it could say next. Power sampling takes those scores and exaggerates the differences — high-confidence answers get pushed higher, low-confidence ones lower. It then uses a resampling loop (drawing new candidate answers repeatedly, keeping the ones that fit the sharpened scores) to approximate what samples would look like if the model had been trained on that exaggerated distribution. The result: answer blocks that the model already ranked as likely get refined further, without changing the model's weights.",
+    "example": "Imagine a model generates a full answer to a math problem. Power sampling then re-examines chunks of that answer — say, the first paragraph or the calculation step — and asks: under my sharpened confidence scoring, can I find a better version of this chunk that still makes sense? It redraws alternatives and keeps ones that score higher on this sharper scale. After iterating this process, you get an answer that is not just what the model thought first, but what it thinks after using better judgment.",
+    "why_it_matters": "Retraining a model (via reinforcement learning) to give better step-by-step answers takes enormous compute and can break the model's existing skills. Power sampling gets many of those benefits — cleaner reasoning, higher accuracy — by just using smarter decoding at inference time. It also preserves diversity (you can sample multiple good answers, not just one), which helps catch cases where the model's first guess was not the only right answer.",
     "connections": [
       "base-model-capability",
       "sampling",
       "pass-at-k",
       "latent-reasoning"
     ],
-    "misunderstanding": "Power sampling is not the same as low temperature. Low temperature sharpens local token choices; power sampling tries to account for future completion likelihoods."
+    "misunderstanding": "Power sampling is often confused with temperature scaling, which lowers the temperature knob on a model to make it more confident. But temperature is a one-step adjustment: it makes each individual word choice more or less random. Power sampling works differently — it looks at full answer blocks and re-judges them under a sharpened scoring system, accounting for how well the entire completion fits, not just whether the next word is likely. Lower temperature makes one word pickier; power sampling makes the model rethink whole sequences."
   },
   {
     "id": "rl-information-inefficiency",
     "title": "RL Information Inefficiency",
     "theme": "reinforcement learning",
-    "plain_meaning": "RL information inefficiency means RL often gives very little learning signal per unit of compute, especially on long tasks with sparse final rewards.",
-    "first_principles": "Pretraining gives token-level feedback on every token. RL may generate thousands or millions of tokens before receiving one success/failure bit. If the pass rate is near zero or near one, even that bit carries little useful information.",
-    "example": "A model works for an hour on a coding task and only learns that the final solution failed. It does not automatically know which step caused the failure.",
-    "why_it_matters": "This explains why curriculum design, process rewards, verifiers, DAPO-style filtering, and task generation near the model's frontier are so important.",
+    "plain_meaning": "When an AI learns by trial and error (reinforcement learning), it often gets very little useful feedback per attempt, especially on long tasks. A single pass-or-fail grade at the end tells the model almost nothing about where its work went wrong along the way, making learning slow and costly.",
+    "first_principles": "During pretraining, the model reads text and gets told the right answer on nearly every chunk—like a student who sees the answer key after each sentence. In reinforcement learning, the model might generate thousands of chunks of text before finding out if it succeeded. If success is rare, even a single 'yes' or 'no' carries very little real information about how to do better next time.",
+    "example": "A model spends an hour working through a coding problem—writing functions, testing them, debugging—and at the very end, it learns only 'your solution does not work.' It never learns which line of code was wrong, whether the logic was flawed early on, or what would have been a better approach halfway through.",
+    "why_it_matters": "Because reward signals are sparse and expensive, humans must design curricula (break problems into easier steps), build checkers that score progress along the way, filter weak solutions out early, and generate new practice problems that match the model's current ability. These techniques aim the learning signals carefully so nothing goes to waste.",
     "connections": [
       "rlvr",
       "dapo",
       "process-vs-outcome-rewards",
       "test-time-compute"
     ],
-    "misunderstanding": "RL being inefficient does not mean RL is useless. It means the reward bits are expensive and must be aimed carefully."
+    "misunderstanding": "Saying RL is information-inefficient does not mean RL does not work. It means the learning signals are precious and must be shaped carefully. A model can still learn to do hard things via RL—it just requires smart design of what problems to try and what feedback to give."
   },
   {
     "id": "algorithmic-progress-categories",
     "title": "Algorithmic Progress Categories",
     "theme": "forecasting",
-    "plain_meaning": "Algorithmic progress is not one thing. It mixes architecture, optimizers, systems work, data improvements, distillation, long-context methods, RL, tools, and evaluation design.",
-    "first_principles": "If model performance improves at fixed compute, the cause could be a better learning algorithm, better data, better implementation, better hardware utilization, better inference strategy, or a new post-training paradigm. Lumping all of these together obscures what actually changed.",
-    "example": "A newer model may beat an older model because it used better synthetic math data, not because its transformer block is fundamentally better.",
-    "why_it_matters": "This matters for forecasting and engineering. The next bottleneck depends on which source of progress is actually driving gains.",
+    "plain_meaning": "When an AI model gets better at answering questions or solving problems, we need to ask: why did it improve? There are many reasons mixed together. Maybe the way the model is built improved. Maybe the data it learned from improved. Maybe how it was trained changed. Maybe the hardware it runs on got faster. Maybe the thinking strategy got better. Maybe it learned from rewards (a score for right answers). Calling all of this together 'progress' hides which part actually helped.",
+    "first_principles": "Start with a simple fact: the model performs better at the same amount of computation work. Now trace backward. The improvement came from somewhere. It could be a new architecture — a smarter pattern for how the neural networks are wired. It could be the optimizer — a better recipe for nudging the billions of dials toward right answers. It could be systems and hardware — code that runs faster on the available chips. It could be data — cleaner, bigger, or more carefully chosen text to learn from. It could be training method — a different reward signal or a new way to guide learning. It could be inference — a smarter strategy at test time for picking the best answer. Each of these is a different lever. When you mix them all together without naming which lever moved, you cannot tell what actually caused progress.",
+    "example": "Imagine Model B beats Model A. A scientist announces: 'Algorithmic progress!' But which lever moved? Dig deeper. Model B used synthetic math problems created by humans — carefully designed arithmetic questions — while Model A only learned from raw text. The transformer block inside both models is essentially the same. The win came from data, not from a smarter algorithm. If you label it all as 'algorithmic progress,' you miss the fact that the next step should probably be better data, not a different architecture.",
+    "why_it_matters": "This matters for forecasting — predicting where AI will go next — and for engineering decisions. If you know data improvements are driving the gains right now, you invest in data pipelines. If hardware speed is the bottleneck, you push for faster chips. If the training method is stuck, you invent new reward signals. The next big jump depends on which lever is closest to its limit. Mislabeling progress hides what is actually stuck and what could move next.",
     "connections": [
       "data-progress",
       "moe",
       "deepseek-mla",
       "muon-optimizer"
     ],
-    "misunderstanding": "Calling everything algorithmic progress can double-count gains and hide the role of data and systems engineering."
+    "misunderstanding": "The trap is using the word 'algorithmic' to mean 'any improvement.' That hides real differences. A newer model beat an older model, so it is progress — but what kind? If you call it all 'algorithmic progress,' you double-count the same gain (maybe data helped and systems helped, but both are called one thing). You also miss when non-algorithmic work — like data collection or hardware engineering — is what actually won. The result: wrong forecasts and misdirected effort."
   }
 ]

@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">agents</p>
   <h1>Continual Learning</h1>
-  <p class="lede">Continual learning is the ability of a deployed system to improve from ongoing experience without forgetting or corrupting previous capabilities.</p>
+  <p class="lede">Continual learning is a system&#x27;s ability to improve as it keeps working — learning from new situations it encounters after deployment — without forgetting what it already knew or breaking what used to work. Imagine a tutoring app that gets smarter from students&#x27; questions each day, but never forgets how to do basic math.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>Humans learn from tasks while doing them. Current LLM agents mostly use fixed weights plus temporary context or external memory. Turning experience into durable, reliable improvement is difficult because updates can overfit, conflict, leak data, or degrade older behavior.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>A coding agent repeatedly sees the same project conventions. Continual learning would let it internalize those conventions safely instead of rediscovering them every session.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>Self-improving agents need more than test-time retries. They need mechanisms for storing, validating, and reusing lessons across tasks.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>Adding memory is not the same as continual learning. Memory retrieves past facts; continual learning changes future behavior in a validated way.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>A person who learns on the job picks up new patterns from each task: you write code in a new team, notice their style, and start matching it. But AI systems today are frozen after training — they read something fresh during a conversation but then forget it the next day. To learn continuously like a person does, a system needs to store what it learns and modify its behavior in a way that sticks, without accidentally undoing old correct behavior or letting new lessons break other skills.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>A coding assistant works with the same team for months. It keeps seeing the same naming rules (like &#x27;use_snake_case for variables&#x27;). Right now, it rediscovers this rule each conversation because it cannot update itself. Continual learning would let it notice the pattern once and update its internal dials so that in future conversations it already knows this team&#x27;s conventions — but checked carefully so it does not break its knowledge of other coding styles.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Self-improving agents — the core topic of reasoning models and learning systems — need more than just trying harder. A single retry or a longer think often fails on a hard problem. Real improvement requires the system to absorb lessons from its attempts, store them safely, and apply them next time. This turns scattered experience into durable skill, which is how you go from trial-and-error to actual growth.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Many people mix up memory with learning. Memory means: store a fact or example and retrieve it later when needed. Learning means: update your future behavior based on new information. A chatbot with a fact database has memory but no learning — it cannot get smarter. Continual learning requires the system to actually change its decision-making process based on what it has done.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

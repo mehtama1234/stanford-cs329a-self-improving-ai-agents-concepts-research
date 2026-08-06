@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">foundation</p>
   <h1>Latent Reasoning</h1>
-  <p class="lede">Latent reasoning means reasoning behavior that the base model can produce but does not reliably expose under ordinary prompting or decoding.</p>
+  <p class="lede">Latent reasoning is reasoning behavior that a model already knows how to do, but doesn&#x27;t show unless you know how to draw it out. The model learned it during training by reading text, but the reasoning stays hidden unless you ask the right way or give the model enough time to think.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>Pretraining can install many partial algorithms and reasoning traces. These behaviors may live as low-probability paths. Post-training, prompting, search, or sampling can make them easier to access.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>A base model may rarely generate a correct backtracking strategy. A reasoning-tuned model may use backtracking frequently at the right time.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>It explains why inference-time methods and RL can produce large apparent gains without necessarily adding new knowledge.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>Latent does not mean fake. A low-probability skill can still be a real skill if the model can execute it coherently.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>During pretraining, a model absorbs patterns from mountains of text—including examples of people thinking step by step, correcting mistakes, and working through hard problems. These reasoning patterns get stored as internal dials and connections. But when you ask a quick question, the model might rush to the first guess instead of using those stored reasoning steps. Prompting tricks, letting the model think longer, or using randomness when picking words can wake up the reasoning that&#x27;s already there.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Imagine a student who has studied backtracking (going back to fix a wrong turn in a problem). Normally, when asked a tricky question under time pressure, the student blurts out a guess. But if you say &quot;think out loud about what you&#x27;d try first, then what you&#x27;d do if that fails,&quot; the student starts using backtracking. The knowledge was there the whole time—you just had to ask the right way.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>This idea explains why spending more time thinking or trying multiple attempts can make a model much better at hard problems, even when you don&#x27;t teach the model anything new. If reasoning is already built in during training, then inference-time tricks (letting it think longer, trying 50 times and picking the best) and even reward training can unlock what&#x27;s sleeping. This saves time and money—you don&#x27;t always need to rebuild the model; sometimes you just need to ask better.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Latent does not mean the reasoning is pretend or not really there. A skill that is hard to trigger is still a real skill. If you ask the model to show its work and it reasons correctly step by step, that reasoning is genuine—it&#x27;s not a copy pasted from the training data, it&#x27;s the model actually doing the thinking.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">inference</p>
   <h1>Test-Time Compute</h1>
-  <p class="lede">Test-time compute means spending more computation when answering a question, without changing the model weights.</p>
+  <p class="lede">Test-time compute means spending more effort when the model answers a question—not by changing what the model learned, but by giving it more time to try, retry, or check its work. Think of it like redoing a math problem three times and picking the right answer, instead of writing down your first guess and moving on.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>If a model has a distribution containing both weak and strong paths, extra runtime computation can search that distribution, generate multiple candidates, revise intermediate work, or verify outputs. The model stays fixed, but the inference procedure becomes stronger.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>Instead of asking for one answer to a coding problem, generate 50 programs, run unit tests, and keep the one that passes.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>This is central to reasoning models and agents because many hard tasks are not solved by one forward pass. They require search, checking, retries, and budget allocation.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>Test-time compute is not free intelligence. It only helps when there is a way to select better outputs or use feedback.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>When a model answers a question, it always picks from a ranked list of possibilities it learned during training. For hard questions, the best answer may not be at the very top of that list, or the model may need to explore several paths to find it. Test-time compute lets you stay with the same model but change how you use it—generate many attempts, check which ones work, refine rough ideas, test answers against rules. The model&#x27;s learning does not change; only the way you run it gets smarter.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>You ask an AI to write a program that sorts numbers. Instead of writing one program and hoping it works, you tell it to write 50 different versions. You test each one with sample numbers. You keep the one that gets them right every time. One model, same brain, but by spending time to generate and test many answers, you get a much better result.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Reasoning models are designed to think step by step, and agents learn by trying and adjusting. Most hard problems—coding, math, planning—are not solved by thinking just once. They need you to explore possibilities, double-check work, catch mistakes, and steer effort to the hardest parts. Test-time compute is how you get a fixed model to solve harder problems by giving it time to do that work at answer-time instead of requiring it to learn it all during training.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Test-time compute is not giving the model superpowers it did not have before. It only works if you have a way to tell good answers from bad ones—a test that passes, a rule that the answer must follow, or another checker you trust. If you just generate 50 answers and pick randomly, you get nowhere. The extra thinking only buys you better results when you can spot the better result.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

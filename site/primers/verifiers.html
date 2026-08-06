@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">verification</p>
   <h1>Verifiers</h1>
-  <p class="lede">A verifier is a system that checks whether an answer, step, action, or trajectory is correct or acceptable.</p>
+  <p class="lede">A verifier is a checker — it looks at an answer the model produces and says yes or no (right or wrong). Think of it like a test that tells you if the model&#x27;s guess actually works. The verifier can be a rule written by hand, code you run to check the answer, or another AI system acting as a judge.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>Generation creates candidates; verification selects among them or turns them into training signal. The verifier can be symbolic, executable, rule-based, learned, or another language model.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>Unit tests verify code. A theorem checker verifies a proof. A rubric-based judge checks whether a support answer follows policy.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>Verifiers are the bridge between sampling and learning. Without verification, more samples may just produce more noise.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>An LLM judge is not automatically a reliable verifier. It needs calibration, adversarial testing, and fallback paths.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>When a model tries to solve a hard problem, it often tries many different paths. A verifier is the gate that looks at each try and decides which ones are actually good. Those good attempts then become the examples the model learns from. Without a verifier, the model has no way to know which of its own guesses to learn from — it just learns from noise. So the verifier is what turns wild guessing into actual learning.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>If a model writes code, a verifier can run that code — if it produces the right output, the verifier says yes. If a model solves a math proof, a verifier can check the logic step by step. If a model writes a support reply, a verifier can check if it follows the company&#x27;s policies. In each case, the verifier is answering one question: does this actually work?</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>A verifier is the bridge between trying many things and learning from the best tries. Without it, you could generate a million answers and have no way to tell good ones from bad ones. With a verifier, you can spot the winners and train the model to do more of what works. This is how reasoning models learn to think better — not by luck, but by repeated cycles of trying and checking.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Many people think that if you use another AI system as a verifier (an &#x27;LLM judge&#x27;), it will always be right. But AI judges make mistakes too. They need testing against cases you know the answer to, backup checks for hard cases, and ways to fall back to a different method if the judge fails. An AI verifier is useful, but only if you build in safeguards to catch when it is wrong.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>
