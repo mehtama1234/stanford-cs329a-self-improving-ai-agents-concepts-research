@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">architecture</p>
   <h1>Expert Balancing</h1>
-  <p class="lede">Expert balancing keeps an MoE model from overusing a few experts while ignoring others.</p>
+  <p class="lede">Some reasoning models use many smaller &#x27;experts&#x27; — little specialist programs that each handle different kinds of questions — and route each question to the ones most useful for it. Expert balancing is a rule to keep the model from always picking the same few experts. Without it, a few popular experts get overloaded and do all the work, while others sit idle and never learn anything.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>If the router always chooses the same experts, unused experts do not learn well and busy experts become bottlenecks. Balancing methods encourage healthier distribution of tokens across experts.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>During training, a bias or auxiliary objective can push the router away from overloaded experts and toward underused ones.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>Poor balancing wastes capacity and can destabilize reasoning because similar prompts may route through inconsistent expert paths.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>Expert balancing is not only a hardware efficiency trick. It affects what experts learn and how stable routing becomes.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>A reasoning model with many experts works like a team of specialists. If the model&#x27;s router (the part that decides which experts to send each question to) always favors the same experts, it&#x27;s like always asking the same two people on a team to solve every problem. Those two get tired and bottlenecked; the others never get practice and fall behind. Balancing rules nudge the router to spread the load — send different types of questions to different experts, so each one gets trained on the problems it can help with.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Imagine a model trained on both code and poetry. Without balancing, the router might always send code to Expert A and poetry to Expert B, ignoring Expert C and D. During training, balancing adds a small penalty if too many tokens go to A and B, and a small bonus if C and D get used. Over time, the router learns to say: &#x27;Hmm, maybe I should try C on this code pattern&#x27; — and C actually learns something useful instead of staying frozen.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Wasteful capacity: if four experts exist but only two are used, you&#x27;re paying for four but using two. Unstable reasoning: because if the router breaks or changes slightly, similar questions might suddenly route through different experts and give different answers. Training falters: unused experts stay random and weak, and overloaded experts train on everything rather than specializing. A well-balanced model reasoning becomes both faster and more reliable.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Many people think expert balancing is only a trick to save GPU memory and hardware cost. It is not. Balancing shapes how experts actually learn and what each one becomes good at. It also affects whether the routing stays consistent — whether the same type of reasoning follows the same expert path each time. Skip balancing and you do not just waste chips; you get a model that reasons less predictably.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>

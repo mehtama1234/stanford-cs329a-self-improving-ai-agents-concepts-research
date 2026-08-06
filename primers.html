@@ -27,123 +27,123 @@
 <div class="grid"><article class="card">
   <p class="quiet">#01 · foundation</p>
   <h3><a href="primers/pretraining.html">Pretraining</a></h3>
-  <p>Pretraining is the broad learning phase where a model predicts the next token (a token is a chunk of text, usually a word or a word-piece) across a huge corpus and absorbs language, facts, patterns, styles, and many weak forms of reasoning.</p>
+  <p>Pretraining is the first, enormous learning phase. A model — a program with billions of dials (numbers) it can adjust — reads through mountains of books, articles, websites, and code. For each piece of text, it plays a guessing game: given what came before, predict the next word. It repeats this game millions of times, tweaking its dials whenever it guesses wrong, until it becomes very good at guessing what comes next. Through this simple game, it sponges up language, facts, how things are explained, and patterns in how people think and write.</p>
 </article><article class="card">
   <p class="quiet">#02 · foundation</p>
   <h3><a href="primers/base-model-capability.html">Base Model Capability</a></h3>
-  <p>A base model is often more capable than one ordinary sample suggests because its probability distribution contains many possible reasoning paths, including rare good ones.</p>
+  <p>When you ask an AI language model — a program with billions of dials it tunes by trial and error — to solve a hard problem, one attempt might look bad. But the model actually contains many different ways it could have answered. If you ask it the same question 100 times, it picks differently each time (like rolling dice), and some attempts will be completely right. The model&#x27;s real skill is hiding in those other paths it could take, not just the first answer it gives.</p>
 </article><article class="card">
   <p class="quiet">#03 · inference</p>
   <h3><a href="primers/sampling.html">Sampling</a></h3>
-  <p>Sampling is the process of choosing tokens from the model&#x27;s probability distribution during generation.</p>
+  <p>When an AI model writes its answer one word at a time, it needs a way to pick each new word. Sampling is how it makes that choice. At each step, the model ranks all possible next words by confidence (a score from 0 to 1 that shows how likely each word is). Sampling is the rule for which word it actually picks — sometimes the top choice, sometimes a random pick from the high-scoring ones, sometimes something in between.</p>
 </article><article class="card">
   <p class="quiet">#04 · inference</p>
   <h3><a href="primers/test-time-compute.html">Test-Time Compute</a></h3>
-  <p>Test-time compute means spending more computation when answering a question, without changing the model weights.</p>
+  <p>Test-time compute means spending more effort when the model answers a question—not by changing what the model learned, but by giving it more time to try, retry, or check its work. Think of it like redoing a math problem three times and picking the right answer, instead of writing down your first guess and moving on.</p>
 </article><article class="card">
   <p class="quiet">#05 · post-training</p>
   <h3><a href="primers/sft.html">Supervised Finetuning</a></h3>
-  <p>Supervised finetuning trains a model on examples of desired input-output behavior.</p>
+  <p>Supervised finetuning is the phase where you take a model that has already learned language basics and show it hundreds or thousands of specific examples: here is a customer question — here is the perfect answer you should give. After seeing many pairs like this, the model learns to copy that style and reasoning pattern.</p>
 </article><article class="card">
   <p class="quiet">#06 · post-training</p>
   <h3><a href="primers/distillation.html">Distillation</a></h3>
-  <p>Distillation trains one model to imitate another model, usually to transfer capability into a cheaper, smaller, or more specialized model.</p>
+  <p>Distillation is teaching one AI model to copy what another AI model does — the goal is to move a skill from one model into a new model that is cheaper to run, smaller, or better at one specific task. Instead of learning from scratch with raw text, the new model learns by watching how the skilled model solves problems.</p>
 </article><article class="card">
   <p class="quiet">#07 · post-training</p>
   <h3><a href="primers/rlhf.html">RLHF</a></h3>
-  <p>RLHF means reinforcement learning from human feedback, usually used to align model outputs with human preferences.</p>
+  <p>RLHF stands for Reinforcement Learning from Human Feedback. After a model learns to predict words by reading text, RLHF teaches it to prefer certain answers over others by showing it which answers humans liked. It is the tuning step that makes a model behave the way people want — answering helpfully instead of just guessing the next word.</p>
 </article><article class="card">
   <p class="quiet">#08 · post-training</p>
   <h3><a href="primers/rlvr.html">RLVR</a></h3>
-  <p>RLVR is reinforcement learning with verifiable rewards: the model gets rewarded when an answer can be automatically checked as correct.</p>
+  <p>RLVR means teaching a model to get better at reasoning by automatically checking whether its answers are correct. When an answer is right, the model learns that path worked. When an answer is wrong, the model learns to avoid that path next time. The key: the computer can judge correctness itself — no human needed for every single try.</p>
 </article><article class="card">
   <p class="quiet">#09 · reinforcement learning</p>
   <h3><a href="primers/grpo.html">GRPO</a></h3>
-  <p>GRPO is a group-relative RL method that compares multiple answers to the same prompt and rewards answers that are better than the group average.</p>
+  <p>GRPO is a technique that helps a reasoning model get better at solving hard problems by having it generate multiple answers to the same question, scoring each one, and then strengthening the ones that worked better than average. Think of it like taking a test five times, keeping track of which answers you got right more often than not, and learning from that contrast.</p>
 </article><article class="card">
   <p class="quiet">#10 · reinforcement learning</p>
   <h3><a href="primers/dapo.html">DAPO</a></h3>
-  <p>DAPO is a refinement of group-relative RL that focuses training on prompts where the sampled group contains both successes and failures, while also managing exploration and response length.</p>
+  <p>DAPO is a method that teaches a reasoning model to improve itself by picking the right training examples — specifically, prompts where some of the model&#x27;s attempts worked and some failed. It also manages how long the model&#x27;s reasoning steps are and how much it should explore different answer paths. By training on examples where the model can see the difference between good and bad reasoning, DAPO helps the model learn which thinking patterns to repeat.</p>
 </article><article class="card">
   <p class="quiet">#11 · evaluation</p>
   <h3><a href="primers/pass-at-k.html">Pass@1 And Pass@k</a></h3>
-  <p>Pass@1 measures whether the first answer is correct. Pass@k measures whether at least one of k sampled answers is correct.</p>
+  <p>Imagine you ask an AI model to solve a hard math problem. Pass@1 is: you get exactly one answer and check if it&#x27;s right. Pass@k is: you tell the model to generate k different answers (say 5, or 100), then check if ANY of them are right. Pass@k shows whether the model *can* find the right answer if given more tries, even if its first attempt fails.</p>
 </article><article class="card">
   <p class="quiet">#12 · evaluation</p>
   <h3><a href="primers/diversity-collapse.html">Diversity Collapse</a></h3>
-  <p>Diversity collapse happens when training makes a model repeat a narrower set of output patterns, even if those patterns are often good.</p>
+  <p>Imagine a model that can solve a problem 10 different ways. During training, if you reward only the way that works most often, the model gradually forgets the other 9 ways — even if some of them sometimes solve harder versions of the problem. Diversity collapse is when a model learns to repeat fewer and fewer answer patterns, because it got trained to copy what was rewarded most. The model becomes narrower, more predictable, and stops trying anything unusual.</p>
 </article><article class="card">
   <p class="quiet">#13 · evaluation</p>
   <h3><a href="primers/reasoning-boundary.html">Reasoning Boundary</a></h3>
-  <p>The reasoning boundary is the set of problems a model can solve at least sometimes under some sampling or inference procedure.</p>
+  <p>A reasoning boundary is the outer edge of what a model is actually able to do. Imagine a model as a student with specific skills from studying: some problems it can solve, some it cannot. The reasoning boundary is the widest circle of problems it could solve if given many, many attempts and different ways of working through them. Not the problems it solves right away, but the ones it gets right at least once if you let it try fifty times.</p>
 </article><article class="card">
   <p class="quiet">#14 · foundation</p>
   <h3><a href="primers/latent-reasoning.html">Latent Reasoning</a></h3>
-  <p>Latent reasoning means reasoning behavior that the base model can produce but does not reliably expose under ordinary prompting or decoding.</p>
+  <p>Latent reasoning is reasoning behavior that a model already knows how to do, but doesn&#x27;t show unless you know how to draw it out. The model learned it during training by reading text, but the reasoning stays hidden unless you ask the right way or give the model enough time to think.</p>
 </article><article class="card">
   <p class="quiet">#15 · interpretability</p>
   <h3><a href="primers/mechanisms-vs-heuristics.html">Mechanisms Versus Heuristics</a></h3>
-  <p>Mechanisms are reasoning moves the model can perform; heuristics decide when to use them.</p>
+  <p>A model&#x27;s reasoning has two separate parts: the *tools it knows how to use* (mechanisms), and the *decision about which tool to pull out when* (heuristics). A calculator is a mechanism—it can add and divide. Knowing *when* to add versus divide is the heuristic. Training might not teach the model new tools; it might just teach the model to pick the right tool at the right time.</p>
 </article><article class="card">
   <p class="quiet">#16 · verification</p>
   <h3><a href="primers/process-vs-outcome-rewards.html">Process Rewards Versus Outcome Rewards</a></h3>
-  <p>Outcome rewards score the final answer. Process rewards score intermediate reasoning steps.</p>
+  <p>When training AI to reason step-by-step, you can reward it in two ways. An outcome reward gives a score only at the very end — did you get the final answer right or wrong? A process reward gives scores all along the way — was your second step correct? Your third? Both approaches try to make good reasoning more likely, but they look at different moments in the chain.</p>
 </article><article class="card">
   <p class="quiet">#17 · verification</p>
   <h3><a href="primers/verifiers.html">Verifiers</a></h3>
-  <p>A verifier is a system that checks whether an answer, step, action, or trajectory is correct or acceptable.</p>
+  <p>A verifier is a checker — it looks at an answer the model produces and says yes or no (right or wrong). Think of it like a test that tells you if the model&#x27;s guess actually works. The verifier can be a rule written by hand, code you run to check the answer, or another AI system acting as a judge.</p>
 </article><article class="card">
   <p class="quiet">#18 · data</p>
   <h3><a href="primers/data-progress.html">Data Progress</a></h3>
-  <p>Data progress means model improvement caused by better data, not necessarily by better architecture or optimizer algorithms.</p>
+  <p>Data progress means a model gets better because you feed it better information to learn from — not because you rewired the model itself or tweaked how it learns. A kitchen scale that learns from 1000 correct weight measurements will outweigh one that learned from 1000 wrong ones, even if both scales have the same springs inside.</p>
 </article><article class="card">
   <p class="quiet">#19 · data</p>
   <h3><a href="primers/synthetic-data.html">Synthetic Data</a></h3>
-  <p>Synthetic data is training or evaluation data generated programmatically, often by another model.</p>
+  <p>Synthetic data means examples — like coding problems, solutions, explanations — made by a computer program instead of collected from humans. In the reasoning-model arc, after the model learns to predict text, it needs thousands or millions of new examples to learn how to think and explain answers step-by-step. Creating these examples by hand would take forever, so a strong model generates them automatically.</p>
 </article><article class="card">
   <p class="quiet">#20 · training</p>
   <h3><a href="primers/mid-training.html">Mid-Training</a></h3>
-  <p>Mid-training is an intermediate training phase between broad pretraining and final post-training, often used to specialize the model toward important domains or long-context behavior.</p>
+  <p>Mid-training is a training phase that sits between two big stages: first, the model reads a mountain of general text and learns to predict the next word well; second, it gets tuned to follow instructions and respond helpfully. Mid-training is the step in between where you feed it a specific diet of data — like lots of code examples, math problems, or documents in different languages — to make it especially strong in those areas before the final tuning happens.</p>
 </article><article class="card">
   <p class="quiet">#21 · architecture</p>
   <h3><a href="primers/moe.html">Mixture Of Experts</a></h3>
-  <p>MoE models contain many expert subnetworks but activate only a subset for each token.</p>
+  <p>A Mixture of Experts (MoE) model has many small neural networks inside it — think of them as different specialist programs. Each specialist is trained to get good at one kind of task. When the model sees a new piece of text (a &#x27;token&#x27;), it doesn&#x27;t run all the specialists. Instead, a router — a separate program that learned which specialist to pick — sends the token to just a few relevant specialists. Those specialists process it together and send their answer back.</p>
 </article><article class="card">
   <p class="quiet">#22 · architecture</p>
   <h3><a href="primers/expert-balancing.html">Expert Balancing</a></h3>
-  <p>Expert balancing keeps an MoE model from overusing a few experts while ignoring others.</p>
+  <p>Some reasoning models use many smaller &#x27;experts&#x27; — little specialist programs that each handle different kinds of questions — and route each question to the ones most useful for it. Expert balancing is a rule to keep the model from always picking the same few experts. Without it, a few popular experts get overloaded and do all the work, while others sit idle and never learn anything.</p>
 </article><article class="card">
   <p class="quiet">#23 · architecture</p>
   <h3><a href="primers/qk-norm.html">QK-Norm</a></h3>
-  <p>QK-norm normalizes query and key vectors in attention to improve training stability.</p>
+  <p>In an attention system — the part of a model that decides which words matter most for each answer — we compare a query (what you are looking for) to keys (labels on available clues). These comparisons are dot products: a way of measuring how much two things line up numerically. QK-norm is a technique that keeps these comparison numbers from getting too big or too small, so the model stays steady while learning.</p>
 </article><article class="card">
   <p class="quiet">#24 · architecture</p>
   <h3><a href="primers/deepseek-mla.html">DeepSeek MLA</a></h3>
-  <p>MLA, or Multi-Head Latent Attention, compresses attention key-value information into latent representations to make long-context inference more efficient.</p>
+  <p>MLA (Multi-Head Latent Attention) is a trick to make an AI model&#x27;s memory work better when reading long texts. Normally, when a model reads a book or a long email, it has to keep detailed notes on every word it has seen so far — those notes take up a lot of space in the computer&#x27;s memory. MLA squashes those notes down into a more compact form, like writing a summary instead of copying the whole text, so the model can hold more context without running out of memory.</p>
 </article><article class="card">
   <p class="quiet">#25 · optimization</p>
   <h3><a href="primers/muon-optimizer.html">Muon Optimizer</a></h3>
-  <p>Muon is an optimizer family explored as an alternative or complement to AdamW for more efficient neural network training.</p>
+  <p>When a neural network learns, it adjusts billions of tiny dials (called parameters or weights) by looking at how wrong its guesses are. An optimizer is a recipe that decides which dials to turn and by how much. Muon is one such recipe — it treats the dials like a grid of numbers (a matrix) and rotates or stretches updates together, instead of fiddling with each dial separately like the popular AdamW method does.</p>
 </article><article class="card">
   <p class="quiet">#26 · evaluation</p>
   <h3><a href="primers/agentic-evaluations.html">Agentic Evaluations</a></h3>
-  <p>Agentic evaluations test systems that act over many steps using tools, memory, planning, and feedback.</p>
+  <p>Agentic evaluations test whether an AI system can work over many steps to finish a real task. Think of it this way: instead of asking a model one question and checking its answer, you give it a goal (like &#x27;fix this broken code&#x27;) and watch it take multiple actions — read files, run tests, try fixes, learn from failures — until the job is done. It measures whether the system can keep track of where it is, use its tools correctly, and recover when something goes wrong.</p>
 </article><article class="card">
   <p class="quiet">#27 · agents</p>
   <h3><a href="primers/continual-learning.html">Continual Learning</a></h3>
-  <p>Continual learning is the ability of a deployed system to improve from ongoing experience without forgetting or corrupting previous capabilities.</p>
+  <p>Continual learning is a system&#x27;s ability to improve as it keeps working — learning from new situations it encounters after deployment — without forgetting what it already knew or breaking what used to work. Imagine a tutoring app that gets smarter from students&#x27; questions each day, but never forgets how to do basic math.</p>
 </article><article class="card">
   <p class="quiet">#28 · inference</p>
   <h3><a href="primers/power-sampling.html">Power Sampling</a></h3>
-  <p>Power sampling is an inference-time method that sharpens the base model&#x27;s distribution over whole completions rather than retraining the model.</p>
+  <p>Power sampling is a way to get better answers from a language model without retraining it. Instead of asking the model once and trusting the first answer, power sampling asks the model to generate multiple answers and then picks the best ones using a sharper version of the model&#x27;s own confidence rankings — like turning up the contrast on what the model thinks is good versus bad.</p>
 </article><article class="card">
   <p class="quiet">#29 · reinforcement learning</p>
   <h3><a href="primers/rl-information-inefficiency.html">RL Information Inefficiency</a></h3>
-  <p>RL information inefficiency means RL often gives very little learning signal per unit of compute, especially on long tasks with sparse final rewards.</p>
+  <p>When an AI learns by trial and error (reinforcement learning), it often gets very little useful feedback per attempt, especially on long tasks. A single pass-or-fail grade at the end tells the model almost nothing about where its work went wrong along the way, making learning slow and costly.</p>
 </article><article class="card">
   <p class="quiet">#30 · forecasting</p>
   <h3><a href="primers/algorithmic-progress-categories.html">Algorithmic Progress Categories</a></h3>
-  <p>Algorithmic progress is not one thing. It mixes architecture, optimizers, systems work, data improvements, distillation, long-context methods, RL, tools, and evaluation design.</p>
+  <p>When an AI model gets better at answering questions or solving problems, we need to ask: why did it improve? There are many reasons mixed together. Maybe the way the model is built improved. Maybe the data it learned from improved. Maybe how it was trained changed. Maybe the hardware it runs on got faster. Maybe the thinking strategy got better. Maybe it learned from rewards (a score for right answers). Calling all of this together &#x27;progress&#x27; hides which part actually helped.</p>
 </article></div>
 </main>
 </body>

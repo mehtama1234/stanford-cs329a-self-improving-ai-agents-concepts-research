@@ -23,13 +23,13 @@
 <section class="page-head">
   <p class="eyebrow">data</p>
   <h1>Data Progress</h1>
-  <p class="lede">Data progress means model improvement caused by better data, not necessarily by better architecture or optimizer algorithms.</p>
+  <p class="lede">Data progress means a model gets better because you feed it better information to learn from — not because you rewired the model itself or tweaked how it learns. A kitchen scale that learns from 1000 correct weight measurements will outweigh one that learned from 1000 wrong ones, even if both scales have the same springs inside.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>Training teaches the model the distribution it sees. If the data shifts from noisy web text to expert demonstrations, synthetic reasoning traces, code, math, and realistic task environments, the learned behavior shifts toward the capabilities people measure.</p></section>
-  <section class="detail"><h2>Concrete Example</h2><p>A model trained on curated math and code examples can outperform a similarly sized model trained mostly on generic web text.</p></section>
-  <section class="detail"><h2>Why It Matters</h2><p>Many gains attributed to algorithmic progress may actually come from data curation, data synthesis, filtering, distillation, and benchmark-aligned task design.</p></section>
-  <section class="detail"><h2>Common Misunderstanding</h2><p>Data progress is not less technical than algorithm progress. Designing data pipelines, verifiers, and task environments is a core engineering challenge.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>When you train a model, it absorbs the patterns baked into the data it sees. Feed it garbage, it learns garbage. Feed it curated examples — a human solving a math problem step-by-step, real code that works, or traces of reasoning that get the right answer — and the model learns to mimic what it saw. Change the diet, change what the model becomes.</p></section>
+  <section class="detail"><h2>Concrete Example</h2><p>Take two models identical in size and wiring. One learns from a random soup of web pages. The other learns from hand-picked math textbooks, working code snippets, and reasoning walkthroughs. When you test both on a hard math problem, the second one wins — not because it has more dials or a better learning rule, but because it memorized better examples.</p></section>
+  <section class="detail"><h2>Why It Matters</h2><p>Many people assume AI progress comes from smarter algorithms or bigger models. But a lot of recent gains actually come from smarter data: picking which examples to show the model, filtering out the bad ones, even using a working model to generate useful synthetic examples for a smaller model to learn from, or designing tasks that match real problems. This flips the focus from tinkering with the engine to feeding it better fuel.</p></section>
+  <section class="detail"><h2>Common Misunderstanding</h2><p>Do not mistake data progress for something simple or non-technical. Building a good data pipeline — deciding what examples matter, writing checkers that say right-from-wrong, creating synthetic reasoning traces that actually help — requires deep engineering skill. It is not less rigorous than inventing a new algorithm; it is a different kind of hard.</p></section>
 </div>
 <section class="detail">
   <h2>Connects To</h2>
