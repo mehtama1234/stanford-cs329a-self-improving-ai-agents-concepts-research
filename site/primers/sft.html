@@ -26,7 +26,7 @@
   <p class="lede">Supervised finetuning trains a model on examples of desired input-output behavior.</p>
 </section>
 <div class="two-col">
-  <section class="detail"><h2>First Principles</h2><p>After pretraining learns broad representations, SFT changes the model&#x27;s conditional behavior. It shows the model what kind of answer should follow a prompt: concise answer, chain of reasoning, tool call, JSON format, safety refusal, or domain-specific response.</p></section>
+  <section class="detail"><h2>First Principles</h2><p>After pretraining learns broad representations, SFT changes how the model responds to a prompt. It shows the model what kind of answer should follow: concise answer, chain of reasoning, tool call, JSON format, safety refusal, or domain-specific response.</p></section>
   <section class="detail"><h2>Concrete Example</h2><p>A dataset of customer support questions and ideal responses teaches the model to answer in the company&#x27;s support style.</p></section>
   <section class="detail"><h2>Why It Matters</h2><p>SFT is the easiest way to teach format, style, task behavior, and teacher-model reasoning traces. Distillation is often implemented as SFT on synthetic outputs from a stronger model.</p></section>
   <section class="detail"><h2>Common Misunderstanding</h2><p>SFT is not only about making a model polite. It can transfer procedural traces and sometimes install reasoning patterns the base model did not naturally use.</p></section>
