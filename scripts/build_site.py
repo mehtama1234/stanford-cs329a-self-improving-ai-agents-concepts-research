@@ -142,6 +142,29 @@ def render_primers(primers: list[dict[str, Any]]) -> None:
     (SITE / "primers.html").write_text(page("Concept Primers", body), encoding="utf-8")
 
 
+def optional_sections(item: dict[str, Any]) -> str:
+    """Render deeper rubric sections when the source record supplies them.
+
+    Backward-compatible: records without these keys render nothing.
+    """
+    specs = [
+        ("worked_example", "Worked Example"),
+        ("deeper_mechanics", "One Level Deeper"),
+        ("failure_boundary", "Failure Boundary"),
+    ]
+    out = []
+    for key, heading in specs:
+        value = item.get(key)
+        if not value:
+            continue
+        if isinstance(value, list):
+            inner = "<ul>" + "".join(f"<li>{esc(v)}</li>" for v in value) + "</ul>"
+        else:
+            inner = "".join(f"<p>{esc(p)}</p>" for p in str(value).split("\n\n") if p.strip())
+        out.append(f'<section class="detail"><h2>{heading}</h2>{inner}</section>')
+    return "\n".join(out)
+
+
 def render_concepts(concepts: list[dict[str, Any]], evidence_by_id: dict[str, dict[str, Any]]) -> None:
     cards = []
     for concept in concepts:
@@ -173,6 +196,7 @@ def render_concepts(concepts: list[dict[str, Any]], evidence_by_id: dict[str, di
   <section class="detail"><h2>What Breaks Without It</h2><p>{esc(concept['what_breaks_without_it'])}</p></section>
   <section class="detail"><h2>Course Role</h2><p>{esc(concept['course_role'])}</p></section>
 </div>
+{optional_sections(concept)}
 <section>
   <h2>Transcript Evidence</h2>
   {''.join(ev_html)}
