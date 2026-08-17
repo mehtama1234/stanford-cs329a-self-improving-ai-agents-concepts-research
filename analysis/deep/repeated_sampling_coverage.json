@@ -1,0 +1,206 @@
+{
+  "id": "repeated_sampling_coverage",
+  "name": "Repeated Sampling and Coverage",
+  "kick": "self-improving agents · first principles · many tries beat one",
+  "title": "Repeated sampling — when one careful try loses to eight noisy ones",
+  "lede": "A hard problem may have a right answer the model only stumbles onto now and then. The fix is not a better single attempt — it is many attempts and a vote. Here is the idea, a real run on a small model where voting beats the careful answer, why the gains flatten, when it fails, and where it reappears as pass@k and best-of-N.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why voting wins"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — one attempt can land on a bad path",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Ask a model a hard question once and it commits to a single chain of steps. If that chain takes a wrong turn early, the whole answer is wrong — even when the model, on a different day, would have gotten it. For some problems the right answer is not what the model says <em>most</em> of the time; it is something it only reaches on a lucky path."
+        },
+        {
+          "t": "para",
+          "html": "So the honest question is not &lsquo;how do I get the one perfect attempt?&rsquo; It is: <strong>if the right answer only shows up sometimes, how do I give it a chance to show up at all — and then recognise it?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — sample many answers, then let them vote",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of one careful answer, take the same question and answer it many times with a little randomness turned on, so each try explores a different chain of reasoning. Now you have a pile of candidate answers. Most hard problems have one right answer and many different wrong ones — and the wrong ones tend to disagree with each other, while the right one tends to repeat. So count the final answers and keep the one that showed up most often. That count-and-keep-the-most-common move is called <em>self-consistency</em>, and how often the right answer appears at all across your tries is its <em>coverage</em>."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — eight noisy tries beat one careful one",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it is genuinely unsure) on 14 grade-school math word problems. For each one we took the single careful answer, and separately drew 8 sampled answers with the randomness turned up, then voted. Every number here is measured."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "how we answer",
+            "accuracy on the 14 problems"
+          ],
+          "rows": [
+            [
+              "one careful (greedy) answer",
+              "6 / 14 = 43%"
+            ],
+            [
+              "one random sampled answer (average)",
+              "39%"
+            ],
+            [
+              "majority vote of 8 sampled answers",
+              "8 / 14 = 57%"
+            ]
+          ],
+          "caption": "One random try is actually worse than the careful one — but eight of them, voted, jump well past it."
+        },
+        {
+          "t": "bars",
+          "caption": "Majority-vote accuracy as the number of voting paths grows from 1 to 8. It climbs, then flattens — the last few paths add nothing here.",
+          "rows": [
+            [
+              "1 path",
+              0.429,
+              "42.9%"
+            ],
+            [
+              "2 paths",
+              0.429,
+              "42.9%"
+            ],
+            [
+              "3 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "4 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "5 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "6 paths",
+              0.571,
+              "57.1%"
+            ],
+            [
+              "7 paths",
+              0.571,
+              "57.1%"
+            ],
+            [
+              "8 paths",
+              0.571,
+              "57.1%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: many tries plus a vote beat one careful try — 43% to 57% — with no change to the model.</strong> A single random answer (39%) is noisier than the careful one (43%), so more randomness alone is not the point. The point is <em>aggregation</em>: across 8 tries the right answer surfaces often enough to win the vote. And the curve flattens after 6 paths, so the boost is real but bounded."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why voting wins — and why it stops helping",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Wrong answers scatter; right answers cluster. If the model reaches the correct number on even a third of its tries, the correct number is usually the single most common one in the pile, because the mistakes spread themselves across many different wrong numbers. Voting turns &lsquo;sometimes right&rsquo; into &lsquo;usually picked.&rsquo;"
+        },
+        {
+          "t": "para",
+          "html": "But there is a ceiling. If the right answer never appears in any of the tries — coverage is zero — no amount of voting can conjure it. That is why the curve above flattens at 57%: beyond a handful of paths, the extra tries just re-draw answers the vote has already seen. More samples widen coverage only until the model has shown you everything it can reach."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — voting can only pick what sampling found",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Self-consistency has no idea what is <em>true</em>; it only knows what is <em>popular</em>. If the model is confidently and consistently wrong — the same mistake on most paths — the vote will faithfully return that wrong answer, and more samples make it more sure, not more right. And every extra try costs real time and money, so you are paying more compute for a boost that flattens."
+        },
+        {
+          "t": "para",
+          "html": "This is exactly why the next ideas in the course exist: a <em>verifier</em> to judge answers rather than just count them, and a way to spend an <em>inference budget</em> wisely instead of sampling forever."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is pass@k, best-of-N, and the cheapest boost there is",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The same move wears many names. Counting whether the right answer appears in <em>any</em> of k tries is <strong>pass@k</strong>, the standard way people measure a model's reachable ceiling. Keeping the best of N sampled answers by some score is <strong>best-of-N</strong>. Voting among them is <strong>self-consistency</strong>. All three are the same bet: spend more compute at answer-time, across independent tries, and aggregate."
+        },
+        {
+          "t": "para",
+          "html": "And it needs no training at all — it is the cheapest, first thing to reach for when a fixed model underperforms. It is also the raw material every heavier method feeds on: a verifier picks from these samples, and reinforcement learning rewards the good ones. Get many tries first; everything else is about choosing among them."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "test-time-compute.html",
+      "test-time compute"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "the verifier selection gap"
+    ],
+    [
+      "inference-budgeting.html",
+      "inference budgeting"
+    ],
+    [
+      "self-improvement-loop.html",
+      "the self-improvement loop"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each: one greedy answer; then 8 sampled answers at temperature 0.9; majority-vote the extracted final numbers. Grader = the careful boxed-answer check from the verifier session.",
+    "eq": "for each problem:\n  greedy_answer  = model(question, temperature=0)\n  samples[1..8]  = model(question, temperature=0.9)   # 8 independent tries\n  vote           = most_common(final_number(s) for s in samples)\n# greedy 6/14=43%, single-sample avg 39%, majority-of-8 8/14=57%\n# coverage curve over k=1..8: .429 .429 .500 .500 .500 .571 .571 .571",
+    "note": "From the companion reasoning-from-scratch lab (Session 3). Numbers are the run's output verbatim."
+  }
+}

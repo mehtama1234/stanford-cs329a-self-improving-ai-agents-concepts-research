@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planning as Search (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="planning-as-search.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · look before you leap</p>
+      <h1>Planning as search — why the best next step walks you into a wall</h1>
+      <p class="lede">An agent that always takes the action that looks best right now can march straight into a dead end. Planning means searching over whole sequences of actions, not grading one move at a time. Here is the idea, a real run where a greedy agent gets stuck and search finds the way, why moving away from the goal is sometimes the only way to reach it, what search costs, and where it reappears as tree-of-thoughts and game-playing search.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why search wins</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="planning-as-search.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — the best-looking next move can be a trap</h2>
+      <div class="essay">
+      <p>Give an agent a goal and the simplest thing it can do is, at every step, take the action that seems to move it closest to the goal. This works until it doesn't: sometimes the only way forward is a route that first goes <em>backward</em>, around an obstacle. An agent that only ever steps toward the goal walks into the obstacle and has nowhere to go.</p>
+      <p>So the real question is not &lsquo;what is the best single next action?&rsquo; It is: <strong>how do I find a whole sequence of actions that reaches the goal, even when good sequences contain steps that look bad on their own?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — plan by searching over sequences, not grading one move</h2>
+      <div class="essay">
+      <p>Treat planning as <em>search</em>. Instead of committing to the best-looking move and hoping, explore many possible sequences of actions outward from where you are — this move, then the moves it leads to, then the moves those lead to — until one sequence reaches the goal. The plan is the path search found, not the action that looked best at step one. The key shift: search is allowed to consider steps that temporarily make things look worse, because it is judging whole routes, not single moves.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — greedy dead-ends, search finds the way</h2>
+      <div class="essay">
+      <p>We built a small 7×7 grid where the only route to the goal winds back and forth around walls, and ran two agents on it. The greedy agent may only step to a cell that is strictly closer to the goal. The search agent explores whole paths outward (breadth-first). Every number here is measured.</p>
+      <div class="tw"><table><tr><th>agent</th><th>reaches the goal?</th><th>what happened</th></tr><tr><td>greedy (only step closer)</td><td>NO</td><td>dead-ended after 7 steps, stuck at cell (2,5)</td></tr><tr><td>search (over whole paths)</td><td>YES</td><td>found a 20-step plan, after expanding 28 cells</td></tr></table></div><figcaption>Same maze, same goal. The greedy rule quits at step 7; search plans a 20-step detour that reaches the goal.</figcaption>
+      <div class="insight"><strong>The discovered fact: the greedy agent gets stuck exactly where progress requires moving away from the goal.</strong> At cell (2,5) every open move takes it farther from the goal — to get around the wall you must go backward first — so the &lsquo;always step closer&rsquo; rule has no legal move and quits. Search, judging whole routes instead of single steps, simply fans out over 28 cells and finds the 20-step snaking path. Nothing about the agent got smarter; it stopped committing early.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why search wins — it can afford to look worse before it gets better</h2>
+      <div class="essay">
+      <p>A single-step rule is blind past its own nose. It cannot tell the difference between a dead end and a detour, because both look like &lsquo;moving away from the goal&rsquo; at the moment you have to choose. Search sees further: by expanding many partial paths it discovers that the away-from-goal step at cell (2,5) is the front of a corridor that eventually curls back to the goal. That is the whole value of planning — it buys the ability to accept a locally bad step for a globally good route.</p>
+      <p>For an agent, the &lsquo;maze&rsquo; is rarely a literal grid. It is a space of tool calls, sub-goals, and actions — and the same trap appears: the sub-task that looks least promising now (gather more context, undo a change, ask a clarifying question) is often the one step that makes the whole task solvable.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the search space explodes</h2>
+      <div class="essay">
+      <p>Search is not free. On our tiny grid it expanded 28 cells; in a real agent, each &lsquo;cell&rsquo; is a full state and each &lsquo;move&rsquo; is a tool call or a model generation, and the number of sequences to consider grows explosively with how many steps ahead you look. Explore everything and you never finish; explore too little and you miss the detour. So real planners need a way to search smartly — a sense of which branches are worth expanding — rather than fanning out over everything.</p>
+      <p>That is exactly why the greedy rule is tempting in the first place, and why the interesting question is not &lsquo;search or not&rsquo; but &lsquo;how do you search a huge space without expanding all of it?&rsquo;</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is tree-of-thoughts, MCTS, and how agents plan</h2>
+      <div class="essay">
+      <p>The move from &lsquo;best next step&rsquo; to &lsquo;search over sequences&rsquo; is one of the oldest ideas in AI and it keeps coming back. When a reasoning model explores several branches of thought and backs out of dead ends, that is <strong>tree-of-thoughts</strong> — search over reasoning steps instead of grid cells. When a game agent imagines many move sequences and keeps the promising ones, that is <strong>Monte-Carlo tree search</strong>, the engine behind superhuman Go and chess. When an agent drafts a multi-step plan, tries it, and revises, it is searching the space of plans.</p>
+      <p>And it composes with everything else in the course: search needs a way to score partial paths (a verifier or value estimate), and the compute it spends is exactly the test-time compute other pages describe. Planning is search; the rest is how to search well.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="trajectory-optimization.html">trajectory optimization for agents</a> · <a href="test-time-compute.html">test-time compute</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="agent-loop.html">the agent loop</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">A 7x7 grid maze (no model needed) where the route to the goal winds around walls. Greedy agent = only step to a neighbor strictly closer to the goal (no backtracking). Search agent = breadth-first over whole paths. Run with plain Python.</p>
+      <div class="eq">greedy: at each step pick an unvisited neighbor with distance-to-goal &lt; current; if none, STUCK
+search: expand paths outward (breadth-first) until one reaches the goal
+# greedy -&gt; dead-ends after 7 steps at cell (2,5), reaches goal = False
+# search -&gt; 20-step plan, 28 cells expanded, reaches goal = True</div>
+      <p class="muted">Full script: scripts/experiments/planning_run.py. Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Planning as Search deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

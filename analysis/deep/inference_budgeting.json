@@ -1,0 +1,200 @@
+{
+  "id": "inference_budgeting",
+  "name": "Inference Budgeting",
+  "kick": "self-improving agents · first principles · fixed spend, smart allocation",
+  "title": "Inference budgeting — where to spend a fixed compute budget to get the most right answers",
+  "lede": "Every extra sample, every deeper chain of thought, every verifier check costs real time and money. If you have a budget — a fixed amount to spend per problem — you need to know where spending buys you the most. Here is the idea, a real run where more samples help until they don't, why the payoff flattens, the hard part of knowing when to stop, and where smart budgeting reappears in heavier methods.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "shape",
+      "The shape of the payoff"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — more tries cost real money",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "You can make a model better by spending more compute: draw many samples instead of one, let it think longer and deeper, run a verifier on each candidate and use that feedback. All of these things work. But they all cost. Every token the model emits costs money. Every verifier check costs money. Every extra sample is a copy of the model running, which means GPU time, which means money. So the honest question is not &lsquo;how do I make this answer as good as possible?&rsquo; It is: <strong>I have a fixed budget — maybe $1 per question, maybe 1000 tokens total — where does that money buy me the most improvement?</strong>"
+        },
+        {
+          "t": "para",
+          "html": "Some problems are easy: the model gets them right 80% of the time cold. Spending $100 of compute on those is waste — you already have them. Some problems are hard: the model only reaches a right answer 5% of the time on a single try. That one probably needs the budget. But you don't know which is which <em>before</em> you start."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — allocate based on effort",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of spending the same on every question, the better picture is this: estimate how hard each problem is, then allocate the budget to where it pays off. If the model seems confident and correct on early tries, stop and move on — the marginal benefit of one more sample is tiny compared to its cost. If the model is stumbling and unsure — confidence is low, many tries give different answers — then spending more buys real improvement."
+        },
+        {
+          "t": "para",
+          "html": "This is called <em>inference budgeting</em>: treat compute as a real scarce resource (not free) and allocate it to the problems where an extra step is most likely to help. Harder problems get more samples, more reasoning steps, more verifier calls. Easier problems get fewer. And you measure payoff as accuracy gained per dollar spent."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — majority voting climbs then plateaus",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it is genuinely unsure) on 14 grade-school math word problems. For each problem we drew 8 sampled tries with randomness turned up, and counted how many questions the majority vote got right as we add more tries one by one. Every number here is measured."
+        },
+        {
+          "t": "bars",
+          "caption": "Majority-vote accuracy climbs from 1 path to 6 paths, then stops improving. Paths 7 and 8 add nothing.",
+          "rows": [
+            [
+              "1 path",
+              0.429,
+              "43%"
+            ],
+            [
+              "2 paths",
+              0.429,
+              "43%"
+            ],
+            [
+              "3 paths",
+              0.5,
+              "50%"
+            ],
+            [
+              "4 paths",
+              0.5,
+              "50%"
+            ],
+            [
+              "5 paths",
+              0.5,
+              "50%"
+            ],
+            [
+              "6 paths",
+              0.571,
+              "57%"
+            ],
+            [
+              "7 paths",
+              0.571,
+              "57%"
+            ],
+            [
+              "8 paths",
+              0.571,
+              "57%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: accuracy climbs from 43% to 57% as paths 1 through 6 are added, then paths 7 and 8 add zero improvement.</strong> Each extra sample costs the same. But the first few samples buy real progress, while the last two buy nothing — they are pure waste. If you had a budget of 6 samples per problem, you would get 57%. With 8 samples, you get 57%. The extra cost is lost money with zero payoff."
+        }
+      ]
+    },
+    {
+      "id": "shape",
+      "h2": "4 · The shape of the payoff — diminishing returns are real",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason the curve flattens is that voting works by finding consensus. Early samples cover new ground: sample 1 shows one chain of reasoning, sample 2 shows a different one. They explore, and the majority vote changes as you add them. But by sample 6, you have already seen most of the answers the model can reach. Samples 7 and 8 just re-show you answers you have already counted. No new consensus emerges, so the vote does not change."
+        },
+        {
+          "t": "para",
+          "html": "This is the signature of <em>diminishing returns</em>: the first unit of spend (first sample) moves the needle a lot, the second unit less, the third even less, and past a certain point you are buying nothing. In this case, the knee of the curve is at 6 samples. Beyond that, you are throwing budget at a problem that has shown you what it can do."
+        },
+        {
+          "t": "para",
+          "html": "Other kinds of spend show the same pattern. Adding longer chains of thought — 100 tokens, 500 tokens, 2000 tokens — helps up to a point, then wastes tokens on repetition or rambling. Running a verifier on 1 sample gets you a yes-or-no signal; running it on 20 samples usually confirms the same answer, so the extra checks are redundant. Knowing where the knee is means knowing where to cut the budget."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — you must estimate difficulty in advance",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Smart budgeting needs to know which problems are easy and which are hard. But you don't know until you try. One approach: look at model confidence — if the first sample is short and confident, the problem is probably easy; if it is long and uncertain, it is hard. Another: look at agreement among the first few tries — if 3 samples all reach the same answer, you have confidence; if they disagree widely, the problem is harder and needs more budget."
+        },
+        {
+          "t": "para",
+          "html": "But these heuristics can fail. A model can be confidently and consistently wrong — high confidence, perfect agreement, but the answer is false. Conversely, a hard problem might have low agreement across tries and yet be solvable with just one more sample. The true problem is that difficulty estimation in new domains or with new model sizes is weak. Easy questions waste the budget, hard ones might need more than you allocated, and you cannot know which is which until partway through."
+        },
+        {
+          "t": "para",
+          "html": "From the companion reasoning lab: in one run, 12 out of 30 problems hit the thinking-token limit (2048 tokens) without settling — they rambled without reaching a confident answer. Those 12 burned compute with no payoff. Spending more tokens on those exact problems might have helped; spending fewer on the others would have freed budget for these."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — smart routers and early stopping are the modern answer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The ideal inference budget allocator does not know problem difficulty in advance either — it has to adapt as it goes. Spend 1 sample, measure its confidence. If confidence is high, stop and move on (save the budget for the next problem). If confidence is low, spend a second sample. Measure again. Keep going until confidence hits a threshold or the budget runs out."
+        },
+        {
+          "t": "para",
+          "html": "This move — early stopping based on learned signals — is called an <em>adaptive router</em>. It has learned to recognize when a model is confident (about to be right) and when it is uncertain (need to keep trying). The system watches intermediate signals — PRM (process) scores, confidence, agreement among samples — and makes per-problem spend decisions. The same principle works for routing between methods: should I do sampling, or refine? Sequential reasoning, or parallel? One verifier call, or two? A good router learns to spend deep reasoning time (expensive) on the hard paths and cheap sampling on the easy ones."
+        },
+        {
+          "t": "para",
+          "html": "This is active research because it works: test-time compute (spending more at inference rather than training) has become a primary frontier for scaling, and budgeting it well is the key to making that scaling efficient. The agents doing this well today allocate compute adaptively, not uniformly."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "the verifier selection gap"
+    ],
+    [
+      "test-time-compute.html",
+      "test-time compute"
+    ],
+    [
+      "self-improvement-loop.html",
+      "the self-improvement loop"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: draw 8 sampled answers at temperature 0.9 (randomness turned up for diversity). Majority-vote the extracted final numbers. Plot accuracy as paths are added one by one. Grader = the careful boxed-answer check from Session 5 (44% of 25 traces).",
+    "eq": "for each problem, k=1..8 paths:\n  samples[1..k] = model(question, temperature=0.9)  # k independent tries\n  vote          = most_common(final_number(s) for s in samples[1..k])\n  accuracy[k]   = count(vote is correct) / 14 problems\n# measured accuracy at each k: 0.429, 0.429, 0.500, 0.500, 0.500, 0.571, 0.571, 0.571",
+    "note": "From companion reasoning-from-scratch lab (Session 3, self-consistency / majority vote). Data: S3 in reasoning.md. Numbers are the run's output verbatim."
+  }
+}

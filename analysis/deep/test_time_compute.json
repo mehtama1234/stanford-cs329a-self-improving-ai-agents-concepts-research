@@ -1,0 +1,200 @@
+{
+  "id": "test_time_compute",
+  "name": "Test-Time Compute",
+  "kick": "self-improving agents · first principles · buy accuracy at answer time",
+  "title": "Test-time compute — a fixed model gets better if you let it work harder at each answer",
+  "lede": "A trained model has a ceiling on what it can reach on any single try. But you can spend more compute at answer time and still raise the answer's correctness — by thinking longer, or by trying many times and picking the best. Neither requires retraining. Here is the idea, two real ways it works, why the gains flatten, when it fails, and where it reappears in reasoning models and inference budgeting.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why both work"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a single attempt has a fixed skill ceiling",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Train a model and freeze it. One forward pass, one answer. That answer carries the model's single-try accuracy on that question — and the model can do no better than that by itself, because the weights never move again."
+        },
+        {
+          "t": "para",
+          "html": "But here is the hidden fact: the model's skill is not really fixed. It is only fixed <em>per attempt</em>. What if the model could work on the question for longer? What if it could try many times and pick the best? The model's knowledge is still the same, but <strong>how hard you make it work at answer time can still raise the answer quality.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — spend inference compute, not training compute",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This move is called <em>test-time compute</em> — paying for more inference (answering), not more training (learning). You have two main levers:"
+        },
+        {
+          "t": "para",
+          "html": "<strong>1. Make the model think longer.</strong> Instead of rushing to a conclusion, let it write out step-by-step reasoning, intermediate checks, or refined guesses. Give it a token budget and let it use it. The longer chain costs more compute but often lands on better answers."
+        },
+        {
+          "t": "para",
+          "html": "<strong>2. Try many times and aggregate.</strong> Run the same question through the model several times with a little randomness turned on, so each try explores a different chain. Collect all the answers, then vote, average, or search among them. Whichever answer the model reaches most often is usually the right one."
+        },
+        {
+          "t": "para",
+          "html": "Both are ways to spend inference tokens without touching the model's weights. They work because the model's knowledge exists in the frozen weights, but <em>finding</em> that knowledge requires search or exploration, and you can buy more search with more compute."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — longer thinking and voting both lift the answer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B) on two sets of grade-school math word problems (GSM8K). For each we measured what happened when we spent more inference compute."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Test 1: Longer thinking.</strong> A quick direct answer is right 47% of the time. Let the model think first, working through the problem step-by-step before answering, it reaches 60% — same model, same weights, just more tokens spent."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Test 2: Many tries plus voting.</strong> A single greedy answer is right 43% of the time. Take the same question, sample it 8 times with temperature turned up (so each try is noisy), then vote on the final number. The vote says 57% — again, same frozen model, just more inference budget."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "how you spend inference time",
+            "accuracy on problems"
+          ],
+          "rows": [
+            [
+              "direct answer (quick)",
+              "14 / 30 = 47%"
+            ],
+            [
+              "thinking first (chain-of-thought)",
+              "18 / 30 = 60%"
+            ],
+            [
+              "",
+              ""
+            ],
+            [
+              "greedy single answer",
+              "6 / 14 = 43%"
+            ],
+            [
+              "majority vote across 8 sampled tries",
+              "8 / 14 = 57%"
+            ]
+          ],
+          "caption": "Two ways to spend answer-time compute. Left: 226 tokens average → 1449 tokens average. Right: 1 attempt → 8 attempts. Both lift accuracy without retraining."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a frozen model raises its answer quality when you spend more compute at answer time.</strong> Longer thinking (226→1449 tokens) lifts 47% to 60%. Many tries plus voting (1→8 attempts) lifts 43% to 57%. Neither changes the model; both buy correctness with inference budget. The gains are real but not unlimited — a model that misses 40% of hard problems cannot simply think its way to 95%."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why both work — and why they stop helping",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Start with thinking. A model's reasoning is not instant; it is a chain of steps, each building on the last. A quick answer runs this chain in a rush, committing to the first plausible path it finds. A longer chain lets it backtrack, reconsider, spot its own mistakes. More tokens = more room to explore the reasoning space before settling."
+        },
+        {
+          "t": "para",
+          "html": "Now sampling. A frozen model generates answers by rolling dice at each token. A single roll is noisy — a bad roll early can lock in a wrong path. But <em>multiple independent rolls of the same question</em> explore different chains. If the right answer lives somewhere in the model's knowledge, many tries increase the chance that at least one try reaches it. The vote finds it."
+        },
+        {
+          "t": "para",
+          "html": "But both hit a wall. If the model genuinely does not know the answer — it has never seen a similar problem, or the knowledge was never learned — then no amount of thinking or sampling can reach it. The reasoning goes in circles; the samples never land on the right answer. That is why both curves <em>flatten</em>: after the model has explored what it can reach, extra tokens and extra tries just re-generate answers it has already tried."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — you cannot buy accuracy above the model's ceiling",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Test-time compute is a tool, not a miracle. It works because the model's knowledge includes the right answer <em>somewhere</em> in its possibility space. If the model has never learned a skill, no amount of inference time will conjure it."
+        },
+        {
+          "t": "para",
+          "html": "A concrete failure: if a model answers a problem wrong on <em>every single try</em> — it is systematically confidently wrong — then voting will faithfully return the wrong answer, and more sampling makes the vote more certain of that wrongness, not less. You are paying more compute for a wrong answer you were already getting."
+        },
+        {
+          "t": "para",
+          "html": "There is also the cost angle. Every extra token and every extra attempt costs real GPU time and real money. If you are spending 8 times the compute to lift accuracy by 14 points (43% to 57%), you are paying heavily for shrinking gains. The inference budget is not infinite."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — reasoning models are built on this axis",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The same idea reappears at every scale. On large models (Llama 3-70B, GPT-4) one attempt solves hard math at 20-45% accuracy. Generate 100 or 1000 samples and use a verifier to pick the best: now it solves 50-70% of problems. No retraining. The entire gain comes from test-time compute — <strong>pass@k</strong> (the probability that the right answer appears in any of k tries) is the standard way to measure this."
+        },
+        {
+          "t": "para",
+          "html": "Reasoning models like OpenAI's o1 push this even further: their entire architecture is designed to spend more tokens on harder questions. They do not have bigger weights than base models; they have more tokens, more thinking, more test-time compute. The log-linear scaling you see on benchmarks (accuracy climbs by 10–20 points for every 10-fold increase in inference tokens) is this same axis."
+        },
+        {
+          "t": "para",
+          "html": "This is what separates a reasoning model from a chatbot. A chatbot makes one fast pass. A reasoning model <em>budgets its inference time</em> — spend more on what needs it. That budget is test-time compute. And the deeper methods all feed on it: verifiers pick from the samples, reinforcement learning rewards the good ones, retrieval feeds them relevant context. They all start by generating a pool to choose from. Get many tries first; everything else is about choosing among them well."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "the verifier selection gap"
+    ],
+    [
+      "inference-budgeting.html",
+      "inference budgeting"
+    ],
+    [
+      "self-improvement-loop.html",
+      "the self-improvement loop"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on GSM8K grade-school math problems, Colab L4 GPU. (1) Chain-of-thought: 30 problems, direct answer vs thinking-first greedy chain. (2) Majority voting: 14 problems, one greedy answer vs 8 sampled answers (temperature 0.9), majority vote on extracted final number. Grader = the careful boxed-answer check from the verifier session.",
+    "eq": "# Thinking: direct vs chain-of-thought\ndirect_answer = model(question, temperature=0)\n# avg 226 tokens, 14/30 correct\n\nthinking_first = model(question, temperature=0, system_thinking=True)\n# avg 1449 tokens, 18/30 correct\n\n# Sampling: greedy vs majority vote\ngreedy = model(question, temperature=0)\n# 6/14 correct\n\nsamples[1..8] = model(question, temperature=0.9)  # 8 independent rolls\nvote = most_common(final_number(s) for s in samples)\n# 8/14 correct",
+    "note": "From the companion reasoning-from-scratch lab (Sessions 2 and 3). Numbers are the run's output verbatim from reasoning.md."
+  }
+}

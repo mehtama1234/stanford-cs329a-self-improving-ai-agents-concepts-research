@@ -1,0 +1,185 @@
+{
+  "id": "self_improvement_loop",
+  "name": "The Self-Improvement Loop",
+  "kick": "agents improving themselves · feedback turns mistakes into corrections · the seed of reinforcement learning",
+  "title": "The self-improvement loop — when an error creates the information to fix it",
+  "lede": "Agents make mistakes. The question is whether each mistake becomes information that improves the next attempt. Here is the loop: answer, look at your own answer, revise it, repeat. A real run on a small model over three rounds showed mistakes being caught and corrected, accuracy climbing from 42% to 58%, and a simple pattern: every fix that changed an answer made it better. This is where reinforcement learning, verifiers, and tool-using agents all begin.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why the loop can climb"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — one shot wastes the mistake",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Ask a model a hard math question once. It writes out steps, reaches an answer, and stops. If that chain of reasoning took a wrong turn, the whole answer is wrong. The model probably knew how to reason correctly — it just went down a bad path. But the human who sent the message sees only the answer, not the path inside the model's head. The mistake vanishes. Nothing is learned from being wrong."
+        },
+        {
+          "t": "para",
+          "html": "So the honest question is: <strong>how do I give the model a chance to see its own error and correct it?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — close the loop: answer, critique, revise, repeat",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of stopping after one answer, ask the model to look back at what it wrote and check it. Ask: is this answer correct? Did I make a mistake? What should I fix? Then give it a chance to write a revised answer. And do it again — one more round of critique and revision."
+        },
+        {
+          "t": "para",
+          "html": "This closes a feedback loop inside the model itself. The first answer creates an error. The critique (ideally) notices the error. The revision fixes it. No new training. No new data. Just: take the first answer, feed it back in, and let the model try again. This is called <em>self-refinement</em> or <em>self-refine</em>, and the loop it closes is the seed of everything that follows — verifiers, reinforcement learning, planning, agent loops with tools."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — mistakes corrected, accuracy climbs from 42% to 58%",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it makes genuine errors) on 12 grade-school math word problems. We had it answer once, then critique-and-revise, then critique-and-revise again, over three rounds total. Every number here is measured."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "round",
+            "accuracy",
+            "correct answers"
+          ],
+          "rows": [
+            [
+              "round 1 (first answer)",
+              "5 / 12 = 42%",
+              "5 correct"
+            ],
+            [
+              "round 2 (after first revision)",
+              "6 / 12 = 50%",
+              "6 correct"
+            ],
+            [
+              "round 3 (after second revision)",
+              "7 / 12 = 58%",
+              "7 correct"
+            ]
+          ],
+          "caption": "Accuracy climbs 5 → 6 → 7 correct out of 12, gaining 17 percentage points over three rounds."
+        },
+        {
+          "t": "bars",
+          "caption": "Accuracy trajectory. Each bar shows the count of correct answers in that round.",
+          "rows": [
+            [
+              "round 1 (answer)",
+              0.417,
+              "5 / 12"
+            ],
+            [
+              "round 2 (revise once)",
+              0.5,
+              "6 / 12"
+            ],
+            [
+              "round 3 (revise twice)",
+              0.583,
+              "7 / 12"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: when a model critiques its own work and revises, it catches mistakes. Over three rounds, it gained 2 correct answers, and every revision that changed an answer improved it — fixed 1, broke 0 in round 1; fixed 1, broke 0 in round 2. Total: 2 fixed, 0 broken.</strong> The loop was strictly positive here. It did not fix all the mistakes — 5 stayed wrong all three rounds — but of the ones it touched, it touched only to correct."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why the loop can climb — and why it often does",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The model that made the first mistake is the same model doing the critique. So why does it catch the error the second time? Because the first answer is now a fact in front of the model, concrete and visible. The model can read its own work. When it reads 'I said the answer is 47' and then works through the problem again to check, it may see the contradiction. The first attempt leaves a footprint, and critique means walking over that footprint and looking carefully."
+        },
+        {
+          "t": "para",
+          "html": "This works when the model can actually <em>see</em> its own error — when its self-criticism is honest. On this run, it often could. The model spotted three kinds of mistakes: arithmetic errors (it added wrong), logical mis-steps (it forgot a constraint in the problem), and interpretation flips (it read the problem backwards). Once it saw these, it revised and got the right answer."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — self-critique is only as good as the model's own judgment",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "If the model cannot tell right from wrong, the loop breaks. The model might critique a correct answer and convince itself it is wrong, then 'fix' it into a mistake. This is called <em>self-reinforcing error</em>. It can also fail to see a genuine mistake and write the same wrong answer again and again, each time convinced it is right. On this run, the model happened to be honest — it did not break a single correct answer — but that is not guaranteed. Honesty is fragile and depends on the model's size, training, and the specific domain."
+        },
+        {
+          "t": "para",
+          "html": "The loop also stalls if the model is stuck. If the first answer leads into a conceptual dead-end — the model genuinely cannot think its way out — critique alone won't help. It will re-read the mistake, but re-reasoning from scratch may just lead to the same dead-end again. On 5 of the 12 problems, this is what happened: the model stayed wrong all three rounds."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this loop reappears in every method that follows",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Add a verifier to the loop — an external checker that labels which answers are right and which are wrong — and now the model trains on its mistakes instead of just revising them. That is <em>supervised learning from mistakes</em>. Add a reward signal (give more reward to correct answers), and the loop becomes <em>reinforcement learning</em>. Give the model access to tools like a calculator or a code runner, and it can verify its own work before finalizing the answer. That is the <em>tool-using agent loop</em>."
+        },
+        {
+          "t": "para",
+          "html": "Every heavier method — every RL trick, every planning algorithm, every agent architecture with feedback — is built on this one core piece: answer, check if the answer is right (by critique, by verification, by reward, by the outside world), and use that signal to improve. The self-improvement loop is not an algorithm. It is the shape of learning itself."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "verifier-selection-gap.html",
+      "the verifier selection gap"
+    ],
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "inference-budgeting.html",
+      "inference budgeting"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 12 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: (1) generate an answer; (2) prompt: critique your answer and revise it, output the new answer; (3) repeat step 2 one more time for a second revision. Grader = the careful boxed-answer check (the same careful grader used in the verifier and RL sessions).",
+    "eq": "for each problem:\n  round_1 = model(question)                                             # first answer\n  round_2 = model(question + '\\n' + round_1 + '\\nCritique and revise') # revised once\n  round_3 = model(question + '\\n' + round_2 + '\\nCritique and revise') # revised twice\n  grade each answer via careful_grader()\n# round 1: 5/12 = 42%\n# round 2: 6/12 = 50%  (fixed 1, broke 0)\n# round 3: 7/12 = 58%  (fixed 1, broke 0)\n# total: 2 fixed, 0 broken across all revisions",
+    "note": "From the companion reasoning-from-scratch lab (Session 4). Numbers are the run's output verbatim."
+  }
+}

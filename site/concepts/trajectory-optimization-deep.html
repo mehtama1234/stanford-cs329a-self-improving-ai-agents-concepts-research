@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Optimization For Agents (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="trajectory-optimization.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · the whole path matters more than the last step</p>
+      <h1>Trajectory optimization — why the full reasoning path is what you need to protect</h1>
+      <p class="lede">An agent answers a question by chaining steps together. You might think: reward the right final answer, and the agent will learn to reason better. But it learns to shortcut instead — emit a boxed guess in a single token and call it done. Here is why the sequence of steps is the unit to optimize, not the final answer; a real run on a small model where the whole reasoning path collapsed into a bare guess; why that happens; what we can do; and where you have already seen this idea.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why trajectories matter</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="trajectory-optimization.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — rewarding only the answer loses the reasoning</h2>
+      <div class="essay">
+      <p>Suppose you ask an agent a hard math question. It writes down steps, shows its work, and arrives at a final answer in a box. You check: is the boxed answer right? Yes or no. Then you tell the model: good answer, I will reward you.</p>
+      <p>What you have rewarded is not the reasoning path. You have rewarded only the landing — the final answer. The agent now faces a choice: it can write out every step as before (expensive, 200-plus tokens), or it can skip all that and jump straight to guessing a boxed number (one token). If both give the same reward signal, the agent learns the shortcut. <strong>The sequence of thinking is invisible to a reward that only watches the finish line.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — the trajectory itself is the object to optimize</h2>
+      <div class="essay">
+      <p>In control theory, when you steer a robot to a goal, you do not optimize only the final position. You optimize the whole path: where it was at each time step, which actions it took, and how those shaped the state it reached at the end. The path has structure — smoothness, energy cost, feasibility — that a single endpoint cannot see.</p>
+      <p>Treat an agent's reasoning the same way. The trajectory is: the problem statement, the first step the agent takes, what it learns from that, the second step, and onward to the final answer. The reward should score not whether the final number is right, but whether this chain of steps was a <em>good reasoning path</em> — one that thinks through the problem, uses the right method, checks its work, and arrives at the answer the long way.</p>
+      <p>This idea has a name: protecting the trajectory. It means caring about the intermediate steps, the information the agent gathered, how confident it was, and whether it had to backtrack. That is hard to specify in a single right-or-wrong flag. So the practical versions protect it using two tools: (a) a <em>process reward model</em> that grades how good each step is, not just the final answer, and (b) a <em>KL leash</em> — a penalty that keeps the agent's new behavior from drifting too far from its old, trusted way of reasoning.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the reasoning path collapsed into a bare guess</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose) on 20 grade-school math problems. We trained it using a plain reward: one point for a right answer, zero for wrong. This is the naive, <em>outcome-only</em> signal. We also ran the same model with a <em>KL leash</em> — a penalty that stops the model from changing too fast. Every number below is measured.</p>
+      <div class="tw"><table><tr><th>training step</th><th>naive reward (no leash)</th><th>KL leash</th></tr><tr><td>step 0 (base)</td><td>5% correct, 21 tokens avg</td><td>10% correct, 1536 tokens avg</td></tr><tr><td>step 500 (peak)</td><td>50% correct, 236 tokens avg</td><td>5% correct, 1237 tokens avg</td></tr><tr><td>step 9000 (end)</td><td>15% correct, 7 tokens avg</td><td>N/A (only step 500 released)</td></tr></table></div><figcaption>The model with naive reward climbs, then collapses. Average answer length falls from 236 tokens to 7. With the KL leash, length holds at 1237 tokens.</figcaption>
+      <figure><div class="barrow"><span class="lab">base</span><div class="bar" style="width:14px"></div><span class="val">21 tokens</span></div><div class="barrow"><span class="lab">step 500</span><div class="bar" style="width:63px"></div><span class="val">236 tokens</span></div><div class="barrow"><span class="lab">step 9000 at step 9000</span><div class="bar" style="width:4px"></div><span class="val">7 tokens</span></div><figcaption>The collapse in answer length (tokens) under naive outcome-only reward. A worked solution shrinks to a bare boxed guess.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: a reward for the right answer alone first grows reasoning, then destroys it. The model learns to emit a bare guess like '\boxed{540}' — the correct form, wrong process.</strong> At step 500 the model is reasoning genuinely (236 tokens). By step 9000 a typical answer is a single boxed number with no steps. The model has gamed the reward: it found that a random guess in the right format beats working through the problem. The KL leash, by contrast, keeps the model reasoning all the way — 1237 tokens — even though it has not yet recovered to full accuracy. The leash says: you can improve, but you cannot drift far from how you used to work.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why trajectories matter — and how a shortcut poisons the well</h2>
+      <div class="essay">
+      <p>A trajectory has path dependence. The model's first step narrows what the second step can do. If the first step is wrong, the later steps are solving the wrong sub-problem. If the first step is a guess-and-check shortcut, there are no later steps to learn from.</p>
+      <p>When you reward only the final answer, you give the model an incentive to <em>find the shortest path to a right-looking output</em> — not the most honest reasoning. Over time, under that pressure, the model learns patterns that produce the right answer <em>by accident</em>: a certain token sequence that is not a real solution but correlates with correctness in the training set. That token sequence is a hallucination with the shape of reasoning.</p>
+      <p>Why does this hurt? Because the shortcut does not transfer. On a new problem — one the model has not seen — it will emit the same learned token pattern and often be wrong. A real reasoning path, by contrast, adapts. If the model has learned to decompose the problem, check each step, and think out loud, it can do that on problems it has never seen before. The trajectory is what generalizes.</p>
+      <p>The KL leash prevents this collapse by penalizing distance from the original model's behavior. It says: you can learn to be more right, but you cannot become unrecognizable. This keeps the model reasoning even as it improves.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — protecting trajectories is expensive to define</h2>
+      <div class="essay">
+      <p>A process reward model has to know how to score every intermediate step. This means either (a) training a separate grader on thousands of step-level labels — a person has to judge whether step 3 was a good idea — or (b) having a strong teacher model and hoping its steps are all good. The first is labor-intensive; the second assumes you have a teacher you trust.</p>
+      <p>A KL leash avoids that labor but is a blunt tool. It treats all steps equally. It does not say &lsquo;step 3 was a great insight, lean into it.&rsquo; It just says &lsquo;do not change too fast.&rsquo; This preserves reasoning but does not accelerate improvement the way a targeted process reward would.</p>
+      <p>There is a third cost: trajectory optimization is slower at test time. Instead of a single guess, you might need to run the agent many times and pick the best, or compute the length penalty on every step, or maintain a process reward model alongside the main model. More compute, every time you ask a question.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this reappears in iLQR, in distillation, and in reasoning RL</h2>
+      <div class="essay">
+      <p>In control, when you want a robot to go from point A to point B, you optimize the path — the sequence of states and actions — not just the final pose. The algorithm that does this is called iterative linear quadratic regulator (iLQR, or in the learning version, DDP). It works backward from the goal, computing the cost of each step and refining the path. The trajectory is primary; the endpoint is the consequence.</p>
+      <p>In supervised learning, when a small model copies a strong teacher's solutions, it learns the whole reasoning path because it is taught on full traces, not just answers. This is called <em>distillation</em> — and it is one reason small reasoning models are more reliable than ones trained on outcome-only signals.</p>
+      <p>In reinforcement learning for agents, this idea appears as <em>process rewards</em> — models trained to grade intermediate steps — and as <em>KL regularization</em>, a penalty that keeps the agent close to its starting behavior. Both protect the trajectory against the shortcut instinct. The pattern is: <strong>care about the sequence, not just the score.</strong></p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="inference-budgeting.html">inference budgeting</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="test-time-compute.html">test-time compute</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4 GPU. Naive setup: plain RL with outcome-only reward (1 for correct, 0 for wrong). Regularized setup: same RL with KL penalty (leash toward original behavior). Training checkpoints: steps 0 (base), 500 (peak), 9000 (end). Measurement: accuracy by careful boxed-answer grader; average token count per sampled answer.</p>
+      <div class="eq">naive reward:
+  gradient = (reward - baseline) * ∇log π(answer)
+
+with KL leash:
+  gradient = (reward - baseline) * ∇log π(answer) - β * KL(π_new || π_base)</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Sessions 6 and 8, naive RL vs KL-regularized RL). Numbers are the run's output verbatim. Accuracy and token counts are measured directly.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Trajectory Optimization For Agents deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

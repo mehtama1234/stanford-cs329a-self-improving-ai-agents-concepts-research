@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Repeated Sampling and Coverage (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="repeated-sampling-coverage.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · many tries beat one</p>
+      <h1>Repeated sampling — when one careful try loses to eight noisy ones</h1>
+      <p class="lede">A hard problem may have a right answer the model only stumbles onto now and then. The fix is not a better single attempt — it is many attempts and a vote. Here is the idea, a real run on a small model where voting beats the careful answer, why the gains flatten, when it fails, and where it reappears as pass@k and best-of-N.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why voting wins</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="repeated-sampling-coverage.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — one attempt can land on a bad path</h2>
+      <div class="essay">
+      <p>Ask a model a hard question once and it commits to a single chain of steps. If that chain takes a wrong turn early, the whole answer is wrong — even when the model, on a different day, would have gotten it. For some problems the right answer is not what the model says <em>most</em> of the time; it is something it only reaches on a lucky path.</p>
+      <p>So the honest question is not &lsquo;how do I get the one perfect attempt?&rsquo; It is: <strong>if the right answer only shows up sometimes, how do I give it a chance to show up at all — and then recognise it?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — sample many answers, then let them vote</h2>
+      <div class="essay">
+      <p>Instead of one careful answer, take the same question and answer it many times with a little randomness turned on, so each try explores a different chain of reasoning. Now you have a pile of candidate answers. Most hard problems have one right answer and many different wrong ones — and the wrong ones tend to disagree with each other, while the right one tends to repeat. So count the final answers and keep the one that showed up most often. That count-and-keep-the-most-common move is called <em>self-consistency</em>, and how often the right answer appears at all across your tries is its <em>coverage</em>.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — eight noisy tries beat one careful one</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it is genuinely unsure) on 14 grade-school math word problems. For each one we took the single careful answer, and separately drew 8 sampled answers with the randomness turned up, then voted. Every number here is measured.</p>
+      <div class="tw"><table><tr><th>how we answer</th><th>accuracy on the 14 problems</th></tr><tr><td>one careful (greedy) answer</td><td>6 / 14 = 43%</td></tr><tr><td>one random sampled answer (average)</td><td>39%</td></tr><tr><td>majority vote of 8 sampled answers</td><td>8 / 14 = 57%</td></tr></table></div><figcaption>One random try is actually worse than the careful one — but eight of them, voted, jump well past it.</figcaption>
+      <figure><div class="barrow"><span class="lab">1 path</span><div class="bar" style="width:64px"></div><span class="val">42.9%</span></div><div class="barrow"><span class="lab">2 paths</span><div class="bar" style="width:64px"></div><span class="val">42.9%</span></div><div class="barrow"><span class="lab">3 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">4 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">5 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">6 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><div class="barrow"><span class="lab">7 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><div class="barrow"><span class="lab">8 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><figcaption>Majority-vote accuracy as the number of voting paths grows from 1 to 8. It climbs, then flattens — the last few paths add nothing here.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: many tries plus a vote beat one careful try — 43% to 57% — with no change to the model.</strong> A single random answer (39%) is noisier than the careful one (43%), so more randomness alone is not the point. The point is <em>aggregation</em>: across 8 tries the right answer surfaces often enough to win the vote. And the curve flattens after 6 paths, so the boost is real but bounded.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why voting wins — and why it stops helping</h2>
+      <div class="essay">
+      <p>Wrong answers scatter; right answers cluster. If the model reaches the correct number on even a third of its tries, the correct number is usually the single most common one in the pile, because the mistakes spread themselves across many different wrong numbers. Voting turns &lsquo;sometimes right&rsquo; into &lsquo;usually picked.&rsquo;</p>
+      <p>But there is a ceiling. If the right answer never appears in any of the tries — coverage is zero — no amount of voting can conjure it. That is why the curve above flattens at 57%: beyond a handful of paths, the extra tries just re-draw answers the vote has already seen. More samples widen coverage only until the model has shown you everything it can reach.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — voting can only pick what sampling found</h2>
+      <div class="essay">
+      <p>Self-consistency has no idea what is <em>true</em>; it only knows what is <em>popular</em>. If the model is confidently and consistently wrong — the same mistake on most paths — the vote will faithfully return that wrong answer, and more samples make it more sure, not more right. And every extra try costs real time and money, so you are paying more compute for a boost that flattens.</p>
+      <p>This is exactly why the next ideas in the course exist: a <em>verifier</em> to judge answers rather than just count them, and a way to spend an <em>inference budget</em> wisely instead of sampling forever.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is pass@k, best-of-N, and the cheapest boost there is</h2>
+      <div class="essay">
+      <p>The same move wears many names. Counting whether the right answer appears in <em>any</em> of k tries is <strong>pass@k</strong>, the standard way people measure a model's reachable ceiling. Keeping the best of N sampled answers by some score is <strong>best-of-N</strong>. Voting among them is <strong>self-consistency</strong>. All three are the same bet: spend more compute at answer-time, across independent tries, and aggregate.</p>
+      <p>And it needs no training at all — it is the cheapest, first thing to reach for when a fixed model underperforms. It is also the raw material every heavier method feeds on: a verifier picks from these samples, and reinforcement learning rewards the good ones. Get many tries first; everything else is about choosing among them.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="test-time-compute.html">test-time compute</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="inference-budgeting.html">inference budgeting</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each: one greedy answer; then 8 sampled answers at temperature 0.9; majority-vote the extracted final numbers. Grader = the careful boxed-answer check from the verifier session.</p>
+      <div class="eq">for each problem:
+  greedy_answer  = model(question, temperature=0)
+  samples[1..8]  = model(question, temperature=0.9)   # 8 independent tries
+  vote           = most_common(final_number(s) for s in samples)
+# greedy 6/14=43%, single-sample avg 39%, majority-of-8 8/14=57%
+# coverage curve over k=1..8: .429 .429 .500 .500 .500 .571 .571 .571</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 3). Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Repeated Sampling and Coverage deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

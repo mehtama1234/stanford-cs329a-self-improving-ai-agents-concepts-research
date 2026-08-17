@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Self-Improvement Loop (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="self-improvement-loop.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">agents improving themselves · feedback turns mistakes into corrections · the seed of reinforcement learning</p>
+      <h1>The self-improvement loop — when an error creates the information to fix it</h1>
+      <p class="lede">Agents make mistakes. The question is whether each mistake becomes information that improves the next attempt. Here is the loop: answer, look at your own answer, revise it, repeat. A real run on a small model over three rounds showed mistakes being caught and corrected, accuracy climbing from 42% to 58%, and a simple pattern: every fix that changed an answer made it better. This is where reinforcement learning, verifiers, and tool-using agents all begin.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the loop can climb</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="self-improvement-loop.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — one shot wastes the mistake</h2>
+      <div class="essay">
+      <p>Ask a model a hard math question once. It writes out steps, reaches an answer, and stops. If that chain of reasoning took a wrong turn, the whole answer is wrong. The model probably knew how to reason correctly — it just went down a bad path. But the human who sent the message sees only the answer, not the path inside the model's head. The mistake vanishes. Nothing is learned from being wrong.</p>
+      <p>So the honest question is: <strong>how do I give the model a chance to see its own error and correct it?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — close the loop: answer, critique, revise, repeat</h2>
+      <div class="essay">
+      <p>Instead of stopping after one answer, ask the model to look back at what it wrote and check it. Ask: is this answer correct? Did I make a mistake? What should I fix? Then give it a chance to write a revised answer. And do it again — one more round of critique and revision.</p>
+      <p>This closes a feedback loop inside the model itself. The first answer creates an error. The critique (ideally) notices the error. The revision fixes it. No new training. No new data. Just: take the first answer, feed it back in, and let the model try again. This is called <em>self-refinement</em> or <em>self-refine</em>, and the loop it closes is the seed of everything that follows — verifiers, reinforcement learning, planning, agent loops with tools.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — mistakes corrected, accuracy climbs from 42% to 58%</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it makes genuine errors) on 12 grade-school math word problems. We had it answer once, then critique-and-revise, then critique-and-revise again, over three rounds total. Every number here is measured.</p>
+      <div class="tw"><table><tr><th>round</th><th>accuracy</th><th>correct answers</th></tr><tr><td>round 1 (first answer)</td><td>5 / 12 = 42%</td><td>5 correct</td></tr><tr><td>round 2 (after first revision)</td><td>6 / 12 = 50%</td><td>6 correct</td></tr><tr><td>round 3 (after second revision)</td><td>7 / 12 = 58%</td><td>7 correct</td></tr></table></div><figcaption>Accuracy climbs 5 → 6 → 7 correct out of 12, gaining 17 percentage points over three rounds.</figcaption>
+      <figure><div class="barrow"><span class="lab">round 1 (answer)</span><div class="bar" style="width:63px"></div><span class="val">5 / 12</span></div><div class="barrow"><span class="lab">round 2 (revise once)</span><div class="bar" style="width:75px"></div><span class="val">6 / 12</span></div><div class="barrow"><span class="lab">round 3 (revise twice)</span><div class="bar" style="width:87px"></div><span class="val">7 / 12</span></div><figcaption>Accuracy trajectory. Each bar shows the count of correct answers in that round.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: when a model critiques its own work and revises, it catches mistakes. Over three rounds, it gained 2 correct answers, and every revision that changed an answer improved it — fixed 1, broke 0 in round 1; fixed 1, broke 0 in round 2. Total: 2 fixed, 0 broken.</strong> The loop was strictly positive here. It did not fix all the mistakes — 5 stayed wrong all three rounds — but of the ones it touched, it touched only to correct.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the loop can climb — and why it often does</h2>
+      <div class="essay">
+      <p>The model that made the first mistake is the same model doing the critique. So why does it catch the error the second time? Because the first answer is now a fact in front of the model, concrete and visible. The model can read its own work. When it reads 'I said the answer is 47' and then works through the problem again to check, it may see the contradiction. The first attempt leaves a footprint, and critique means walking over that footprint and looking carefully.</p>
+      <p>This works when the model can actually <em>see</em> its own error — when its self-criticism is honest. On this run, it often could. The model spotted three kinds of mistakes: arithmetic errors (it added wrong), logical mis-steps (it forgot a constraint in the problem), and interpretation flips (it read the problem backwards). Once it saw these, it revised and got the right answer.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — self-critique is only as good as the model's own judgment</h2>
+      <div class="essay">
+      <p>If the model cannot tell right from wrong, the loop breaks. The model might critique a correct answer and convince itself it is wrong, then 'fix' it into a mistake. This is called <em>self-reinforcing error</em>. It can also fail to see a genuine mistake and write the same wrong answer again and again, each time convinced it is right. On this run, the model happened to be honest — it did not break a single correct answer — but that is not guaranteed. Honesty is fragile and depends on the model's size, training, and the specific domain.</p>
+      <p>The loop also stalls if the model is stuck. If the first answer leads into a conceptual dead-end — the model genuinely cannot think its way out — critique alone won't help. It will re-read the mistake, but re-reasoning from scratch may just lead to the same dead-end again. On 5 of the 12 problems, this is what happened: the model stayed wrong all three rounds.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this loop reappears in every method that follows</h2>
+      <div class="essay">
+      <p>Add a verifier to the loop — an external checker that labels which answers are right and which are wrong — and now the model trains on its mistakes instead of just revising them. That is <em>supervised learning from mistakes</em>. Add a reward signal (give more reward to correct answers), and the loop becomes <em>reinforcement learning</em>. Give the model access to tools like a calculator or a code runner, and it can verify its own work before finalizing the answer. That is the <em>tool-using agent loop</em>.</p>
+      <p>Every heavier method — every RL trick, every planning algorithm, every agent architecture with feedback — is built on this one core piece: answer, check if the answer is right (by critique, by verification, by reward, by the outside world), and use that signal to improve. The self-improvement loop is not an algorithm. It is the shape of learning itself.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 12 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: (1) generate an answer; (2) prompt: critique your answer and revise it, output the new answer; (3) repeat step 2 one more time for a second revision. Grader = the careful boxed-answer check (the same careful grader used in the verifier and RL sessions).</p>
+      <div class="eq">for each problem:
+  round_1 = model(question)                                             # first answer
+  round_2 = model(question + '\n' + round_1 + '\nCritique and revise') # revised once
+  round_3 = model(question + '\n' + round_2 + '\nCritique and revise') # revised twice
+  grade each answer via careful_grader()
+# round 1: 5/12 = 42%
+# round 2: 6/12 = 50%  (fixed 1, broke 0)
+# round 3: 7/12 = 58%  (fixed 1, broke 0)
+# total: 2 fixed, 0 broken across all revisions</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 4). Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · The Self-Improvement Loop deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Verifier Selection Gap (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="verifier-selection-gap.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · generating vs picking</p>
+      <h1>The verifier selection gap — generating many answers and picking the right one are different jobs</h1>
+      <p class="lede">A model can produce a pile of candidate answers, and the right one might be in there. But finding it is a separate, harder problem from generating it. Here is why: the numbers from a real run where voting reaches 57% but a single pick is only 39–43%, and four different graders score the same answers 0% / 64% / 40% / 44%. The gap is where selection happens, and this is where almost all of self-improvement lives.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#gap">The gap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="verifier-selection-gap.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — generating an answer is not the same as picking the right one</h2>
+      <div class="essay">
+      <p>A model can produce many candidate answers for a single hard question. Sometimes the right answer is in that pile. But recognizing which one is right is a separate job from creating the candidates in the first place.</p>
+      <p>This matters because the honest question is not &lsquo;can the model write a correct answer somewhere?&rsquo; but rather &lsquo;will the system hand me back the correct answer?&rsquo; The answer depends not only on whether the model can reach the right one, but whether something can reliably pick it from the pile.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — coverage is not the same as accuracy</h2>
+      <div class="essay">
+      <p>Call <em>coverage</em> the ability to produce the right answer at least once in a batch of tries. Call <em>selection accuracy</em> the ability to pick the right one from the batch. A system can have high coverage — the right answer appears in 8 out of 10 tries — but still pick wrong if the selector is broken. Sampling more to raise coverage does nothing if the selector does not improve.</p>
+      <p>This is the gap: your generator and your selector are separate machines working on separate problems.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — coverage says it is reachable but selection still fails</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so it is unsure) on 14 grade-school math problems. We took 8 tries per problem. Every number below is measured.</p>
+      <div class="tw"><table><tr><th>selection method</th><th>accuracy</th></tr><tr><td>pick a single random answer</td><td>39%</td></tr><tr><td>pick the greedy (careful, temperature-0) answer</td><td>43%</td></tr><tr><td>pick by majority vote of the 8 sampled answers</td><td>57%</td></tr></table></div><figcaption>The same pile of 8 answers. Greedy is better than random (43% vs 39%), but voting beats both (57%).</figcaption>
+      <p>The key: the majority-vote result (57%) is the ceiling for that pile of answers. It tells us the right answer appears in the pile at least 57% of the time. But a single picked answer reaches only 39–43%. This is the gap.</p>
+      <div class="insight"><strong>The discovered fact: a system that can generate the right answer 57% of the time might still hand back the wrong answer 57–61% of the time if the picker is dumb.</strong> Majority voting has zero idea which answer is truly right — it only counts which is most popular. But it beats a random pick and even beats the model's own confident best guess.</div>
+      </div>
+    </section>
+    <section class="fp" id="gap">
+      <h2>4 · Why the gap exists — the grader is itself unreliable</h2>
+      <div class="essay">
+      <p>Now suppose you build a verifier — a separate model trained to score which answers are correct. You run it on the same 25 traced problems to see how well it picks. But you need to define what &lsquo;correct&rsquo; means. The problem is: <em>how you score the answer is a choice, and different choices give different scores.</em></p>
+      <p>We tested four grading rules on the identical 25 traces:</p>
+      <div class="tw"><table><tr><th>grading rule</th><th>score</th></tr><tr><td>exact string match of the final answer</td><td>0%</td></tr><tr><td>does the right number appear anywhere in the text?</td><td>64%</td></tr><tr><td>does the last number in the text match?</td><td>40%</td></tr><tr><td>is there a clean boxed final answer that matches?</td><td>44%</td></tr></table></div><figcaption>One model, one set of answers, four different graders, four different scores. The most lenient grader (64%, &amp;lsquo;number anywhere&amp;rsquo;) would fool a verifier into picking wrong answers; the careful boxed grader (44%) is the trusted one.</figcaption>
+      <div class="insight"><strong>A verifier cannot be better than the signal it learns from.</strong> If you train it on a lenient rule (64%), it learns to value wrong answers that happen to mention the right number in passing. If you train it on a careful rule (44%), it learns something narrower but trustworthy. The grader design is a choice that limits what the verifier can be.</div>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the verifier is itself a model that can be wrong</h2>
+      <div class="essay">
+      <p>A verifier is just another model, scored on pairs of (answer, ground-truth label). It sees correlations — maybe correct answers are often longer, or mention certain keywords. But those correlations can be spurious. If the training data happens to have mostly long correct answers and short wrong ones, the verifier learns &lsquo;long = right&rsquo; even if that is not the deep cause.</p>
+      <p>This means a verifier can be confidently wrong. It hands back a high score for an answer that is plausible, well-written, and utterly incorrect. And because it is confident, the system trusts it. A bad verifier is worse than no verifier — it actively misguides the whole pipeline.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the verifier selection gap is the core of self-improvement</h2>
+      <div class="essay">
+      <p>This is why the rest of the course exists. Every technique that follows — reward models, process supervision, constitutional critique, RL training — is trying to close this gap. The goal is always the same: build a better selector.</p>
+      <p>If you can sample 100 answers and the right one appears in 80 of them (coverage = 80%), your system is wasted if the selector picks wrong 70% of the time. Raising the model's generation ceiling is useless without raising the selection accuracy to match. The hard part of self-improvement is not generating more candidates — it is reliably picking the good one.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="test-time-compute.html">test-time compute</a> · <a href="inference-budgeting.html">inference budgeting</a> · <a href="process-reward-models.html">process reward models</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: generate 8 sampled answers at temperature 0.9, plus one greedy answer at temperature 0. Select by (a) random pick, (b) greedy, (c) majority vote of the 8 samples. Separately, take 25 traces and score them four ways: exact string match, number anywhere in text, last number in text, boxed final answer. Grader = careful boxed-answer check.</p>
+      <div class="eq"># Coverage vs selection accuracy
+for each problem:
+  samples[1..8]  = model(question, temperature=0.9)
+  greedy         = model(question, temperature=0)
+  random_pick    = choice(samples)    # one random sample
+  majority_vote  = most_common(final_number(s) for s in samples)
+
+# Results on 14 problems:
+# random pick: 39%  (39 accuracy)
+# greedy pick: 43%  (43 accuracy)
+# majority-vote pick: 57%  (57 accuracy / coverage ceiling of the pile)
+
+# Grader reliability on 25 traces:
+# exact match: 0/25 = 0%
+# number anywhere: 16/25 = 64%
+# last number: 10/25 = 40%
+# boxed answer: 11/25 = 44%</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 3 and Session 5). Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · The Verifier Selection Gap deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,207 @@
+{
+  "id": "rationale_bootstrapping",
+  "name": "Rationale Bootstrapping",
+  "kick": "self-improving agents · first principles · learning from explanations, not just answers",
+  "title": "Rationale bootstrapping — when a small model learns by imitating a teacher's worked solutions",
+  "lede": "You have answers but not the explanations for how to reach them. The fix is to ask a stronger model to show its work, keep the good solutions, and train the small model to copy that reasoning shape. Here is the idea, a real run where a 0.6-billion-parameter student climbed from 10% to 65% by imitating a teacher, why the learned explanations stick (no collapse), and the one real ceiling.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why learned rationales stick"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — answers alone do not teach the method",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A small model trained only on correct final answers learns answer patterns. It memorizes that GSM8K problems about nickels tend to have prices in the 15–30 range. But it does not learn the steps: read the problem, figure out what you are solving for, set up the multiplication, carry the units. For hard problems, the path matters more than the destination. A model that has seen a thousand answers but never watched the reasoning cannot build the reasoning muscle."
+        },
+        {
+          "t": "para",
+          "html": "The honest need is not just: 'is this right?' It is: <strong>show me how you think, so I can learn the shape of successful thinking.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — bootstrap explanations from a stronger teacher",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Ask a much stronger model (one with billions of parameters, or one trained on a huge reasoning dataset) to answer the hard problems and write out all the steps. Keep only the solutions where the final answer is correct — throw away the reasoning traces that lead to wrong answers. Now you have a curated set of worked solutions: question, step-by-step reasoning, and verified answer. Train the small model to imitate these traces. This is <em>rationale bootstrapping</em>: you bootstrap the missing explanations by copying them from a teacher you trust, then train your small model on the copy."
+        },
+        {
+          "t": "para",
+          "html": "The bootstrap is the key move: instead of inventing the explanations yourself (expensive and error-prone), you borrow them from a model you already know can reason, filter to keep only the correct ones, and use those traces as training data. The small model is not learning to discover; it is learning to imitate the shape of good thinking."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — a 0.6B student climbs from 10% to 65% imitating a teacher",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We took a real small model (Qwen3-0.6B — 0.6 billion parameters, small on purpose so reasoning is visible and fragile) and trained it to copy worked solutions written by a much stronger model (DeepSeek-R1). The stronger model solved 20 grade-school math word problems and wrote out full reasoning. We kept the 20 traces where the final answer was correct. Then we fine-tuned the 0.6B student on those teacher traces, one epoch per iteration, and measured accuracy and answer length after each. Every number below is from the real run."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "training stage",
+            "accuracy (student)",
+            "avg answer length"
+          ],
+          "rows": [
+            [
+              "before training (base)",
+              "2 / 20 = 10%",
+              "1536 tokens"
+            ],
+            [
+              "after epoch 1",
+              "7 / 20 = 35%",
+              "934 tokens"
+            ],
+            [
+              "after epoch 2 (peak)",
+              "13 / 20 = 65%",
+              "673 tokens"
+            ],
+            [
+              "after epoch 3 (slight overfit)",
+              "10 / 20 = 50%",
+              "840 tokens"
+            ]
+          ],
+          "caption": "A small model imitating a teacher's worked solutions. Accuracy climbs 10%→65%, and the student keeps writing full solutions throughout (never collapses to a bare guess)."
+        },
+        {
+          "t": "bars",
+          "caption": "Accuracy trend across training. Peak at epoch 2, then slight decline (over-fitting on the small set), but notice the answer length stays high—never shrivels to a token or two.",
+          "rows": [
+            [
+              "base (no training)",
+              0.1,
+              "10%"
+            ],
+            [
+              "epoch 1",
+              0.35,
+              "35%"
+            ],
+            [
+              "epoch 2 (peak)",
+              0.65,
+              "65%"
+            ],
+            [
+              "epoch 3",
+              0.5,
+              "50%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a small model trained to imitate a teacher's step-by-step reasoning climbed 10% to 65% and stayed stable — never collapsing to a bare guess.</strong> The answer length dropped from 1536 to 673 tokens by epoch 2 (the student learned to be more concise), but at epoch 3 it bounced back to 840 tokens — a full solution, not a shortcut. Compare this to reinforcement learning on the same size model, which hit 50% at step 500 then crashed to 15% and shrank answers to 7 tokens. Distillation—copying the teacher's reasoning—is far more stable."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why learned rationales stick — the student absorbs the reasoning shape",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "When the student copies a teacher's step-by-step solution, it is not memorizing numbers. It is absorbing patterns: 'read the problem, extract the quantities, figure out what operation connects them, show the arithmetic, box the final answer.' Those patterns transfer. A model that has internalized the shape of good reasoning can apply it to new problems it has never seen."
+        },
+        {
+          "t": "para",
+          "html": "This is why distillation is stable: the student is not playing a reward game (right answer = +1, wrong = 0). It is learning a behavior from observation. The teacher's solution naturally contains all the intermediate steps, so the student learns that reasoning is not a luxury, it is the core output. There is no incentive to cheat and skip to a guess."
+        },
+        {
+          "t": "para",
+          "html": "And crucially: the step-by-step structure itself is a guide. If the teacher's solution says 'first multiply 3 × 12, then add 4,' the student sees that order and builds it into what it learns. This structure does not collapse under pressure — it is baked into the imitation."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — you inherit the teacher's ceiling and mistakes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Rationale bootstrapping can only teach what the teacher knows. If the teacher makes a systematic mistake, the student learns it. If the teacher can solve only 80% of the problems in the domain, the student trained to copy it will likely never exceed that ceiling—no matter how many times it trains."
+        },
+        {
+          "t": "para",
+          "html": "And you need a strong, trustworthy teacher to start with. A weak or unreliable teacher produces bad rationales that corrupt the student's training. In the experiment above, we used DeepSeek-R1, a model specifically built for reasoning. If we had used a smaller or weaker base model to generate the solutions, the rationales would be lower quality and the student would climb slower or stop sooner."
+        },
+        {
+          "t": "para",
+          "html": "Finally, you still need a way to filter: only keep the teacher's solutions where the final answer is correct. If you train on the teacher's wrong reasoning traces, you are just spreading mistakes."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is how most small reasoning models are actually built",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every tiny reasoning model you see — 1-billion-parameter models that do real math, coding, logic problems — is built this way. First, a huge base model is trained on a massive reasoning dataset (often from internet step-by-step solutions). Then, a much smaller model is fine-tuned to imitate the big one's solutions on hard problems. The small model never sees the original data; it learns from the teacher's worked examples."
+        },
+        {
+          "t": "para",
+          "html": "This is why distillation is so common in practice: it is stable (no reward-hacking collapse), it transfers the teacher's skill pattern, and it requires no new data collection—only filtering what the teacher already wrote. A single strong teacher can bootstrap hundreds of smaller models, each one learning the reasoning shape rather than discovering it from scratch."
+        },
+        {
+          "t": "para",
+          "html": "It also explains why these small models are so fragile when pushed: they are imitating, not reasoning. When a new problem falls too far outside the teacher's distribution, the imitated pattern does not generalize. But within the training domain—math, logic, coding problems similar to the teacher's solutions—the distilled reasoning holds."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "inference-budgeting.html",
+      "inference budgeting"
+    ],
+    [
+      "domain-reasoning-data.html",
+      "domain reasoning data"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B student fine-tuned to imitate DeepSeek-R1 teacher traces on 20 GSM8K grade-school math problems, Colab L4 GPU. For each epoch: compute accuracy (careful boxed-answer grader from verifier session) and average solution length in tokens. Teacher solutions were generated by DeepSeek-R1, filtered to keep only correct final answers, then used as training targets.",
+    "eq": "for each epoch:\n  supervised_loss = cross_entropy(student_output, teacher_trace)\n  accuracy = count_correct(student_answers) / 20\n  avg_length = mean(len(student_outputs) for correct answers)\n# base: 2/20=10%, 1536 tok\n# epoch 1: 7/20=35%, 934 tok\n# epoch 2: 13/20=65%, 673 tok\n# epoch 3: 10/20=50%, 840 tok",
+    "note": "From the companion reasoning-from-scratch lab (Session 7). Numbers are the run's output verbatim."
+  }
+}

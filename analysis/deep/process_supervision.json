@@ -1,0 +1,188 @@
+{
+  "id": "process_supervision",
+  "name": "Process Supervision",
+  "kick": "self-improving agents · first principles · grade the steps, not just the answer",
+  "title": "Process supervision — why grading the answer hides the broken step",
+  "lede": "A final answer can be right for the wrong reason, or wrong because of a single bad step in the middle. Grading only the answer gives a garbled signal: it can't tell you which step failed. Here is the idea, a real run where four different ways of reading the final answer give four wildly different scores, why that matters, what you lose without step-level feedback, and where this reappears as process reward models.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "insight",
+      "Why outcome-only grades lie"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a lucky wrong-method answer looks identical to a sound one",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see."
+        },
+        {
+          "t": "para",
+          "html": "The deeper problem: a model that reaches the right answer the wrong way is indistinguishable from a model that solved it soundly. If you reward both the same way, you train the wrong behaviour. The model learns 'if the final number looks right, you win' instead of 'here is how to think through it.' Over time, the model stops learning to reason; it learns to imitate the look of a final answer."
+        },
+        {
+          "t": "para",
+          "html": "So the honest question is: <strong>How do you know which step in a chain of reasoning actually works, and which one is a hidden mistake?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — grade the steps themselves, not just the finish line",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of labeling only the final answer as right or wrong, label each intermediate step. Step 1: correct. Step 2: correct. Step 3: incorrect — it violates a constraint. Step 4: correct, but built on a wrong foundation. Now the model sees exactly where the chain broke. It learns not just 'the answer was wrong' but 'this specific step was the pivot that sent you off track.'"
+        },
+        {
+          "t": "para",
+          "html": "In the language of machine learning, this is called <em>process supervision</em> — you supervise the process (the reasoning steps), not just the outcome (the final answer). The alternative, which only grades the endpoint, is called <em>outcome supervision</em>. Outcome is cheaper to do — you only label one thing per problem. Process is more expensive — you label many steps per problem. But process gives you richer information."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — four different graders, four wildly different scores",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so its reasoning is visible and imperfect) on 25 grade-school math word problems. Each problem was solved by the model, producing a trace of steps and a final answer. Then we graded the same 25 traces using four different rules — four different ways of deciding whether the answer was correct. Every number here is measured."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "grading rule",
+            "accuracy on 25 traces"
+          ],
+          "rows": [
+            [
+              "exact string match (must equal the gold answer exactly, character for character)",
+              "0 / 25 = 0%"
+            ],
+            [
+              "the right number appears anywhere in the text",
+              "16 / 25 = 64%"
+            ],
+            [
+              "the last number mentioned in the entire trace",
+              "10 / 25 = 40%"
+            ],
+            [
+              "the final boxed answer, read and checked carefully",
+              "11 / 25 = 44%"
+            ]
+          ],
+          "caption": "One model. Same 25 traces. Four different outcome-only graders. Four different scores: 0%, 64%, 40%, 44%."
+        },
+        {
+          "t": "para",
+          "html": "Notice: 14 of the 25 traces ended in a clean boxed final answer. The other 11 either rambled or gave no clear final number. That structure is what the graders are searching for."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: outcome-only grading is unstable and gameable. The exact same reasoning, read by four different final-answer rules, scores 0%, 64%, 40%, and 44%. A lenient grader ('the number appears somewhere') is easy to fool: 64% credit for work that might be meaningless. A strict grader ('exact match') is harsh but unforgiving. And the 'careful boxed answer' grader (44%) is trusted, but it depends entirely on format.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "insight",
+      "h2": "4 · Why outcome-only grades lie — and what you lose",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "When you grade only the final answer, you are averaging across everything that led to it. A model might have solved steps 1–3 perfectly, made a critical error in step 4, but then fixed it by accident in step 5. You award full credit because the final number is right. The model learns nothing about step 4. It never learns that 'here is where the chain broke.'"
+        },
+        {
+          "t": "para",
+          "html": "Process supervision fixes this: you label step 4 as incorrect. The model now sees the error at the point where it happened. It learns not 'my final answer was wrong' (which is useless feedback if multiple paths lead to the wrong answer), but 'this specific algebraic move violated a constraint.'"
+        },
+        {
+          "t": "para",
+          "html": "Another loss: outcome-only grading creates <em>Goodhart's Law</em> — when a measure becomes a target, it ceases to be a good measure. If you reward the model for 'getting a high number anywhere in the text,' the model learns to scatter many numbers. If you reward 'exact string match,' the model learns to memorize expected phrasings instead of solving the problem. Process supervision measures the quality of reasoning itself, not the format of its conclusion."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — who labels the steps?",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Process supervision is more data-intensive than outcome supervision. For each problem, instead of one label ('right' or 'wrong'), you need many labels — one per step. If your step labels are wrong, your signal is worse than outcome-only. An automated labeler might mark step 4 as correct because it 'looks algebraically sound,' but miss that it violates a subtle constraint. A non-expert human might do the same."
+        },
+        {
+          "t": "para",
+          "html": "There is also a risk of <em>process reward model gaming</em>: once you train a model that scores steps, the generator learns to produce steps that score highly without actually advancing toward the solution. The steps read correctly, but the reasoning is hollow. Detecting this requires checking end-to-end accuracy, not just step scores."
+        },
+        {
+          "t": "para",
+          "html": "And every step label costs time and money. If you hire human experts to label steps for millions of problems, that is expensive. The trade-off is real: richer signal per problem, but higher cost per problem."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — process reward models and the self-improving agent",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Process supervision is not just an idea — it is the foundation of <em>process reward models</em>, sometimes called PRMs. A process reward model is a neural network that learns to score each step of a reasoning trace as correct or incorrect. At test time, you sample many candidate solutions, and the PRM scores each step in each solution. The solutions with the highest step-level scores are the ones to trust."
+        },
+        {
+          "t": "para",
+          "html": "This is where self-improving agents live. A generator produces many candidate solutions (sampling). A process reward model scores the steps (process supervision). A reinforcement learning algorithm learns to produce solutions that score well according to the PRM. Each round, the agent gets better — not by the PRM being perfect, but by it catching enough of the broken steps that the next round avoids them."
+        },
+        {
+          "t": "para",
+          "html": "The big win over outcome-only methods: a PRM sees the step-level mistake as it happens. An outcome grader only knows the final answer was wrong, and cannot tell why. Process supervision is dense, local feedback; outcome supervision is sparse, global feedback. Dense feedback trains better reasoning — it is why every serious reasoning model now includes process reward models or step-level annotations."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "verifier-robustness.html",
+      "verifier robustness"
+    ],
+    [
+      "process-reward-models.html",
+      "process reward models"
+    ],
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "self-improvement-loop.html",
+      "the self-improvement loop"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 25 GSM8K grade-school math problems, Colab T4 GPU. For each problem: run model, extract final answer and full trace. Grade the same 25 traces with four different outcome-only rules: (1) exact string match to gold; (2) right number appears anywhere; (3) last number in text; (4) final boxed answer, carefully read. All numbers measured.",
+    "eq": "for each trace in 25 problems:\n  accuracy_exact = 1 if answer == gold else 0\n  accuracy_anywhere = 1 if gold_number in trace_text else 0\n  accuracy_last_num = 1 if extract_last_number(trace) == gold else 0\n  accuracy_boxed = 1 if extract_boxed_final(trace) == gold else 0\n# Results: [0%, 64%, 40%, 44%]",
+    "note": "From the companion reasoning-from-scratch lab (Session 5: verifiers). Numbers are the run's output verbatim."
+  }
+}

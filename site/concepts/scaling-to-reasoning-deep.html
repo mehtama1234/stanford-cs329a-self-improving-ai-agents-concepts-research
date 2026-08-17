@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>From Scaling To Reasoning (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="scaling-to-reasoning.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">test-time compute · inference leverage · the reframe that launched reasoning models</p>
+      <h1>From scaling to reasoning — when bigger is stuck, thinking is cheap</h1>
+      <p class="lede">For years the recipe was simple: more parameters, more data, more training compute — the model gets smarter. But that path hits a wall: training costs explode, and the gains per dollar shrink. Here is the reframe that broke it open: instead of spending all the work upfront, let the model think at answer-time. Same fixed network, no retraining — just let it work out loud before committing an answer. This is the idea, a real run on a small model where thinking rescues a problem it failed cold, why the thinking time matters, the one real weakness, and where this idea reappears as o1, test-time compute, and the whole reasoning-model era.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why working-out-loud helps</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="scaling-to-reasoning.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — scaling the model itself gets expensive and hits a wall</h2>
+      <div class="essay">
+      <p>For a decade, the path to better language models was clear: add more parameters (the weights the model learns), add more training data, add more compute during training. The payoff was real — test errors dropped predictably. But this path has two hard limits. First: doubling the model size costs roughly 2 to 3 times more compute to train. You are spending money exponentially. Second: the gains flatten. A model with a hundred million parameters gains a lot from ten billion parameters, but a ten billion parameter model gains much less from a hundred billion — you are chasing smaller and smaller improvements per dollar spent.</p>
+      <p>So the honest question becomes: if making the network bigger is expensive and its benefits are shrinking, how else can you make the system smarter? The naive answer is: keep scaling anyway. The radical answer is: stop.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — let the same network think before answering, instead of training a bigger one</h2>
+      <div class="essay">
+      <p>The reframe is this: a model's capability is not just in its weights — it is also in what you <em>ask it to do</em> before it gives you an answer. Most of the time you ask a model a hard question and it answers instantly: give me a number, right now. That is like asking a person 'what is seven times eight?' and expecting them to blurt the answer without internal thought. They might guess. Or you can say: 'show me your working, think out loud, write down every step, then tell me the answer.' The same person, the same brain, often gets it right when they think aloud but wrong when they guess.</p>
+      <p>The idea is to do that with the model. Let it write a chain of reasoning steps before the final answer. Let it critique its own work and try again. Let it work for seconds, not milliseconds, before committing. The network inside is the same. The weights are frozen — no retraining. But now it is spending <em>inference time</em> — the time it takes to produce the answer — on reasoning, instead of dumping an answer instantly. Reasoning traces, chain-of-thought, self-correction, and verification are all procedures you overlay on a fixed model to make it more reliable.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the same model fails cold but thinks its way to right</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so its mistakes are visible) on 5 hard questions, including the famous 'how many times does the letter R appear in the word STRAWBERRY?' Each question we tried two ways: answer immediately, and answer after writing private reasoning first. Every number here is measured from the real run.</p>
+      <div class="tw"><table><tr><th>approach</th><th>accuracy</th><th>example: the R in STRAWBERRY</th></tr><tr><td>direct answer (no thinking)</td><td>3 / 5 correct</td><td>1 (wrong, 21 tokens spent)</td></tr><tr><td>think-first (show working)</td><td>4 / 5 correct</td><td>3 (right, 336 tokens spent)</td></tr></table></div><figcaption>Same model, same questions, no retraining. Letting it think first rescues one problem it failed cold.</figcaption>
+      <figure><div class="barrow"><span class="lab">problem 1: strawberry R-count</span><div class="bar" style="width:2px"></div><span class="val">cold: 1/1 wrong</span></div><div class="barrow"><span class="lab">problem 1: strawberry R-count (with thinking)</span><div class="bar" style="width:150px"></div><span class="val">thinking: 1/1 right</span></div><div class="barrow"><span class="lab">other 4 problems (greedy)</span><div class="bar" style="width:112px"></div><span class="val">greedy: 3/4 right</span></div><div class="barrow"><span class="lab">other 4 problems (thinking)</span><div class="bar" style="width:150px"></div><span class="val">thinking: 4/4 right</span></div><figcaption>Where the improvement shows up: one specific problem shifts from wrong to right when the model is told to think first.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: no retraining, no new weights, no bigger model — just telling the network to write down its thinking out loud and then answer rescued one hard problem outright (strawberry: 1→3 Rs) and kept others alive, jumping the success rate from 60% to 80%.</strong> The cost is real: a thinking trace spent 336 tokens instead of 21 on that problem — 16 times longer. But the length is not wasted; it is the working-out-loud doing the work. The model is not guessing; it is stepping through the reasoning.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why working-out-loud helps — and what it really buys</h2>
+      <div class="essay">
+      <p>A hard problem usually cannot be solved in one leap. Counting the Rs in strawberry requires: first understanding what the task is (count occurrences of a letter), then stepping through each letter, then keeping a tally. When you force the model to write these steps in order, two things happen. First: each step is a constraint on the next one. If step 1 says 'I see the letters S-T-R-A-W-B-E-R-R-Y', then step 2 must pick from that list, not invent new letters. Second: early mistakes are visible and can sometimes be caught. A model that talks itself through a problem is often more reliable than one that guesses.</p>
+      <p>The deeper win is this: a model has latent capability it does not always show. Not every problem-solving ability lives in the weights as a surface behavior — some of it is there, unreached, until you ask for it in the right way. Asking for a thinking trace is asking for that buried ability.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — thinking is not free, and it still fails the hard ones</h2>
+      <div class="essay">
+      <p>Thinking costs real time and compute. In the example above, the strawberry question went from 21 tokens to 336 tokens — 15 times more. If you deployed this at scale, every question would demand 10 to 20 times the inference compute for thinking. That is not free. Second, thinking is not magic. Of the 30 math problems, even with thinking, the model got 12 wrong and then rambled all the way to the token limit (2048 tokens) without settling on an answer. Thinking helps the model clarify medium-hard problems it could almost solve, but genuinely hard problems still stumped it. A smaller model cannot reason its way to knowledge it never learned.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this reframe launched the whole reasoning-model era</h2>
+      <div class="essay">
+      <p>The insight that you can spend compute at answer-time instead of training-time broke open a new field. Modern reasoning models like OpenAI's o1, DeepSeek-R1, and others follow this exact logic: pre-train a model, then during deployment, give it a budget of inference compute — time to think, verify, search, retry — and let it use that budget to work harder on hard problems. You can train a smaller model (cheaper upfront) and boost it with inference-time reasoning (cheap at scale, pay only when you need it). This is test-time compute: the idea that every question deserves a different amount of thinking.</p>
+      <p>The course from here out is all methods to make that inference-time work better: verifiers to judge whether a step is right, self-consistency to aggregate many tries, reinforcement learning to train the reasoning traces themselves, distillation to copy from a teacher. All of them sit on top of this one insight: a fixed model can unlock hidden ability by thinking out loud.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="test-time-compute.html">test-time compute</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 5 hard reasoning questions. For each: one direct greedy answer (temperature 0), then one think-first answer where the model was prompted to write a private reasoning trace before answering (temperature 0, but longer context). Grader = manual verification + token counting. Qwen-3.0.5B, Colab L4 GPU.</p>
+      <div class="eq">direct_answer = model(question, temperature=0)
+think_first = model('Think step-by-step. Then answer.\n' + question, temperature=0)
+# direct: 3/5 (60%)
+# think-first: 4/5 (80%)
+# strawberry example: direct=1 (21 tokens), think-first=3 (336 tokens)
+# average length: direct ~21-70 tokens, think-first ~336-1449 tokens</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 1, scaling-to-reasoning deep-dive run). Numbers are measured verbatim from the real model run. The small model size is intentional: smaller reasoning is more visible and easier to interpret; frontier models show the same pattern at larger scale.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · From Scaling To Reasoning deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

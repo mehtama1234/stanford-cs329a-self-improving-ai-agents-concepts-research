@@ -43,6 +43,7 @@ def page(title: str, body: str, prefix: str = "") -> str:
       <a href="{prefix}index.html">Overview</a>
       <a href="{prefix}primers.html">Primers</a>
       <a href="{prefix}concepts.html">Concepts</a>
+      <a href="{prefix}deep-track.html">Deep track</a>
       <a href="{prefix}lectures.html">Lectures</a>
       <a href="{prefix}evidence.html">Evidence</a>
       <a href="{prefix}transcripts.html">Transcripts</a>
@@ -182,11 +183,14 @@ def render_concepts(concepts: list[dict[str, Any]], evidence_by_id: dict[str, di
   <p>{esc(ev['why_span_matters'])}</p>
 </article>"""
             )
+        _deep = (ROOT / "analysis" / "deep" / f"{concept['id']}.json").exists()
+        _deep_link = (f'<p><a class="button" href="{slugify(concept["id"])}-deep.html">Read the deep dive — seen on a real run &rarr;</a></p>' if _deep else '')
         body = f"""
 <section class="page-head">
   <p class="eyebrow">{esc(concept['theme'])}</p>
   <h1>{esc(concept['name'])}</h1>
   <p class="lede">{esc(concept['plain_language_definition'])}</p>
+  {_deep_link}
 </section>
 <div class="two-col">
   <section class="detail"><h2>Ordinary Problem</h2><p>{esc(concept['ordinary_problem'])}</p></section>

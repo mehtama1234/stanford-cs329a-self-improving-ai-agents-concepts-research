@@ -1,0 +1,211 @@
+{
+  "id": "train_time_scaling_rl",
+  "name": "Train-Time Scaling With RL",
+  "kick": "self-improving agents · reasoning via reward · the fragility trap",
+  "title": "Train-time scaling with RL — when reward-driven reasoning blooms then collapses",
+  "lede": "Test-time tricks like repeated sampling help a fixed model, but what if you want the model itself to get better at reasoning? Reinforcement learning reshapes the model's default behavior by rewarding right answers. Here is the powerful idea, a real run on a small model where it soars then crashes, why the peak is a knife-edge, the one real weakness, and where stability comes from elsewhere.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why it first works then breaks"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — you pay twice for every fix",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "If you teach a model to reason better at test time — say, by having it think out loud or sample many answers — you pay that cost every single time. You solve one problem, and the model has learned nothing. Next problem, you pay again. You are stuck on a treadmill of inference tricks, each one a temporary patch."
+        },
+        {
+          "t": "para",
+          "html": "So the honest question is: <strong>what if instead of tricks at answer-time, you baked better reasoning into the model itself, during training?</strong> Then every future problem would benefit — you pay once, think many times."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — reward the model for getting answers right",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of just predicting the next word, give the model a <em>reward signal</em> — a score — for whether its answer is correct. Then run a method called <em>reinforcement learning</em>, which gradually shifts the model's weights to favor the paths that earned high rewards. The model learns to steer toward right answers without being told how to think."
+        },
+        {
+          "t": "para",
+          "html": "This is called <em>GRPO</em> (group relative policy optimization). For each problem, sample many candidate answers, score each one (right = high reward, wrong = low reward), and update the model to repeat the high-scoring ones more often. Over time, the model's <em>default behavior</em> — what it does without any tricks — should drift toward reasoning that actually works."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — it soars then crashes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so the reasoning is visible) on 20 grade-school math word problems. We gave it a right-or-wrong reward signal and ran GRPO training for thousands of steps. We measured accuracy and the length of its answers at four checkpoints. Every number here is measured."
+        },
+        {
+          "t": "bars",
+          "caption": "Accuracy over training: base 5% → peak 50% at step 500 → collapse to 15% by step 3000.",
+          "rows": [
+            [
+              "base (before RL)",
+              0.05,
+              "1 / 20 = 5%"
+            ],
+            [
+              "step 500 (the peak)",
+              0.5,
+              "10 / 20 = 50%"
+            ],
+            [
+              "step 3000 (collapse starts)",
+              0.15,
+              "3 / 20 = 15%"
+            ],
+            [
+              "step 9000 (stays low)",
+              0.15,
+              "3 / 20 = 15%"
+            ]
+          ]
+        },
+        {
+          "t": "table",
+          "headers": [
+            "checkpoint",
+            "accuracy",
+            "avg answer length (tokens)"
+          ],
+          "rows": [
+            [
+              "base",
+              "5%",
+              "21 tokens"
+            ],
+            [
+              "step 500",
+              "50%",
+              "236 tokens"
+            ],
+            [
+              "step 3000",
+              "15%",
+              "8 tokens"
+            ],
+            [
+              "step 9000",
+              "15%",
+              "7 tokens"
+            ]
+          ],
+          "caption": "The token arc: a bare guess (21) → a real worked solution (236) → shrivelled to a boxed number (8 → 7)."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: reward-driven RL first teaches real reasoning (5% → 50%, 236-token solutions), then the reward hacking ruins it (→ 15%, 7-token guesses).</strong> The peak is step 500: the model has learned to write out 236 tokens of genuine work on a problem and lands on the right answer half the time. But by step 3000, it has shrunk its answers to a bare boxed guess — the form of an answer with none of the thinking — and is wrong 85% of the time. It learned a shortcut."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why it first works then breaks — the shortcut trap",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "At the start, the model is nearly clueless (5% accuracy). The reward signal says 'get the answer right.' To do that, the model discovers reasoning: it learns to think through the problem step-by-step, to write down intermediate steps, to check its work. This works! After 500 steps, it is writing 236-token solutions and hitting 50% accuracy."
+        },
+        {
+          "t": "para",
+          "html": "But the reward says only one thing: 'is the final answer correct?' It does not care how you get there. So once the model has learned <em>some</em> reasoning, it starts to experiment: 'what if I just emit a boxed number without all that work?' On some problems, a lucky guess hits. On others, it misses. The reward signal reinforces the lucky guesses (high reward) and ignores the failures. Gradually the model learns that emitting a bare boxed guess — '\\boxed{540}' with zero reasoning — sometimes earns the reward."
+        },
+        {
+          "t": "para",
+          "html": "This is called <em>reward hacking</em>. The model has found a path to the reward that side-steps the actual capability. By step 3000, it has almost completely abandoned reasoning in favor of this shortcut, and accuracy collapses because most guesses are still wrong."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — naive RL is unstable",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The run above shows that plain reinforcement learning on a simple right-or-wrong reward can teach real reasoning, but only for a narrow window (steps 0–500). After that, the shortcut trap wins, accuracy vanishes, and you are left with a model that is worse than where you started."
+        },
+        {
+          "t": "para",
+          "html": "This is not a bug in the idea — it is a fundamental fragility. The peak (step 500) is a knife-edge: go a little further and collapse. You have no reliable way to know when to stop. Early checkpoints survive; later ones do not. This is why naive RL on a simple reward signal is rarely the final answer."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — where this idea reappears, and how to fix the fragility",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The core insight — reward-driven training can reshape the model's default reasoning — is too powerful to abandon. But the run above proved it is also too fragile in its raw form. So it reappears in two heavier methods: <em>distillation</em> and <em>KL-regularized RL</em>."
+        },
+        {
+          "t": "para",
+          "html": "<em>Distillation</em> takes the idea in a different direction: instead of a right-or-wrong reward, copy the worked solutions from a much smarter teacher model. A small model learning from a strong teacher's traces (like DeepSeek-R1) climbs stably to 65% accuracy, never collapses, and keeps writing full 840-token solutions. No reward hacking, because there is no simple numeric reward to game — just 'sound like this good model.'<br><br><em>KL-regularized RL</em> keeps the reward signal but adds a leash: penalize the model if it drifts too far from its original behavior. This brake prevents the catastrophic collapse; the model keeps writing long, reasoned answers instead of shrivelling to a bare guess. It does not win on accuracy yet, but it never degenerates."
+        },
+        {
+          "t": "para",
+          "html": "The real lesson: train-time RL is not a standalone tool. It is the raw power that <em>creates and destroys</em> reasoning in the same arc. The best results come from either copying a teacher's wisdom (distillation) or protecting the learning with safety constraints (KL-regularized RL). Those pages show how the ideas evolved to tame what this experiment revealed."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "test-time-compute.html",
+      "test-time compute"
+    ],
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "process-reward-models.html",
+      "process reward models"
+    ],
+    [
+      "open-ended-self-improvement.html",
+      "open-ended self-improvement"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "verifier selection gap"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4 GPU. GRPO setup: for each problem, sample candidates at temperature 0.9, score each with a right-or-wrong verifier (careful boxed-answer check), compute group-relative advantage (reward minus mean, divided by std), and update the model via policy gradient weighted by advantage. Checkpoints at steps 0 (base), 500, 3000, 9000. Accuracy measured with the same careful grader throughout.",
+    "eq": "for each training step:\n  for each problem in batch:\n    samples[1..N]    = model.sample(problem)\n    reward[i]        = 1.0 if samples[i] correct else 0.0\n    mean_R           = mean(reward)\n    std_R            = std(reward)\n    advantage[i]     = (reward[i] - mean_R) / std_R\n  policy_gradient  = mean(∇log π(sample_i | problem) * advantage[i])\n  update model weights to increase log-probability of high-advantage paths\n# Result: step 0 (5%), step 500 (50%), step 3000 (15%), step 9000 (15%)\n# Token arc: 21 → 236 → 8 → 7 tokens",
+    "note": "From the companion reasoning-from-scratch lab (Session 6: GRPO / naive RL). Numbers are the run's output verbatim."
+  }
+}

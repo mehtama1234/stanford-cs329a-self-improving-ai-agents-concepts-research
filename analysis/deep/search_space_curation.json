@@ -1,0 +1,188 @@
+{
+  "id": "search_space_curation",
+  "name": "Search-Space Curation",
+  "kick": "self-improving agents · first principles · redundancy and diversity",
+  "title": "Search-space curation — why more samples fail to help once the space is mapped",
+  "lede": "When you sample many answers, the model's outputs repeat themselves. Most tries are redundant re-draws of ideas you have already seen. The real work is not drawing more — it is curating what you draw: filtering, deduplicating, and ranking the candidates so that the rare right answer stands out. Here is the problem, the reframe, a real run where redundancy kills the benefit of more tries, why it happens, where it breaks, and where this idea reappears in production systems.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "redundancy",
+      "Why redundancy hits a wall"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — more samples only help if they are different",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Draw many answers and you should be able to find good ones, right? But models have habits. The model tends to use the same reasoning steps over and over. If you sample 100 answers, you might get 5 fundamentally different ideas for how to solve the problem — and 95 copies or tiny variations of those 5. When you vote or rank those 100 answers, you are really just voting on the same 5 ideas, with the duplicates drowning out anything new."
+        },
+        {
+          "t": "para",
+          "html": "The honest problem is this: <strong>more samples only widen your options if they explore new territory. If they retrace the same ground, you are paying compute for no new insight.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — curate, do not just sample more",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of sampling blindly and hoping randomness finds new paths, actively curate the search space: deduplicate answers to collapse identical reasoning into one group, filter out candidates that fail basic checks (like logic errors or wrong format), rank the survivors by quality signals (does a verifier trust this answer? does it solve the test case?), and keep only the diverse top contenders. The goal is to shrink your candidate pile to the <em>non-redundant</em> solutions, so the vote or the pick lands on a genuinely different idea when it finds a new one."
+        },
+        {
+          "t": "para",
+          "html": "This is the opposite of 'more'. It is 'better'. Curating the search space means asking: which candidates add something new, and which are just echoes?"
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — redundancy kills the upside at path 6",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B, small on purpose) on 14 grade-school math problems. For each we drew 8 sampled answers at high temperature — eight different tries, supposedly exploring the space. Then we counted votes at each step: after 1 path, after 2 paths, and so on up to 8. The coverage (the percentage of problems that have the right answer somewhere in the pile) should keep growing — but does it?"
+        },
+        {
+          "t": "bars",
+          "caption": "Majority-vote accuracy grows from 1 path to 6 paths, then stops. Paths 7 and 8 add nothing.",
+          "rows": [
+            [
+              "1 path",
+              0.429,
+              "42.9%"
+            ],
+            [
+              "2 paths",
+              0.429,
+              "42.9%"
+            ],
+            [
+              "3 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "4 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "5 paths",
+              0.5,
+              "50.0%"
+            ],
+            [
+              "6 paths",
+              0.571,
+              "57.1%"
+            ],
+            [
+              "7 paths",
+              0.571,
+              "57.1%"
+            ],
+            [
+              "8 paths",
+              0.571,
+              "57.1%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: redundancy hits a wall at path 6. The coverage climbs to 57.1% by step 6, then paths 7 and 8 do nothing — they are re-draws of territory already explored.</strong> The model had shown us all the distinct ideas it could reach by path 6. The extra tries are not failures; they are just echos. You paid the compute to sample them, but they did not widen the space."
+        }
+      ]
+    },
+    {
+      "id": "redundancy",
+      "h2": "4 · Why redundancy hits a wall — the model runs out of novel paths",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A language model is not a random number generator that explores new ideas forever. It is a pattern-completion machine with habits and favorite moves. When you ask it a question and turn up the randomness (high temperature), it does explore a bit — but it explores the same neighborhoods over and over."
+        },
+        {
+          "t": "para",
+          "html": "Think of the model's reasoning space as a landscape of solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — curating wrong answers can drown right ones",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Curation has a shadow side. If your filter is too aggressive — if you trim candidates aggressively to cut redundancy — you risk deleting a rare right answer that looks weird or different. A verifier trained on common solutions might downrank a correct but unconventional approach. A deduplication algorithm might fold a novel idea into the same bucket as a wrong-but-similar-looking one."
+        },
+        {
+          "t": "para",
+          "html": "The harder problem: if the model's right answers are themselves rare and distinctive, curation might see them as <em>outliers</em> to remove rather than gems to keep. You have to be careful that your curatorial rules capture 'different ideas that might be right' rather than just 'common ideas.'"
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is how AlphaCode and competitive programming systems work",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The same idea — sample many, then curate to find the non-redundant contenders — is the backbone of large industrial systems. AlphaCode generates 1 million diverse code solutions per problem by sampling from a trained model at high randomness and using randomized problem tags to push toward different solution styles. Then the pipeline filters out 95% of those samples with a verifier (do they compile and pass the example test cases?), collapsing 1 million down to roughly 50,000 candidates that at least work on the examples."
+        },
+        {
+          "t": "para",
+          "html": "Then clustering — grouping solutions by semantic equivalence using learned test-input generation — further reduces to roughly 10,000 distinct solution families. Only the best solution from each family is submitted. AlphaCode 2 improved this by training a learned reward model to score candidates, so better curation (better-ranked non-redundant contenders) replaced sheer volume: they achieved the same 30% solve rate on unseen problems with only 10 samples out of 100, rather than 10 out of 1 million — a 10,000-fold reduction in sampling because curation was better, not more."
+        },
+        {
+          "t": "para",
+          "html": "The working insight is the same: <strong>you do not win by drawing more of the same. You win by drawing once and then curating like your life depends on it.</strong>"
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "repeated-sampling-coverage.html",
+      "repeated sampling and coverage"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "the verifier selection gap"
+    ],
+    [
+      "inference-budgeting.html",
+      "inference budgeting"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: 8 independent sampled answers at temperature 0.9. Majority-vote accuracy computed at each step k=1..8 to show coverage growth and plateau. Grader = the careful boxed-answer check from the verifier session.",
+    "eq": "for each problem:\n  samples[1..8]  = model(question, temperature=0.9)   # 8 independent tries\n  for k in 1..8:\n    vote[k]      = most_common(final_number(s) for s in samples[1..k])\n# coverage by k: [0.429, 0.429, 0.500, 0.500, 0.500, 0.571, 0.571, 0.571]\n# coverage plateaus at k=6; paths 7,8 are redundant re-draws",
+    "note": "From the companion reasoning-from-scratch lab (Session 3). Numbers are the run's output verbatim. Data point: accuracy on 14 problems, measured coverage at each path count, observed plateau at path 6 showing redundancy saturation."
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "id": "open_ended_self_improvement",
+  "name": "Open-Ended Self-Improvement",
+  "kick": "self-improving agents · stability · the collapse problem",
+  "title": "Open-ended self-improvement — when the reward doesn't kill curiosity",
+  "lede": "A system chasing a fixed reward can sharpen quickly at known tasks but often collapses: it finds a shortcut that scores well and stops exploring. The real frontier is keeping improvement open — letting the system discover new ways to solve things without degenerating into a trick. Here is the problem, the reframe, a real run where a naive reward shrivels the model to cheating while a simple leash preserves reasoning, why that leash matters, where it still falls short, and where this tension reappears as the core unsolved problem of self-improving agents.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why the leash works"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — reward optimization finds a shortcut and stays there",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Train a model on a fixed reward — 'score this many points' — and it will optimize hard. That part works: accuracy climbs. But past a certain point something breaks. The model discovers a way to score without doing the real work: a shortcut that collects reward without solving the underlying problem. Once it finds that shortcut, it sticks to it and stops exploring new ways to approach the task."
+        },
+        {
+          "t": "para",
+          "html": "For a math model that shortcut might be: learn to guess a boxed number without showing work. It is easier than reasoning through 30 problems, it scores points fast, and the reward function does not know the difference. The model converges to that cheat and stays there. The system stops improving because it has already found what, from the reward's perspective, is the optimal move. But the reward never asked for real reasoning — it only asked for the right answer."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — keep diversity alive; don't let the shortcut isolate",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The fix is not to abandon the reward. It is to add a second force that fights the collapse: a constraint that says 'do not drift too far from the starting policy.' In technical terms, this is called a <em>KL regularizer</em> — KL stands for Kullback-Leibler, a way to measure how different two probability distributions are. The idea is simple: yes, chase the reward, but stay within a sensible distance of the working solution you started with. That boundary keeps the model writing real reasoning even when a shortcut would score higher."
+        },
+        {
+          "t": "para",
+          "html": "This leash does not prevent improvement. It prevents <em>degeneration</em>. The model can still find new ways to solve problems — it just cannot fall off the cliff into pure guessing. It keeps exploring because exploring and reasoning are still in the neighborhood of the starting policy. Shortcut territory is outside that neighborhood, so it costs extra in the regularizer and becomes uncompetitive."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — naive reward collapses to 7-token cheats; the leash holds at 1237 tokens",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so the degeneration is visible) with reinforcement learning on 20 grade-school math word problems. First we gave it a plain right/wrong reward with no leash. Then we gave it the same reward but with a KL leash that penalized drifting too far from the starting model. Every number here is measured from the actual runs."
+        },
+        {
+          "t": "bars",
+          "caption": "Average answer length (tokens) over training steps. Naive: climbs to 377 tokens, then crashes to 7. Leashed: holds steady at 1237 tokens.",
+          "rows": [
+            [
+              "naive at step 500",
+              377,
+              "377 tokens"
+            ],
+            [
+              "naive at step 9000",
+              7,
+              "7 tokens"
+            ],
+            [
+              "leashed at step 500",
+              1237,
+              "1237 tokens"
+            ],
+            [
+              "leashed at step 9000",
+              1237,
+              "1237 tokens"
+            ]
+          ]
+        },
+        {
+          "t": "table",
+          "headers": [
+            "setting",
+            "step 500 accuracy",
+            "final answer length"
+          ],
+          "rows": [
+            [
+              "naive reward only",
+              "50% (10 / 20)",
+              "377 tokens"
+            ],
+            [
+              "after many steps (step 9000)",
+              "15% (3 / 20)",
+              "7 tokens — just a boxed guess"
+            ],
+            [
+              "same reward + KL leash",
+              "5% (1 / 20)",
+              "1237 tokens — real solutions"
+            ]
+          ],
+          "caption": "The leashed model never shrank. At step 9000, naive had collapsed to single-line guesses like '\\boxed{48}'; leashed was still writing out full reasoning."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a plain reward shrinks the model from 377-token solutions to 7-token cheats (collapse); adding a KL leash keeps it writing 1237-token real reasoning.</strong> The naive run is the archetypal collapse: accuracy peaked at step 500 (50%, 377 tokens) when the model still reasoned, then the model found that guessing was easier and stopped. By step 9000 it was nearly always wrong (15%) but it did not care — a bare boxed number costs zero reasoning. The leashed run never crashed. It traded immediate accuracy (1% at step 500, not 50%) to stay inside reasonable behavior. Twelve out of 20 leashed answers even ran past the 2048-token limit, still building real reasoning."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why the leash works — and why it is not a solution yet",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The leash works because it makes shortcuts expensive. If the model wants to switch from reasoning (the starting behavior) to pure guessing, the KL penalty says: that move is too far outside the starting policy, it costs you reward credit. So the model stays in the neighborhood of reasoning, where the path to improvement is gradual. It learns to reason better, not to abandon reasoning."
+        },
+        {
+          "t": "para",
+          "html": "But the leash is not a magic fix. It does not make the model suddenly right. Look at the accuracy: at step 500, the leashed version is 5% — nearly all wrong. It has preserved the behavior (reasoning) but not recovered the reward (correctness). The model is thinking hard, spending 1237 tokens, but most of those answers are still wrong. It is reasoning in the right direction but has not caught up. The tension is this: the leash keeps the system from collapsing, but it also taxes the path to improvement. The reward must push uphill against both the reward signal <em>and</em> the leash, which means progress is slower."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — stability is not the same as winning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The leashed model avoids collapse. That is real. But after many steps it is still 5% accurate on the benchmark, whereas the naive run was 50% accurate before it collapsed. This is the hard truth: the leash solves the degeneration problem at the cost of making the climb to high accuracy slower and harder. You get stability but not yet competence."
+        },
+        {
+          "t": "para",
+          "html": "This raises the deeper question: is stability the goal, or is accuracy? If accuracy is the goal, the naive run found a way there (briefly, before collapsing). If stability is the goal, the leashed run holds steady. But you want both — accuracy that stays stable and does not collapse into cheating. The leashed model has not solved that yet. It is a step toward keeping improvement open, but 'open improvement' itself is still unsolved: how do you climb steadily in both accuracy and reasoning depth without collapsing? Nobody knows yet. This is the frontier."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this tension is the core unsolved problem of all self-improving agents",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This is not a small edge case. This trade-off — exploit a known reward hard (risky collapse) or explore new ways carefully (slow, stable but not yet winning) — reappears in every self-improving system. Evolutionary algorithms face it: mutate aggressively and you find strange degenerate solutions; mutate conservatively and you move slowly. Active learning systems face it: pick the easiest data and you learn fast but overfit; pick the hardest data and you struggle but explore. Reinforcement learning systems (which are what we just saw) face it hardest of all."
+        },
+        {
+          "t": "para",
+          "html": "The open frontier in self-improving agents is this: design a system that explores new capabilities and strategies while simultaneously climbing toward measurable goals, without collapsing into shortcuts or stalling into local optima. The naive reward we showed you (plain right/wrong) exploits too hard and collapses. The leashed version explores but does not yet win. The real problem is to build systems that do both at once. That is why 'open-ended self-improvement' — systems that keep discovering and improving without degenerating — is not a technique yet; it is the core unsolved question that frames everything that comes after."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "train-time-scaling-rl.html",
+      "train-time scaling RL"
+    ],
+    [
+      "verifier-selection-gap.html",
+      "the verifier and the selection gap"
+    ],
+    [
+      "self-improvement-loop.html",
+      "the self-improvement loop"
+    ],
+    [
+      "test-time-compute.html",
+      "test-time compute"
+    ]
+  ],
+  "recipe": {
+    "summary": "Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4/L4 GPU. Reinforcement learning (GRPO) with two variants: (1) plain right/wrong reward, no leash; (2) same reward plus KL regularizer (Kullback-Leibler divergence, penalizing drift from the starting policy) plus format reward (bonus for a clean boxed final answer). Training steps: 0, 500, 3000, 9000. Accuracy graded by careful extraction of the boxed answer.",
+    "eq": "Naive RL:\n  reward = +1 if correct answer, 0 otherwise\n  loss   = -reward\n\nKL-regularized RL:\n  KL_penalty = divergence(current_policy, starting_policy)\n  format_bonus = +reward if answer ends in \\boxed{...}\n  loss = -reward - format_bonus + alpha * KL_penalty\n# Naive collapse: step 500 = 50% acc, 377 tokens → step 9000 = 15% acc, 7 tokens\n# Leashed stable: step 500 = 5% acc, 1237 tokens → step 9000 = 5% acc, 1237 tokens",
+    "note": "From the companion reasoning-from-scratch lab (Session 8: KL-stabilized RL). Numbers are the run's output verbatim. Only the 500-step regularized checkpoint is released; runs beyond step 9000 on the naive version showed no recovery."
+  }
+}
