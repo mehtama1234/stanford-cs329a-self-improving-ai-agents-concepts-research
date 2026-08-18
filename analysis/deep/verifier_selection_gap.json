@@ -224,5 +224,13 @@
     "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: generate 8 sampled answers at temperature 0.9, plus one greedy answer at temperature 0. Select by (a) random pick, (b) greedy, (c) majority vote of the 8 samples. Separately, take 25 traces and score them four ways: exact string match, number anywhere in text, last number in text, boxed final answer. Grader = careful boxed-answer check.",
     "eq": "# Coverage vs selection accuracy\nfor each problem:\n  samples[1..8]  = model(question, temperature=0.9)\n  greedy         = model(question, temperature=0)\n  random_pick    = choice(samples)    # one random sample\n  majority_vote  = most_common(final_number(s) for s in samples)\n\n# Results on 14 problems:\n# random pick: 39%  (39 accuracy)\n# greedy pick: 43%  (43 accuracy)\n# majority-vote pick: 57%  (57 accuracy / coverage ceiling of the pile)\n\n# Grader reliability on 25 traces:\n# exact match: 0/25 = 0%\n# number anywhere: 16/25 = 64%\n# last number: 10/25 = 40%\n# boxed answer: 11/25 = 44%",
     "note": "From the companion reasoning-from-scratch lab (Session 3 and Session 5). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "reasoning-lab",
+      "id": "05-verifier",
+      "label": "Run it: verifiers",
+      "note": "Coverage vs selection, measured in the lab."
+    }
+  ]
 }

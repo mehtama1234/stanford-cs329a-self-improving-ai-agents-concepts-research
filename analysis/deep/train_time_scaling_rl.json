@@ -246,6 +246,12 @@
       "id": "rl_for_llms",
       "label": "RL for LLMs",
       "note": "Where reward hacking comes from, and the KL leash that limits it."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "06-grpo",
+      "label": "Run it: GRPO",
+      "note": "Watch RL improve, then reward-hack and collapse, in the lab."
     }
   ]
 }

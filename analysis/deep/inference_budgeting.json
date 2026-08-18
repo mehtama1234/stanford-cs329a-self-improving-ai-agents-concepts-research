@@ -222,5 +222,13 @@
     "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: draw 8 sampled answers at temperature 0.9 (randomness turned up for diversity). Majority-vote the extracted final numbers. Plot accuracy as paths are added one by one. Grader = the careful boxed-answer check from Session 5 (44% of 25 traces).",
     "eq": "for each problem, k=1..8 paths:\n  samples[1..k] = model(question, temperature=0.9)  # k independent tries\n  vote          = most_common(final_number(s) for s in samples[1..k])\n  accuracy[k]   = count(vote is correct) / 14 problems\n# measured accuracy at each k: 0.429, 0.429, 0.500, 0.500, 0.500, 0.571, 0.571, 0.571",
     "note": "From companion reasoning-from-scratch lab (Session 3, self-consistency / majority vote). Data: S3 in reasoning.md. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "reasoning-lab",
+      "id": "02-cot-measured",
+      "label": "Run it: chain-of-thought, measured",
+      "note": "Watch the cost-accuracy tradeoff of longer thinking in the lab."
+    }
+  ]
 }

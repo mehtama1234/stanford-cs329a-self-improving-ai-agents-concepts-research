@@ -224,5 +224,13 @@
     "summary": "Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each: one greedy answer; then 8 sampled answers at temperature 0.9; majority-vote the extracted final numbers. Grader = the careful boxed-answer check from the verifier session.",
     "eq": "for each problem:\n  greedy_answer  = model(question, temperature=0)\n  samples[1..8]  = model(question, temperature=0.9)   # 8 independent tries\n  vote           = most_common(final_number(s) for s in samples)\n# greedy 6/14=43%, single-sample avg 39%, majority-of-8 8/14=57%\n# coverage curve over k=1..8: .429 .429 .500 .500 .500 .571 .571 .571",
     "note": "From the companion reasoning-from-scratch lab (Session 3). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "reasoning-lab",
+      "id": "03-self-consistency",
+      "label": "Run it: self-consistency",
+      "note": "Sample many answers and vote, measured in the lab."
+    }
+  ]
 }

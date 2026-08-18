@@ -227,5 +227,13 @@
     "summary": "Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4 GPU. Naive setup: plain RL with outcome-only reward (1 for correct, 0 for wrong). Regularized setup: same RL with KL penalty (leash toward original behavior). Training checkpoints: steps 0 (base), 500 (peak), 9000 (end). Measurement: accuracy by careful boxed-answer grader; average token count per sampled answer.",
     "eq": "naive reward:\n  gradient = (reward - baseline) * ∇log π(answer)\n\nwith KL leash:\n  gradient = (reward - baseline) * ∇log π(answer) - β * KL(π_new || π_base)",
     "note": "From the companion reasoning-from-scratch lab (Sessions 6 and 8, naive RL vs KL-regularized RL). Numbers are the run's output verbatim. Accuracy and token counts are measured directly."
-  }
+  },
+  "connects": [
+    {
+      "course": "reasoning-lab",
+      "id": "08-stable-rl",
+      "label": "Run it: KL-stabilized RL",
+      "note": "See a KL leash keep reasoning from collapsing, in the lab."
+    }
+  ]
 }

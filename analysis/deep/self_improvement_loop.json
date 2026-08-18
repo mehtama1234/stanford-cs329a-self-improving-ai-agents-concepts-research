@@ -210,6 +210,12 @@
       "id": "rl_for_llms",
       "label": "RL for LLMs",
       "note": "The loop is RL with the model generating its own training signal."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "04-self-refine",
+      "label": "Run it: self-refine",
+      "note": "Watch a model critique and fix its own answer in the lab."
     }
   ]
 }

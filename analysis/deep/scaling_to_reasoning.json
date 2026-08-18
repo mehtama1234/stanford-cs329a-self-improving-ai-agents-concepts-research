@@ -212,6 +212,12 @@
       "id": "scaling_laws",
       "label": "scaling laws",
       "note": "The regular decline of loss with scale, extended to reasoning."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "02-cot-measured",
+      "label": "Run it: CoT measured",
+      "note": "See where more thinking helps and where it stops, in the lab."
     }
   ]
 }

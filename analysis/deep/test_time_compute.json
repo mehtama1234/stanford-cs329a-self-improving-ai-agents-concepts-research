@@ -225,6 +225,12 @@
       "id": "transformer_block",
       "label": "the transformer block",
       "note": "Training-time depth is fixed inside the block; test-time compute is its flexible-depth counterpart at inference."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "02-cot-measured",
+      "label": "Run it: CoT measured",
+      "note": "Extra test-time thinking, measured on real problems in the lab."
     }
   ]
 }

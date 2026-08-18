@@ -206,6 +206,12 @@
       "id": "tokenization",
       "label": "tokenization",
       "note": "Traces are written in the very tokens tokenization defines."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "01-reasoning",
+      "label": "Run it: reasoning",
+      "note": "Direct answers vs thinking traces on a real small model, in the reasoning lab."
     }
   ]
 }

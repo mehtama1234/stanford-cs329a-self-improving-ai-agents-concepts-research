@@ -245,6 +245,12 @@
       "id": "reward",
       "label": "reward",
       "note": "Where a single reward is gameable, a per-step reward is the fix."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "05-verifier",
+      "label": "Run it: verifiers",
+      "note": "Grade the same traces four ways and see the scores diverge, in the lab."
     }
   ]
 }

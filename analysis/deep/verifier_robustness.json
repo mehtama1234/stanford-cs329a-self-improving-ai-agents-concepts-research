@@ -189,6 +189,12 @@
       "id": "rl_for_llms",
       "label": "RL for LLMs",
       "note": "The RL-collapse pattern is exactly why a verifier must be hard to trick."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "05-verifier",
+      "label": "Run it: verifiers",
+      "note": "See how grader design changes what the model learns, in the lab."
     }
   ]
 }

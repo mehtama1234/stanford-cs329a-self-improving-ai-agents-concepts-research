@@ -236,6 +236,12 @@
       "id": "fine_tuning",
       "label": "fine-tuning",
       "note": "Bootstrapping is fine-tuning on the teacher's own correct traces."
+    },
+    {
+      "course": "reasoning-lab",
+      "id": "07-distill",
+      "label": "Run it: distillation",
+      "note": "See distillation beat RL without collapse, in the lab."
     }
   ]
 }
