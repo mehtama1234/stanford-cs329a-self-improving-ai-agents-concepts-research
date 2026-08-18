@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -157,6 +161,24 @@
           "html": "The course from here out is all methods to make that inference-time work better: verifiers to judge whether a step is right, self-consistency to aggregate many tries, reinforcement learning to train the reasoning traces themselves, distillation to copy from a teacher. All of them sit on top of this one insight: a fixed model can unlock hidden ability by thinking out loud."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Spending compute at answer-time instead of training-time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This is the reframe behind o1, reasoning models, and test-time compute: instead of pre-training a massive model, train a smaller one and let it think at inference time. DeepSeek-R1 and similar systems use a fixed model but allow it much longer to work through hard problems. Theorem provers (like those used for formal mathematics) spend CPU on verification at query time. Even small local models get a boost when deployed with extra tokens reserved for reasoning, verification, or search before the final answer."
+        },
+        {
+          "t": "para",
+          "html": "A model's capability lives partly in its weights and partly in what you ask it to do before answering. The same frozen network can write a quick guess or spend seconds working through the problem step by step. By moving compute from training-time to inference-time, you trade upfront expense (huge pre-training runs) for pay-as-you-go reasoning (cheap at scale, used only when needed). The model unlocks latent ability by writing its thinking down before committing."
+        },
+        {
+          "t": "insight",
+          "html": "Thinking is not free: traces cost many times times more compute, and even with thinking, genuinely hard problems still stumped the model—reasoning helps medium-hard problems far more than hard ones."
+        }
+      ]
     }
   ],
   "related": [
@@ -177,5 +199,19 @@
     "summary": "Qwen3-0.6B on 5 hard reasoning questions. For each: one direct greedy answer (temperature 0), then one think-first answer where the model was prompted to write a private reasoning trace before answering (temperature 0, but longer context). Grader = manual verification + token counting. Qwen-3.0.5B, Colab L4 GPU.",
     "eq": "direct_answer = model(question, temperature=0)\nthink_first = model('Think step-by-step. Then answer.\\n' + question, temperature=0)\n# direct: 3/5 (60%)\n# think-first: 4/5 (80%)\n# strawberry example: direct=1 (21 tokens), think-first=3 (336 tokens)\n# average length: direct ~21-70 tokens, think-first ~336-1449 tokens",
     "note": "From the companion reasoning-from-scratch lab (Session 1, scaling-to-reasoning deep-dive run). Numbers are measured verbatim from the real model run. The small model size is intentional: smaller reasoning is more visible and easier to interpret; frontier models show the same pattern at larger scale."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "pretraining",
+      "label": "pretraining",
+      "note": "Pretraining is the scaling curve this builds on."
+    },
+    {
+      "course": "stanford",
+      "id": "scaling_laws",
+      "label": "scaling laws",
+      "note": "The regular decline of loss with scale, extended to reasoning."
+    }
+  ]
 }

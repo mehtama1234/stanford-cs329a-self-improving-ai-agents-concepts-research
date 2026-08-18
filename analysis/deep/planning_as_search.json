@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -129,6 +133,24 @@
         {
           "t": "para",
           "html": "And it composes with everything else in the course: search needs a way to score partial paths (a verifier or value estimate), and the compute it spends is exactly the test-time compute other pages describe. Planning is search; the rest is how to search well."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Look ahead before committing to the next step",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Tree-of-thoughts reasoning samples multiple branches of thought and backs out of dead ends, exploring a tree of reasoning paths instead of committing to the first best-looking step. Monte-Carlo tree search powers game-playing agents that imagine many move sequences. Agentic coding tools explore multiple refactoring paths and selects the most promising. Each system treats planning as search: lay out possible sequences and pick the path that reaches the goal, not the move that looks best alone."
+        },
+        {
+          "t": "para",
+          "html": "The mechanism: expand candidate partial plans outward from the current state. Score each partial plan (using a verifier or value estimate) to decide which to expand next. Stop when one path reaches the goal. The search is allowed to explore steps that temporarily make things worse, because it judges whole routes, not single moves. A heuristic guides which branches to expand—expand the most promising ones first to avoid exploring everything."
+        },
+        {
+          "t": "insight",
+          "html": "The cost is real: search expands many states and times out on large spaces, which is why intelligent prioritization of branches is essential."
         }
       ]
     }

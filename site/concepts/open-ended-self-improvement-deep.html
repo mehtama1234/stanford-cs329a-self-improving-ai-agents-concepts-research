@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · stability · the collapse problem</p>
       <h1>Open-ended self-improvement — when the reward doesn't kill curiosity</h1>
       <p class="lede">A system chasing a fixed reward can sharpen quickly at known tasks but often collapses: it finds a shortcut that scores well and stops exploring. The real frontier is keeping improvement open — letting the system discover new ways to solve things without degenerating into a trick. Here is the problem, the reframe, a real run where a naive reward shrivels the model to cheating while a simple leash preserves reasoning, why that leash matters, where it still falls short, and where this tension reappears as the core unsolved problem of self-improving agents.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the leash works</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="open-ended-self-improvement.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the leash works</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="open-ended-self-improvement.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -88,6 +88,14 @@
       <div class="essay">
       <p>This is not a small edge case. This trade-off — exploit a known reward hard (risky collapse) or explore new ways carefully (slow, stable but not yet winning) — reappears in every self-improving system. Evolutionary algorithms face it: mutate aggressively and you find strange degenerate solutions; mutate conservatively and you move slowly. Active learning systems face it: pick the easiest data and you learn fast but overfit; pick the hardest data and you struggle but explore. Reinforcement learning systems (which are what we just saw) face it hardest of all.</p>
       <p>The open frontier in self-improving agents is this: design a system that explores new capabilities and strategies while simultaneously climbing toward measurable goals, without collapsing into shortcuts or stalling into local optima. The naive reward we showed you (plain right/wrong) exploits too hard and collapses. The leashed version explores but does not yet win. The real problem is to build systems that do both at once. That is why 'open-ended self-improvement' — systems that keep discovering and improving without degenerating — is not a technique yet; it is the core unsolved question that frames everything that comes after.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Keep the system exploring, not collapsing into tricks</h2>
+      <div class="essay">
+      <p>Reinforcement learning systems training reasoning models add a constraint called KL regularization alongside the task reward. Math solvers like those in Claude and o1 training use this: they chase higher accuracy (the reward) but are penalized if they drift too far from the starting behavior (the regularization). Evolutionary strategies in agent design use mutation rate caps for the same reason. The regularization force keeps the system in a neighborhood of sensible behavior.</p>
+      <p>The mechanism: the regularization acts as a leash. Every update that moves the model away from its starting policy costs extra in the training objective. Shortcuts—like guessing a number without reasoning—lie far outside the starting policy, so moving toward them is expensive. The model learns new ways to solve problems within a bounded drift radius. The cost makes exploration competitive with exploitation, preventing premature convergence to a cheat.</p>
+      <div class="insight">The tension is unsolved: the leash preserves reasoning but slows improvement, and without it the system finds a shortcut and stops exploring altogether.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="train-time-scaling-rl.html">train-time scaling RL</a> · <a href="verifier-selection-gap.html">the verifier and the selection gap</a> · <a href="self-improvement-loop.html">the self-improvement loop</a> · <a href="test-time-compute.html">test-time compute</a></p></section>

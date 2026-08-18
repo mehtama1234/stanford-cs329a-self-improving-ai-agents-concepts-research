@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · learning from explanations, not just answers</p>
       <h1>Rationale bootstrapping — when a small model learns by imitating a teacher's worked solutions</h1>
       <p class="lede">You have answers but not the explanations for how to reach them. The fix is to ask a stronger model to show its work, keep the good solutions, and train the small model to copy that reasoning shape. Here is the idea, a real run where a 0.6-billion-parameter student climbed from 10% to 65% by imitating a teacher, why the learned explanations stick (no collapse), and the one real ceiling.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why learned rationales stick</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="rationale-bootstrapping.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why learned rationales stick</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="rationale-bootstrapping.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -58,6 +58,7 @@
       <div class="essay">
       <p>Ask a much stronger model (one with billions of parameters, or one trained on a huge reasoning dataset) to answer the hard problems and write out all the steps. Keep only the solutions where the final answer is correct — throw away the reasoning traces that lead to wrong answers. Now you have a curated set of worked solutions: question, step-by-step reasoning, and verified answer. Train the small model to imitate these traces. This is <em>rationale bootstrapping</em>: you bootstrap the missing explanations by copying them from a teacher you trust, then train your small model on the copy.</p>
       <p>The bootstrap is the key move: instead of inventing the explanations yourself (expensive and error-prone), you borrow them from a model you already know can reason, filter to keep only the correct ones, and use those traces as training data. The small model is not learning to discover; it is learning to imitate the shape of good thinking.</p>
+      <p>The hidden quantity is the fraction of the teacher's generated rationales that are actually correct — only those pass the filter, and that pass-rate sets the ceiling on what the student can learn.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -93,6 +94,15 @@
       <p>It also explains why these small models are so fragile when pushed: they are imitating, not reasoning. When a new problem falls too far outside the teacher's distribution, the imitated pattern does not generalize. But within the training domain—math, logic, coding problems similar to the teacher's solutions—the distilled reasoning holds.</p>
       </div>
     </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Small models copying teacher worked solutions</h2>
+      <div class="essay">
+      <p>Every small reasoning model in production learns this way: a stronger teacher (DeepSeek-R1, a large frontier model) solves hard problems and writes out step-by-step reasoning. Those solutions are filtered to keep only ones with correct final answers. Then a smaller model gets fine-tuned to imitate the teacher's traces. Examples include how companies build embedded math assistants, coding tutors, and logic engines that run on-device and must stay small. The approach bypasses the need to train on raw internet data and instead borrows explanations from a trusted, capable source.</p>
+      <p>The model is not discovering reasoning; it is learning the shape of good thinking through supervised learning on the teacher's worked examples. A small student exposed to a teacher's step-by-step solutions learns both the problem-solving pattern and the intermediate checkpoints. Instead of chasing one right answer, the student absorbs a reasoning structure that transfers to new, unseen problems within the same domain. This is why distillation is more stable than reinforcement learning on small models: the student sees the full causal chain from problem to answer, with every step visible.</p>
+      <div class="insight">The ceiling is inherited: a small model trained to copy a teacher can never exceed what the teacher knows, making teacher quality the critical lever.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="http://localhost:8015/concepts/fine_tuning-deep.html" style="font-weight:700">fine-tuning</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">Bootstrapping is fine-tuning on the teacher's own correct traces.</div></li></ul></section>
     <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="inference-budgeting.html">inference budgeting</a> · <a href="domain-reasoning-data.html">domain reasoning data</a></p></section>
     <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
       <p class="muted">Qwen3-0.6B student fine-tuned to imitate DeepSeek-R1 teacher traces on 20 GSM8K grade-school math problems, Colab L4 GPU. For each epoch: compute accuracy (careful boxed-answer grader from verifier session) and average solution length in tokens. Teacher solutions were generated by DeepSeek-R1, filtered to keep only correct final answers, then used as training targets.</p>

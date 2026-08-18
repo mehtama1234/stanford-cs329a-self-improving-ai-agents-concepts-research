@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -161,6 +165,24 @@
           "html": "Every heavier method — every RL trick, every planning algorithm, every agent architecture with feedback — is built on this one core piece: answer, check if the answer is right (by critique, by verification, by reward, by the outside world), and use that signal to improve. The self-improvement loop is not an algorithm. It is the shape of learning itself."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Answer, critique your work, revise—close the feedback loop",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Self-refinement appears in every system that gives agents feedback: a model answers a question, is prompted to critique and revise the answer, and repeats. Tool-using agents (with calculators, code runners, search) use this loop to verify their work before finalizing. Reinforcement-learning-trained reasoning models optimize this loop by rewarding correct revisions and penalizing bad ones. Even simple local systems use it: answer, check, try again. The loop is the seed of everything: verifiers are external critics, reinforcement learning adds rewards, and planning agents scaffold the loop with tools."
+        },
+        {
+          "t": "para",
+          "html": "The model makes a first attempt, then reads its own work and decides whether it is right. If it detects an error, it revises. No external training signal, no new data—just feedback from the model to itself. Each revision that corrects a mistake teaches the model that self-critique works. If the model catches the error and fixes it on the second pass, the loop succeeded. The loop is closed because the output of one step (an incorrect answer) becomes the input to the next step (the critique)."
+        },
+        {
+          "t": "insight",
+          "html": "Self-critique is only as good as the model's own judgment: if the model cannot tell right from wrong, it may break correct answers while revising, or stay stuck repeating the same mistake."
+        }
+      ]
     }
   ],
   "related": [
@@ -181,5 +203,13 @@
     "summary": "Qwen3-0.6B on 12 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: (1) generate an answer; (2) prompt: critique your answer and revise it, output the new answer; (3) repeat step 2 one more time for a second revision. Grader = the careful boxed-answer check (the same careful grader used in the verifier and RL sessions).",
     "eq": "for each problem:\n  round_1 = model(question)                                             # first answer\n  round_2 = model(question + '\\n' + round_1 + '\\nCritique and revise') # revised once\n  round_3 = model(question + '\\n' + round_2 + '\\nCritique and revise') # revised twice\n  grade each answer via careful_grader()\n# round 1: 5/12 = 42%\n# round 2: 6/12 = 50%  (fixed 1, broke 0)\n# round 3: 7/12 = 58%  (fixed 1, broke 0)\n# total: 2 fixed, 0 broken across all revisions",
     "note": "From the companion reasoning-from-scratch lab (Session 4). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "rl_for_llms",
+      "label": "RL for LLMs",
+      "note": "The loop is RL with the model generating its own training signal."
+    }
+  ]
 }

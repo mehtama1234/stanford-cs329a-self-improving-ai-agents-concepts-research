@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · generating vs picking</p>
       <h1>The verifier selection gap — generating many answers and picking the right one are different jobs</h1>
       <p class="lede">A model can produce a pile of candidate answers, and the right one might be in there. But finding it is a separate, harder problem from generating it. Here is why: the numbers from a real run where voting reaches 57% but a single pick is only 39–43%, and four different graders score the same answers 0% / 64% / 40% / 44%. The gap is where selection happens, and this is where almost all of self-improvement lives.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#gap">The gap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="verifier-selection-gap.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#gap">The gap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="verifier-selection-gap.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -58,6 +58,7 @@
       <div class="essay">
       <p>Call <em>coverage</em> the ability to produce the right answer at least once in a batch of tries. Call <em>selection accuracy</em> the ability to pick the right one from the batch. A system can have high coverage — the right answer appears in 8 out of 10 tries — but still pick wrong if the selector is broken. Sampling more to raise coverage does nothing if the selector does not improve.</p>
       <p>This is the gap: your generator and your selector are separate machines working on separate problems.</p>
+      <p>The hidden quantity is the selection gap — the difference between the right answer being somewhere in the samples and actually being picked out; most of the room to improve lives there.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -90,6 +91,14 @@
       <div class="essay">
       <p>This is why the rest of the course exists. Every technique that follows — reward models, process supervision, constitutional critique, RL training — is trying to close this gap. The goal is always the same: build a better selector.</p>
       <p>If you can sample 100 answers and the right one appears in 80 of them (coverage = 80%), your system is wasted if the selector picks wrong 70% of the time. Raising the model's generation ceiling is useless without raising the selection accuracy to match. The hard part of self-improvement is not generating more candidates — it is reliably picking the good one.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Generating an answer and picking the right one are different problems</h2>
+      <div class="essay">
+      <p>A model can produce many candidates—some right, some wrong. The hard part is not generating the pile but finding the right one in it. A system might sample many completions in a coder agent, try many proof paths in a theorem prover, or generate multiple math solutions. But if the selector is weak, the system hands back the wrong answer even though the right one was in the pile. Majority voting beats random guessing but beats single greedy picks too.</p>
+      <p>Coverage is the ceiling—does the right answer appear at least once in all attempts? Selection accuracy is what the user sees—does the system hand back the correct one? A verifier or voting rule bridges the gap, but it has its own failure modes. If the verifier is trained on a faulty signal or overfits to training data, it picks wrong confidently. The gap widens when the verifier and generator are mismatched.</p>
+      <div class="insight">Self-improvement is bottlenecked by selection, not generation; raising coverage alone is wasted if the picker fails.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="test-time-compute.html">test-time compute</a> · <a href="inference-budgeting.html">inference budgeting</a> · <a href="process-reward-models.html">process reward models</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>

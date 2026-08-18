@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · fixed spend, smart allocation</p>
       <h1>Inference budgeting — where to spend a fixed compute budget to get the most right answers</h1>
       <p class="lede">Every extra sample, every deeper chain of thought, every verifier check costs real time and money. If you have a budget — a fixed amount to spend per problem — you need to know where spending buys you the most. Here is the idea, a real run where more samples help until they don't, why the payoff flattens, the hard part of knowing when to stop, and where smart budgeting reappears in heavier methods.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#shape">The shape of the payoff</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="inference-budgeting.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#shape">The shape of the payoff</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="inference-budgeting.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -58,6 +58,7 @@
       <div class="essay">
       <p>Instead of spending the same on every question, the better picture is this: estimate how hard each problem is, then allocate the budget to where it pays off. If the model seems confident and correct on early tries, stop and move on — the marginal benefit of one more sample is tiny compared to its cost. If the model is stumbling and unsure — confidence is low, many tries give different answers — then spending more buys real improvement.</p>
       <p>This is called <em>inference budgeting</em>: treat compute as a real scarce resource (not free) and allocate it to the problems where an extra step is most likely to help. Harder problems get more samples, more reasoning steps, more verifier calls. Easier problems get fewer. And you measure payoff as accuracy gained per dollar spent.</p>
+      <p>The hidden quantity is the point of diminishing returns — where each extra unit of test-time compute stops buying accuracy, which is exactly what a budget should be set to.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -72,7 +73,7 @@
       <h2>4 · The shape of the payoff — diminishing returns are real</h2>
       <div class="essay">
       <p>The reason the curve flattens is that voting works by finding consensus. Early samples cover new ground: sample 1 shows one chain of reasoning, sample 2 shows a different one. They explore, and the majority vote changes as you add them. But by sample 6, you have already seen most of the answers the model can reach. Samples 7 and 8 just re-show you answers you have already counted. No new consensus emerges, so the vote does not change.</p>
-      <p>This is the signature of <em>diminishing returns</em>: the first unit of spend (first sample) moves the needle a lot, the second unit less, the third even less, and past a certain point you are buying nothing. In this case, the knee of the curve is at 6 samples. Beyond that, you are throwing budget at a problem that has shown you what it can do.</p>
+      <p>This is the signature of <em>diminishing returns</em>: the first unit of spend (first sample) moves the needle a lot, the second unit less, the third even less, and past a certain point you are buying nothing. In this case, the point of diminishing returns is at 6 samples. Beyond that, you are throwing budget at a problem that has shown you what it can do.</p>
       <p>Other kinds of spend show the same pattern. Adding longer chains of thought — 100 tokens, 500 tokens, 2000 tokens — helps up to a point, then wastes tokens on repetition or rambling. Running a verifier on 1 sample gets you a yes-or-no signal; running it on 20 samples usually confirms the same answer, so the extra checks are redundant. Knowing where the knee is means knowing where to cut the budget.</p>
       </div>
     </section>
@@ -90,6 +91,14 @@
       <p>The ideal inference budget allocator does not know problem difficulty in advance either — it has to adapt as it goes. Spend 1 sample, measure its confidence. If confidence is high, stop and move on (save the budget for the next problem). If confidence is low, spend a second sample. Measure again. Keep going until confidence hits a threshold or the budget runs out.</p>
       <p>This move — early stopping based on learned signals — is called an <em>adaptive router</em>. It has learned to recognize when a model is confident (about to be right) and when it is uncertain (need to keep trying). The system watches intermediate signals — PRM (process) scores, confidence, agreement among samples — and makes per-problem spend decisions. The same principle works for routing between methods: should I do sampling, or refine? Sequential reasoning, or parallel? One verifier call, or two? A good router learns to spend deep reasoning time (expensive) on the hard paths and cheap sampling on the easy ones.</p>
       <p>This is active research because it works: test-time compute (spending more at inference rather than training) has become a primary frontier for scaling, and budgeting it well is the key to making that scaling efficient. The agents doing this well today allocate compute adaptively, not uniformly.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Spend compute where it buys the most improvement</h2>
+      <div class="essay">
+      <p>Reasoning models like o1 and Claude implement adaptive compute allocation: easier problems get fewer sampling attempts and shorter reasoning chains; harder problems trigger longer chains and more verifier calls. Search-augmented agents measure confidence after a single attempt and decide whether to sample more or move on. Modern inference routers in deployed systems allocate tokens per query based on learned confidence signals, saving expensive reasoning compute on straightforward questions.</p>
+      <p>The mechanism works by observing early signals: when the first few attempts agree, stop and cache the answer. When they disagree, spend more samples until consensus emerges or a budget limit is reached. Some systems use a learned confidence estimator trained on past attempts—it recognizes patterns that precede correct answers and patterns that precede continued uncertainty. Others use heuristics like token count or entropy of the first sample. The router adapts allocation per problem, not uniformly.</p>
+      <div class="insight">The payoff flattens quickly: the first few extra attempts solve new cases, but further attempts re-show the same wrong answers and waste budget.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="test-time-compute.html">test-time compute</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>

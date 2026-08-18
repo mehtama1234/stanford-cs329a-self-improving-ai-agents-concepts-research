@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -37,7 +41,7 @@
       "blocks": [
         {
           "t": "para",
-          "html": "Imagine a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see."
+          "html": "Consider a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see."
         },
         {
           "t": "para",
@@ -158,6 +162,24 @@
         {
           "t": "para",
           "html": "The big win over outcome-only methods: a PRM sees the step-level mistake as it happens. An outcome grader only knows the final answer was wrong, and cannot tell why. Process supervision is dense, local feedback; outcome supervision is sparse, global feedback. Dense feedback trains better reasoning — it is why every serious reasoning model now includes process reward models or step-level annotations."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Label the reasoning, not just the result",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Researchers train verifiers on datasets where each intermediate step of a solution is labeled correct or incorrect, not just the final answer. This process supervision trains a model to recognize broken reasoning at the point it happens. OpenAI's work on mathematical reasoning used step-level annotations. Modern RL training for reasoning agents uses these step labels to guide learning. Systems like o1 training use step-level feedback from automated verifiers."
+        },
+        {
+          "t": "para",
+          "html": "The mechanism: during labeling, humans or strong automated verifiers examine each step independently and mark it as correct or incorrect based on whether it follows a valid rule in the domain. A model trained on these step labels learns local, dense feedback—it sees exactly which step caused a failure. In contrast, outcome-only labels (right or wrong answer) only reveal the final result, leaving ambiguity about where reasoning broke. Process supervision closes the loop: the labeler's judgment reaches the model as step-level credit or blame."
+        },
+        {
+          "t": "insight",
+          "html": "The tradeoff is explicit: process supervision is more expensive to create but generates much richer learning signals than outcome-only grading."
         }
       ]
     }

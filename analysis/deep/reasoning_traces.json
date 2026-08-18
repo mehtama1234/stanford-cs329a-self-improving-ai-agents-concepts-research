@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -56,6 +60,10 @@
         {
           "t": "para",
           "html": "Now when the model is right, you can see a sensible chain: step 1 → step 2 → step 3 → answer. When it is wrong, you can point to which step failed. And if the model has the capability to solve the problem but was being sloppy, asking it to slow down and write things down sometimes coaxes that capability out."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is how many thinking tokens the model spends before answering — and whether those tokens converge on an answer or just wander, which is what separates real reasoning from confident rambling."
         }
       ]
     },
@@ -160,6 +168,24 @@
           "html": "Modern reasoning models are trained by distillation from larger teachers or by reinforcement learning that rewards each step. But both start with a reasoning trace. The trace is the unit of improvement: step-level supervision, step-level voting, step-level reward. You cannot improve what you cannot see. Making the model write its reasoning down is the first move — not because writing is thinking, but because it creates something downstream systems can work with."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Making the model write its steps before answering",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Chain-of-thought is now standard in every production reasoning system: o1 and DeepSeek-R1 show their work for hard problems. Math assistants use it to make mistakes visible. Coding tools use it to justify each refactoring step. Theorem provers ask for step-by-step justifications so each lemma can be verified independently. Even smaller local models use reasoning traces when deployed in applications where accuracy matters more than latency."
+        },
+        {
+          "t": "para",
+          "html": "Instead of jumping to the answer, the model writes out intermediate steps, turning a silent final result into a visible chain. Each step becomes a checkpoint that can be graded, interrupted, or verified. Downstream systems (verifiers, human reviewers, other agents) can now see where the reasoning broke rather than only seeing the final error. If a step is correct, the next step has a firmer foundation. If a step is wrong, it is caught early and flagged before it corrupts the whole answer."
+        },
+        {
+          "t": "insight",
+          "html": "Visible reasoning enables supervision at each step, but the cost is real: traces are often several times times longer than direct answers, and not all longer traces are wiser ones."
+        }
+      ]
     }
   ],
   "related": [],
@@ -167,5 +193,19 @@
     "summary": "Qwen3-0.6B on 30 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: one direct-answer run at temperature 0; one chain-of-thought run at temperature 0. Graded by checking the final numeric answer against the gold solution.",
     "eq": "for each problem:\n  direct    = model(question, temperature=0)\n              # extract and check final numeric answer\n  thinking  = model(question, system_prompt='Think through this step by step, then give your final answer.', temperature=0)\n              # extract and check final numeric answer\n# direct: 14/30=47%, avg_tokens=226\n# thinking: 18/30=60%, avg_tokens=1449, 12/30 hit 2048 token limit\n# rescued 4 (direct→thinking), broke 0",
     "note": "From the companion reasoning-from-scratch lab (Session 2). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "attention",
+      "label": "attention",
+      "note": "The written trace is the externalised form of the focus attention learns."
+    },
+    {
+      "course": "stanford",
+      "id": "tokenization",
+      "label": "tokenization",
+      "note": "Traces are written in the very tokens tokenization defines."
+    }
+  ]
 }

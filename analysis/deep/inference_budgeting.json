@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -56,6 +60,10 @@
         {
           "t": "para",
           "html": "This is called <em>inference budgeting</em>: treat compute as a real scarce resource (not free) and allocate it to the problems where an extra step is most likely to help. Harder problems get more samples, more reasoning steps, more verifier calls. Easier problems get fewer. And you measure payoff as accuracy gained per dollar spent."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is the point of diminishing returns — where each extra unit of test-time compute stops buying accuracy, which is exactly what a budget should be set to."
         }
       ]
     },
@@ -129,7 +137,7 @@
         },
         {
           "t": "para",
-          "html": "This is the signature of <em>diminishing returns</em>: the first unit of spend (first sample) moves the needle a lot, the second unit less, the third even less, and past a certain point you are buying nothing. In this case, the knee of the curve is at 6 samples. Beyond that, you are throwing budget at a problem that has shown you what it can do."
+          "html": "This is the signature of <em>diminishing returns</em>: the first unit of spend (first sample) moves the needle a lot, the second unit less, the third even less, and past a certain point you are buying nothing. In this case, the point of diminishing returns is at 6 samples. Beyond that, you are throwing budget at a problem that has shown you what it can do."
         },
         {
           "t": "para",
@@ -170,6 +178,24 @@
         {
           "t": "para",
           "html": "This is active research because it works: test-time compute (spending more at inference rather than training) has become a primary frontier for scaling, and budgeting it well is the key to making that scaling efficient. The agents doing this well today allocate compute adaptively, not uniformly."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Spend compute where it buys the most improvement",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reasoning models like o1 and Claude implement adaptive compute allocation: easier problems get fewer sampling attempts and shorter reasoning chains; harder problems trigger longer chains and more verifier calls. Search-augmented agents measure confidence after a single attempt and decide whether to sample more or move on. Modern inference routers in deployed systems allocate tokens per query based on learned confidence signals, saving expensive reasoning compute on straightforward questions."
+        },
+        {
+          "t": "para",
+          "html": "The mechanism works by observing early signals: when the first few attempts agree, stop and cache the answer. When they disagree, spend more samples until consensus emerges or a budget limit is reached. Some systems use a learned confidence estimator trained on past attempts—it recognizes patterns that precede correct answers and patterns that precede continued uncertainty. Others use heuristics like token count or entropy of the first sample. The router adapts allocation per problem, not uniformly."
+        },
+        {
+          "t": "insight",
+          "html": "The payoff flattens quickly: the first few extra attempts solve new cases, but further attempts re-show the same wrong answers and waste budget."
         }
       ]
     }

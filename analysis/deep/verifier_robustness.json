@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -140,6 +144,24 @@
           "html": "The collapse in the RL runs (S6: 50% down to 15%) happened precisely when the reward signal was weak. The model reward-hacked a simple right/wrong rule. The next ideas in the course build better verifiers: multiple graders (ensemble them), process supervision (grade steps, not just the answer), and adaptive weighting (trust the grader that works on your distribution)."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Your grader's blindness becomes the system's blindness",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A verifier scores candidate solutions in a loop that optimizes the score. If the verifier is easy to fool—just check if the right number appears anywhere—the model learns to place the number and skip reasoning. If it is too strict, every solution scores zero and nothing improves. In math reasoning, code synthesis, and question-answering systems, a weak verifier trains the system on the wrong signal: good work gets thrown out, bad work gets approved."
+        },
+        {
+          "t": "para",
+          "html": "The very same set of solutions can score anywhere from nothing to a solid fraction depending only on how you grade — exact-string matching, lenient matching, last-number matching, and careful boxed-answer matching each give a different result. The verifier's design is a choice that propagates backward into what the model learns to optimize for. Robust verifiers use several independent graders, calibration on a held-out set, and audits for adversarial examples."
+        },
+        {
+          "t": "insight",
+          "html": "A verifier that is easy to game teaches the system to game it; a strict one teaches nothing; calibration and ensemble matter more than strictness alone."
+        }
+      ]
     }
   ],
   "related": [
@@ -160,5 +182,13 @@
     "summary": "Qwen3-0.6B on 25 GSM8K grade-school math problems, Colab T4/L4 GPU. Each solution trace left unchanged. Then graded by four independent verifiers: (1) exact string match (does it match the gold string), (2) lenient scanner (does the right number appear anywhere), (3) last number (grab the final number), (4) careful boxed answer (read the formal final answer box). All 25 traces kept identical; only the grading rule changed.",
     "eq": "verifiers tested on the SAME 25 solution traces:\n  exact_match      = count(trace_matches_gold_string)            # 0/25 = 0%\n  lenient          = count(gold_number in trace)                  # 16/25 = 64%\n  last_number      = count(final_number(trace) == gold)           # 10/25 = 40%\n  careful_boxed    = count(boxed_answer_section(trace) == gold)   # 11/25 = 44%\n# The same model, same traces. Verifier choice alone changes score from 0% to 64%.",
     "note": "From the companion reasoning-from-scratch lab (Session 5, 'verifier sensitivity'). Numbers are the run's output verbatim. The 'careful boxed answer' grader (44%) is the standard used to grade all subsequent RL and distillation runs (S6–S8)."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "rl_for_llms",
+      "label": "RL for LLMs",
+      "note": "The RL-collapse pattern is exactly why a verifier must be hard to trick."
+    }
+  ]
 }

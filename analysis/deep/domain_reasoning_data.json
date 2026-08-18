@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -161,7 +165,7 @@
       "blocks": [
         {
           "t": "para",
-          "html": "Here is the catch: to build domain reasoning data, you need two things: (1) a source of problems, and (2) verified correct solutions with intermediate steps. You cannot just copy random solutions from the internet — they are often wrong, incomplete, or missing the reasoning. Every wrong solution you feed the model teaches it to reason the wrong way, and that habit is hard to break."
+          "html": "The catch: to build domain reasoning data, you need two things: (1) a source of problems, and (2) verified correct solutions with intermediate steps. You cannot just copy random solutions from the internet — they are often wrong, incomplete, or missing the reasoning. Every wrong solution you feed the model teaches it to reason the wrong way, and that habit is hard to break."
         },
         {
           "t": "para",
@@ -184,6 +188,24 @@
         {
           "t": "para",
           "html": "The result: a 7-billion model competing with much larger models on math benchmarks, because domain reasoning data outweighs parameter count. The lesson generalizes: gathering, verifying, and curating domain data — the hard, unglamorous work we saw collapse your small model at epoch 3 — is the real bottleneck in building reasoning agents. Scale the data; scale the reasoning."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Curated verified datasets beat generic text",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Math assistants like DeepSeek Math mine curated mathematical problem-solution pairs from web archives, then train on those instead of generic internet text. Coding assistants use verified code solutions from benchmarks. Reasoning models like o1 and Claude synthesize domain-specific reasoning traces from strong verifiers and build training datasets from those traces. Each system treats the hard work—gathering correct examples in the target domain—as the real bottleneck, not model size."
+        },
+        {
+          "t": "para",
+          "html": "The mechanism: a weak model is fed many correct step-by-step solutions for problems it will later see. It observes patterns repeated across correct solutions: how to structure an equation, when to verify intermediate results, how to recognize a dead end. The model allocates its capacity to these recurrent patterns. Training happens in multiple passes through the same curated set, with early stopping once gains plateau. The model learns what right reasoning looks like in that domain because every example shown to it displays correct reasoning."
+        },
+        {
+          "t": "insight",
+          "html": "The payoff is lopsided: a small model trained on domain data outperforms a much larger model trained on generic text in that domain."
         }
       ]
     }

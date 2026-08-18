@@ -43,7 +43,7 @@
       <p class="eyebrow">agents improving themselves · feedback turns mistakes into corrections · the seed of reinforcement learning</p>
       <h1>The self-improvement loop — when an error creates the information to fix it</h1>
       <p class="lede">Agents make mistakes. The question is whether each mistake becomes information that improves the next attempt. Here is the loop: answer, look at your own answer, revise it, repeat. A real run on a small model over three rounds showed mistakes being caught and corrected, accuracy climbing from 42% to 58%, and a simple pattern: every fix that changed an answer made it better. This is where reinforcement learning, verifiers, and tool-using agents all begin.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the loop can climb</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="self-improvement-loop.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the loop can climb</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="self-improvement-loop.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -90,6 +90,15 @@
       <p>Every heavier method — every RL trick, every planning algorithm, every agent architecture with feedback — is built on this one core piece: answer, check if the answer is right (by critique, by verification, by reward, by the outside world), and use that signal to improve. The self-improvement loop is not an algorithm. It is the shape of learning itself.</p>
       </div>
     </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Answer, critique your work, revise—close the feedback loop</h2>
+      <div class="essay">
+      <p>Self-refinement appears in every system that gives agents feedback: a model answers a question, is prompted to critique and revise the answer, and repeats. Tool-using agents (with calculators, code runners, search) use this loop to verify their work before finalizing. Reinforcement-learning-trained reasoning models optimize this loop by rewarding correct revisions and penalizing bad ones. Even simple local systems use it: answer, check, try again. The loop is the seed of everything: verifiers are external critics, reinforcement learning adds rewards, and planning agents scaffold the loop with tools.</p>
+      <p>The model makes a first attempt, then reads its own work and decides whether it is right. If it detects an error, it revises. No external training signal, no new data—just feedback from the model to itself. Each revision that corrects a mistake teaches the model that self-critique works. If the model catches the error and fixes it on the second pass, the loop succeeded. The loop is closed because the output of one step (an incorrect answer) becomes the input to the next step (the critique).</p>
+      <div class="insight">Self-critique is only as good as the model's own judgment: if the model cannot tell right from wrong, it may break correct answers while revising, or stay stuck repeating the same mistake.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="http://localhost:8015/concepts/rl_for_llms-deep.html" style="font-weight:700">RL for LLMs</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">The loop is RL with the model generating its own training signal.</div></li></ul></section>
     <section class="fp"><p class="muted">Related: <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>
     <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
       <p class="muted">Qwen3-0.6B on 12 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: (1) generate an answer; (2) prompt: critique your answer and revise it, output the new answer; (3) repeat step 2 one more time for a second revision. Grader = the careful boxed-answer check (the same careful grader used in the verifier and RL sessions).</p>

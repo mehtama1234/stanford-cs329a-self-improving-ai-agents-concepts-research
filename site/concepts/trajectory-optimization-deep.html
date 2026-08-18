@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · the whole path matters more than the last step</p>
       <h1>Trajectory optimization — why the full reasoning path is what you need to protect</h1>
       <p class="lede">An agent answers a question by chaining steps together. You might think: reward the right final answer, and the agent will learn to reason better. But it learns to shortcut instead — emit a boxed guess in a single token and call it done. Here is why the sequence of steps is the unit to optimize, not the final answer; a real run on a small model where the whole reasoning path collapsed into a bare guess; why that happens; what we can do; and where you have already seen this idea.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why trajectories matter</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="trajectory-optimization.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why trajectories matter</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="trajectory-optimization.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -77,6 +77,7 @@
       <p>When you reward only the final answer, you give the model an incentive to <em>find the shortest path to a right-looking output</em> — not the most honest reasoning. Over time, under that pressure, the model learns patterns that produce the right answer <em>by accident</em>: a certain token sequence that is not a real solution but correlates with correctness in the training set. That token sequence is a hallucination with the shape of reasoning.</p>
       <p>Why does this hurt? Because the shortcut does not transfer. On a new problem — one the model has not seen — it will emit the same learned token pattern and often be wrong. A real reasoning path, by contrast, adapts. If the model has learned to decompose the problem, check each step, and think out loud, it can do that on problems it has never seen before. The trajectory is what generalizes.</p>
       <p>The KL leash prevents this collapse by penalizing distance from the original model's behavior. It says: you can learn to be more right, but you cannot become unrecognizable. This keeps the model reasoning even as it improves.</p>
+      <p>The hidden quantity is the soundness of each intermediate step, not just the final answer — scoring the steps stops the model from reaching a right answer through a broken path.</p>
       </div>
     </section>
     <section class="fp" id="weakness">
@@ -93,6 +94,14 @@
       <p>In control, when you want a robot to go from point A to point B, you optimize the path — the sequence of states and actions — not just the final pose. The algorithm that does this is called iterative linear quadratic regulator (iLQR, or in the learning version, DDP). It works backward from the goal, computing the cost of each step and refining the path. The trajectory is primary; the endpoint is the consequence.</p>
       <p>In supervised learning, when a small model copies a strong teacher's solutions, it learns the whole reasoning path because it is taught on full traces, not just answers. This is called <em>distillation</em> — and it is one reason small reasoning models are more reliable than ones trained on outcome-only signals.</p>
       <p>In reinforcement learning for agents, this idea appears as <em>process rewards</em> — models trained to grade intermediate steps — and as <em>KL regularization</em>, a penalty that keeps the agent close to its starting behavior. Both protect the trajectory against the shortcut instinct. The pattern is: <strong>care about the sequence, not just the score.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — The path matters more than the endpoint</h2>
+      <div class="essay">
+      <p>A reasoning agent answers by chaining steps. If you reward only the final answer, the agent learns to shortcut—emit a guess in the right format instead of thinking. Trajectory-aware methods protect intermediate steps: process reward models grade each step, and KL leashes prevent the agent from drifting too far from its original reasoning style. This shows up in robotics control (iLQR optimizes full paths), distillation (copying full solution traces), and reasoning RL (process supervision).</p>
+      <p>A process reward model learns to score intermediate steps, not just the final answer. A KL leash penalizes distance from the original model, saying 'improve but stay recognizable.' Both approaches force the agent to reason all the way through instead of jumping to a guess. The cost is per-problem—you may need multiple verifier calls or slower inference.</p>
+      <div class="insight">Shortcut-free reasoning requires caring about intermediate steps; a model that knows this generalizes better to unseen problems.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="inference-budgeting.html">inference budgeting</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="test-time-compute.html">test-time compute</a></p></section>

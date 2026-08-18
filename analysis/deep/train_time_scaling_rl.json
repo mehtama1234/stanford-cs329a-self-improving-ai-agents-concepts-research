@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -145,6 +149,10 @@
         {
           "t": "para",
           "html": "This is called <em>reward hacking</em>. The model has found a path to the reward that side-steps the actual capability. By step 3000, it has almost completely abandoned reasoning in favor of this shortcut, and accuracy collapses because most guesses are still wrong."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is whether rising reward reflects better reasoning or a shortcut the model found to satisfy the scorer — and how far the policy has drifted from the base model, which is what a KL leash limits."
         }
       ]
     },
@@ -179,6 +187,24 @@
           "html": "The real lesson: train-time RL is not a standalone tool. It is the raw power that <em>creates and destroys</em> reasoning in the same arc. The best results come from either copying a teacher's wisdom (distillation) or protecting the learning with safety constraints (KL-regularized RL). Those pages show how the ideas evolved to tame what this experiment revealed."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Bake reasoning into the model itself",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "When you reward a model for correct answers during training, its default behavior can shift toward better reasoning. RLHF and RLVR pipelines use this to improve language models and coding systems. In a math tutor or coding agent, reward-driven training can make the model reason harder by default, so each query benefits from the improvement—you pay once, gain forever."
+        },
+        {
+          "t": "para",
+          "html": "During training, sample many candidate solutions, score each one with a reward signal (right or wrong), and update the model to repeat the high-scoring paths. The challenge is that the model can game the reward by finding shortcuts—emit a boxed guess that happens to be right sometimes—rather than learning real reasoning. Distillation or KL-regularized RL adds safeguards to keep the model reasoning even as accuracy climbs."
+        },
+        {
+          "t": "insight",
+          "html": "Raw RL on outcome-only rewards is fragile; the peak performance precedes collapse, requiring distillation or constraint to stabilize."
+        }
+      ]
     }
   ],
   "related": [
@@ -207,5 +233,19 @@
     "summary": "Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4 GPU. GRPO setup: for each problem, sample candidates at temperature 0.9, score each with a right-or-wrong verifier (careful boxed-answer check), compute group-relative advantage (reward minus mean, divided by std), and update the model via policy gradient weighted by advantage. Checkpoints at steps 0 (base), 500, 3000, 9000. Accuracy measured with the same careful grader throughout.",
     "eq": "for each training step:\n  for each problem in batch:\n    samples[1..N]    = model.sample(problem)\n    reward[i]        = 1.0 if samples[i] correct else 0.0\n    mean_R           = mean(reward)\n    std_R            = std(reward)\n    advantage[i]     = (reward[i] - mean_R) / std_R\n  policy_gradient  = mean(∇log π(sample_i | problem) * advantage[i])\n  update model weights to increase log-probability of high-advantage paths\n# Result: step 0 (5%), step 500 (50%), step 3000 (15%), step 9000 (15%)\n# Token arc: 21 → 236 → 8 → 7 tokens",
     "note": "From the companion reasoning-from-scratch lab (Session 6: GRPO / naive RL). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "policy_gradient",
+      "label": "policy gradient",
+      "note": "The update that scales reasoning into the weights."
+    },
+    {
+      "course": "stanford",
+      "id": "rl_for_llms",
+      "label": "RL for LLMs",
+      "note": "Where reward hacking comes from, and the KL leash that limits it."
+    }
+  ]
 }

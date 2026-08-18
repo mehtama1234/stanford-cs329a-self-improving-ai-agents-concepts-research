@@ -125,6 +125,22 @@ def render(spec: dict) -> str:
             out.append(render_block(b))
         out.append("      </div>")
         out.append("    </section>")
+    if spec.get("connects"):
+        BASES = {"stanford": "http://localhost:8015/concepts/", "cs329a": "http://localhost:8016/concepts/", "llm-lab": "http://localhost:8017/", "reasoning-lab": "http://localhost:8018/"}
+        SUFFIX = {"stanford": "-deep.html", "cs329a": "-deep.html", "llm-lab": ".html", "reasoning-lab": ".html"}
+        CLABEL = {"stanford": "Build · Stanford LLM", "cs329a": "Reason · CS329A", "llm-lab": "LLM-from-scratch lab", "reasoning-lab": "Reasoning-from-scratch lab"}
+        items = ""
+        for c in spec["connects"]:
+            course = c.get("course", "stanford")
+            href = BASES[course] + esc(c["id"]) + SUFFIX[course]
+            items += (f'<li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7">'
+                      f'<a href="{href}" style="font-weight:700">{esc(c["label"])}</a>'
+                      f' <span class="muted" style="font-size:13px">· {esc(CLABEL[course])}</span>'
+                      f'<div style="font-size:14.5px;margin-top:3px">{c["note"]}</div></li>')
+        out.append(
+            '    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2>'
+            '<p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p>'
+            f'<ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff">{items}</ul></section>')
     if spec.get("related"):
         rel = " · ".join(f'<a href="{esc(h.replace(chr(95),chr(45)))}">{esc(l)}</a>' for h, l in spec["related"])
         out.append(f'    <section class="fp"><p class="muted">Related: {rel}</p></section>')

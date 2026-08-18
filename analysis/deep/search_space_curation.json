@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -129,7 +133,7 @@
         },
         {
           "t": "para",
-          "html": "Think of the model's reasoning space as a landscape of solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done."
+          "html": "The model's reasoning space is the set of possible solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done."
         }
       ]
     },
@@ -162,6 +166,24 @@
         {
           "t": "para",
           "html": "The working insight is the same: <strong>you do not win by drawing more of the same. You win by drawing once and then curating like your life depends on it.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Filtering redundancy instead of sampling blindly",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "AlphaCode uses this: sample a million code solutions, then use a verifier to filter to the thousands that pass basic tests, cluster semantic duplicates, and keep one representative from each family. Competitive programming systems apply curation to reduce from thousands of candidates down to a handful of truly distinct ideas. Math assistants deduplicate reasoning paths so that voting works on novel strategies, not echoes. The key is recognizing that more samples only help if they explore new territory; beyond that point, extra samples are wasted compute."
+        },
+        {
+          "t": "para",
+          "html": "Instead of sampling blindly hoping randomness finds new ideas, actively curate: deduplicate answers by semantic equivalence, filter out candidates that fail basic logic or format checks, rank survivors by quality signals (does a verifier trust this? does it solve test cases?), and keep only the diverse top contenders. This shrinks the candidate pile to non-redundant solutions so each distinct idea has a fair chance in voting or selection. The goal is not more candidates, but smarter candidates."
+        },
+        {
+          "t": "insight",
+          "html": "Curation risks deleting rare right answers if filters are too aggressive; a correct but unconventional solution can look like an outlier to be removed."
         }
       ]
     }

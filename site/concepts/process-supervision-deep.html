@@ -43,13 +43,13 @@
       <p class="eyebrow">self-improving agents · first principles · grade the steps, not just the answer</p>
       <h1>Process supervision — why grading the answer hides the broken step</h1>
       <p class="lede">A final answer can be right for the wrong reason, or wrong because of a single bad step in the middle. Grading only the answer gives a garbled signal: it can't tell you which step failed. Here is the idea, a real run where four different ways of reading the final answer give four wildly different scores, why that matters, what you lose without step-level feedback, and where this reappears as process reward models.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">Why outcome-only grades lie</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="process-supervision.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">Why outcome-only grades lie</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="process-supervision.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
       <h2>1 · The problem — a lucky wrong-method answer looks identical to a sound one</h2>
       <div class="essay">
-      <p>Imagine a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see.</p>
+      <p>Consider a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see.</p>
       <p>The deeper problem: a model that reaches the right answer the wrong way is indistinguishable from a model that solved it soundly. If you reward both the same way, you train the wrong behaviour. The model learns 'if the final number looks right, you win' instead of 'here is how to think through it.' Over time, the model stops learning to reason; it learns to imitate the look of a final answer.</p>
       <p>So the honest question is: <strong>How do you know which step in a chain of reasoning actually works, and which one is a hidden mistake?</strong></p>
       </div>
@@ -92,6 +92,14 @@
       <p>Process supervision is not just an idea — it is the foundation of <em>process reward models</em>, sometimes called PRMs. A process reward model is a neural network that learns to score each step of a reasoning trace as correct or incorrect. At test time, you sample many candidate solutions, and the PRM scores each step in each solution. The solutions with the highest step-level scores are the ones to trust.</p>
       <p>This is where self-improving agents live. A generator produces many candidate solutions (sampling). A process reward model scores the steps (process supervision). A reinforcement learning algorithm learns to produce solutions that score well according to the PRM. Each round, the agent gets better — not by the PRM being perfect, but by it catching enough of the broken steps that the next round avoids them.</p>
       <p>The big win over outcome-only methods: a PRM sees the step-level mistake as it happens. An outcome grader only knows the final answer was wrong, and cannot tell why. Process supervision is dense, local feedback; outcome supervision is sparse, global feedback. Dense feedback trains better reasoning — it is why every serious reasoning model now includes process reward models or step-level annotations.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Label the reasoning, not just the result</h2>
+      <div class="essay">
+      <p>Researchers train verifiers on datasets where each intermediate step of a solution is labeled correct or incorrect, not just the final answer. This process supervision trains a model to recognize broken reasoning at the point it happens. OpenAI's work on mathematical reasoning used step-level annotations. Modern RL training for reasoning agents uses these step labels to guide learning. Systems like o1 training use step-level feedback from automated verifiers.</p>
+      <p>The mechanism: during labeling, humans or strong automated verifiers examine each step independently and mark it as correct or incorrect based on whether it follows a valid rule in the domain. A model trained on these step labels learns local, dense feedback—it sees exactly which step caused a failure. In contrast, outcome-only labels (right or wrong answer) only reveal the final result, leaving ambiguity about where reasoning broke. Process supervision closes the loop: the labeler's judgment reaches the model as step-level credit or blame.</p>
+      <div class="insight">The tradeoff is explicit: process supervision is more expensive to create but generates much richer learning signals than outcome-only grading.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="verifier-robustness.html">verifier robustness</a> · <a href="process-reward-models.html">process reward models</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>

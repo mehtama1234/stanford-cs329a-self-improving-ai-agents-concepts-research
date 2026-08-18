@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · step-level credit beats one final grade</p>
       <h1>Process reward models — when a right-or-wrong reward hacks itself down</h1>
       <p class="lede">Reinforcement learning with a single final reward grows reasoning first, then learns a shortcut and collapses it away. The fix is a model that scores each intermediate step, so training can reward a good process, not just a lucky ending. Here is the idea, a real run on a small model where a plain reward grew real reasoning then shriveled it to a bare guess, why step-level supervision prevents the collapse, what breaks, and where process reward models reappear as the standard fix for reasoning.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">Why step-level reward holds</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="process-reward-models.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">Why step-level reward holds</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="process-reward-models.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -58,6 +58,7 @@
       <div class="essay">
       <p>Instead of one reward at the end, use a second model trained to grade intermediate steps. As the reasoning unfolds — step 1, step 2, step 3 — the scoring model watches each one and gives it a score. Now the training signal is dense and arrives early: step 3 gets credit (or blame) <em>as it happens</em>, not buried in the pile.</p>
       <p>A model trained to score reasoning steps is called a <em>process reward model</em>. It turns one sparse, final reward into many dense, step-level rewards. An algorithm trained with per-step scores can tell which steps were worth keeping and which were dead ends — because each step says something about itself, not just the landing.</p>
+      <p>The hidden quantity is a score on every intermediate step, not just the final answer — a per-step signal that says which parts of the reasoning were worth keeping.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -93,6 +94,15 @@
       <p>This reappears not just in reasoning but in any long-chain task: code generation (reward each subroutine independently), scientific discovery (score the hypothesis before the experiment), search and planning (score each candidate expansion). Anywhere a single final grade is too late and too coarse, a process that scores the steps is the fix. The reason these methods exist is exactly what you see in the numbers above: 50% to 15%, reasoning collapsing into guesses. Process reward models are how you stop it.</p>
       </div>
     </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Score each step, not just the final answer</h2>
+      <div class="essay">
+      <p>Reasoning models like o1, DeepSeek-R1, and Claude train a separate process reward model that grades each intermediate step of a reasoning trace as correct or incorrect. During reinforcement learning, this step-level signal trains the base model to produce good solutions. Automated theorem provers use similar idea: score each proof step, not just 'did we reach the theorem.' Code-generation systems score each generated function, not just 'did the full program run.'</p>
+      <p>The mechanism: as the generator produces a reasoning trace, the process reward model watches each step and assigns a score. Training receives dense feedback—each step is evaluated independently—instead of a single final grade. Reinforcement learning uses these step scores as the reward signal. An algorithm can now tell which steps the model should keep and which are dead ends. The model is incentivized to produce steps that score well, which correlates with correct reasoning.</p>
+      <div class="insight">The fix works because step-level scores reveal where the chain broke; a final-only reward cannot see shortcuts hiding in the middle steps.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="http://localhost:8015/concepts/reward-deep.html" style="font-weight:700">reward</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">Where a single reward is gameable, a per-step reward is the fix.</div></li></ul></section>
     <section class="fp"><p class="muted">Related: <a href="reasoning-traces.html">reasoning traces</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="scaling-to-reasoning.html">scaling to reasoning with RL</a></p></section>
     <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
       <p class="muted">Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4/L4 GPU, GRPO reinforcement learning. Single reward signal: 1 for correct final answer (careful boxed-answer grading), 0 for wrong. Training for 9000 steps. Checkpoints at 0 / 500 / 3000 / 9000 steps. Measured accuracy and average tokens per answer.</p>

@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · redundancy and diversity</p>
       <h1>Search-space curation — why more samples fail to help once the space is mapped</h1>
       <p class="lede">When you sample many answers, the model's outputs repeat themselves. Most tries are redundant re-draws of ideas you have already seen. The real work is not drawing more — it is curating what you draw: filtering, deduplicating, and ranking the candidates so that the rare right answer stands out. Here is the problem, the reframe, a real run where redundancy kills the benefit of more tries, why it happens, where it breaks, and where this idea reappears in production systems.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#redundancy">Why redundancy hits a wall</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="search-space-curation.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#redundancy">Why redundancy hits a wall</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="search-space-curation.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -72,7 +72,7 @@
       <h2>4 · Why redundancy hits a wall — the model runs out of novel paths</h2>
       <div class="essay">
       <p>A language model is not a random number generator that explores new ideas forever. It is a pattern-completion machine with habits and favorite moves. When you ask it a question and turn up the randomness (high temperature), it does explore a bit — but it explores the same neighborhoods over and over.</p>
-      <p>Think of the model's reasoning space as a landscape of solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done.</p>
+      <p>The model's reasoning space is the set of possible solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done.</p>
       </div>
     </section>
     <section class="fp" id="weakness">
@@ -88,6 +88,14 @@
       <p>The same idea — sample many, then curate to find the non-redundant contenders — is the backbone of large industrial systems. AlphaCode generates 1 million diverse code solutions per problem by sampling from a trained model at high randomness and using randomized problem tags to push toward different solution styles. Then the pipeline filters out 95% of those samples with a verifier (do they compile and pass the example test cases?), collapsing 1 million down to roughly 50,000 candidates that at least work on the examples.</p>
       <p>Then clustering — grouping solutions by semantic equivalence using learned test-input generation — further reduces to roughly 10,000 distinct solution families. Only the best solution from each family is submitted. AlphaCode 2 improved this by training a learned reward model to score candidates, so better curation (better-ranked non-redundant contenders) replaced sheer volume: they achieved the same 30% solve rate on unseen problems with only 10 samples out of 100, rather than 10 out of 1 million — a 10,000-fold reduction in sampling because curation was better, not more.</p>
       <p>The working insight is the same: <strong>you do not win by drawing more of the same. You win by drawing once and then curating like your life depends on it.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Filtering redundancy instead of sampling blindly</h2>
+      <div class="essay">
+      <p>AlphaCode uses this: sample a million code solutions, then use a verifier to filter to the thousands that pass basic tests, cluster semantic duplicates, and keep one representative from each family. Competitive programming systems apply curation to reduce from thousands of candidates down to a handful of truly distinct ideas. Math assistants deduplicate reasoning paths so that voting works on novel strategies, not echoes. The key is recognizing that more samples only help if they explore new territory; beyond that point, extra samples are wasted compute.</p>
+      <p>Instead of sampling blindly hoping randomness finds new ideas, actively curate: deduplicate answers by semantic equivalence, filter out candidates that fail basic logic or format checks, rank survivors by quality signals (does a verifier trust this? does it solve test cases?), and keep only the diverse top contenders. This shrinks the candidate pile to non-redundant solutions so each distinct idea has a fair chance in voting or selection. The goal is not more candidates, but smarter candidates.</p>
+      <div class="insight">Curation risks deleting rare right answers if filters are too aggressive; a correct but unconventional solution can look like an outlier to be removed.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>

@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -143,6 +147,10 @@
         {
           "t": "para",
           "html": "The KL leash prevents this collapse by penalizing distance from the original model's behavior. It says: you can learn to be more right, but you cannot become unrecognizable. This keeps the model reasoning even as it improves."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is the soundness of each intermediate step, not just the final answer — scoring the steps stops the model from reaching a right answer through a broken path."
         }
       ]
     },
@@ -179,6 +187,24 @@
         {
           "t": "para",
           "html": "In reinforcement learning for agents, this idea appears as <em>process rewards</em> — models trained to grade intermediate steps — and as <em>KL regularization</em>, a penalty that keeps the agent close to its starting behavior. Both protect the trajectory against the shortcut instinct. The pattern is: <strong>care about the sequence, not just the score.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — The path matters more than the endpoint",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A reasoning agent answers by chaining steps. If you reward only the final answer, the agent learns to shortcut—emit a guess in the right format instead of thinking. Trajectory-aware methods protect intermediate steps: process reward models grade each step, and KL leashes prevent the agent from drifting too far from its original reasoning style. This shows up in robotics control (iLQR optimizes full paths), distillation (copying full solution traces), and reasoning RL (process supervision)."
+        },
+        {
+          "t": "para",
+          "html": "A process reward model learns to score intermediate steps, not just the final answer. A KL leash penalizes distance from the original model, saying 'improve but stay recognizable.' Both approaches force the agent to reason all the way through instead of jumping to a guess. The cost is per-problem—you may need multiple verifier calls or slower inference."
+        },
+        {
+          "t": "insight",
+          "html": "Shortcut-free reasoning requires caring about intermediate steps; a model that knows this generalizes better to unseen problems."
         }
       ]
     }

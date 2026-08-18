@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -56,6 +60,10 @@
         {
           "t": "para",
           "html": "This is the gap: your generator and your selector are separate machines working on separate problems."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is the selection gap — the difference between the right answer being somewhere in the samples and actually being picked out; most of the room to improve lives there."
         }
       ]
     },
@@ -168,6 +176,24 @@
         {
           "t": "para",
           "html": "If you can sample 100 answers and the right one appears in 80 of them (coverage = 80%), your system is wasted if the selector picks wrong 70% of the time. Raising the model's generation ceiling is useless without raising the selection accuracy to match. The hard part of self-improvement is not generating more candidates — it is reliably picking the good one."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Generating an answer and picking the right one are different problems",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A model can produce many candidates—some right, some wrong. The hard part is not generating the pile but finding the right one in it. A system might sample many completions in a coder agent, try many proof paths in a theorem prover, or generate multiple math solutions. But if the selector is weak, the system hands back the wrong answer even though the right one was in the pile. Majority voting beats random guessing but beats single greedy picks too."
+        },
+        {
+          "t": "para",
+          "html": "Coverage is the ceiling—does the right answer appear at least once in all attempts? Selection accuracy is what the user sees—does the system hand back the correct one? A verifier or voting rule bridges the gap, but it has its own failure modes. If the verifier is trained on a faulty signal or overfits to training data, it picks wrong confidently. The gap widens when the verifier and generator are mismatched."
+        },
+        {
+          "t": "insight",
+          "html": "Self-improvement is bottlenecked by selection, not generation; raising coverage alone is wasted if the picker fails."
         }
       ]
     }

@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · correct examples matter more than scale</p>
       <h1>Domain reasoning data — why a tiny model trained on verified math beats generic text</h1>
       <p class="lede">A model trained on general internet text has seen little correct step-by-step reasoning for hard domains like math. The fix is not to wait for a larger model — it is to gather verified worked examples from that domain and train on those. Here is the idea, a real run where a small model trained on correct math reasoning traces jumped from 10% to 65%, why such data is scarce, what breaks without it, and where this approach reappears in real reasoning models.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why targeted data works</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="domain-reasoning-data.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why targeted data works</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="domain-reasoning-data.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -83,7 +83,7 @@
     <section class="fp" id="weakness">
       <h2>5 · The one real weakness — domain data is scarce and expensive to produce</h2>
       <div class="essay">
-      <p>Here is the catch: to build domain reasoning data, you need two things: (1) a source of problems, and (2) verified correct solutions with intermediate steps. You cannot just copy random solutions from the internet — they are often wrong, incomplete, or missing the reasoning. Every wrong solution you feed the model teaches it to reason the wrong way, and that habit is hard to break.</p>
+      <p>The catch: to build domain reasoning data, you need two things: (1) a source of problems, and (2) verified correct solutions with intermediate steps. You cannot just copy random solutions from the internet — they are often wrong, incomplete, or missing the reasoning. Every wrong solution you feed the model teaches it to reason the wrong way, and that habit is hard to break.</p>
       <p>Generating correct solutions requires either hiring expert humans (expensive and slow) or using a strong language model that you already trust and that you can verify (DeepSeek-R1 in our case). Either path is a bottleneck. The model that generated our 20 verified traces was very large and capable — something you need a research group or a company to run.</p>
       <p>A second problem: domain data, once curated, is often not public. Companies treat their internal datasets as competitive assets. Researchers share some benchmarks, but reproducible, high-quality domain reasoning datasets are rare. This is exactly why this sourcing and curation is becoming a central research problem in self-improving agents.</p>
       </div>
@@ -93,6 +93,14 @@
       <div class="essay">
       <p>The same idea — curate domain-specific, verified, step-by-step data and train on it — is the foundation of real reasoning models in production. DeepSeek Math, an early competitor to OpenAI's o1, began by training a 7-billion-parameter model on domain data: they mined OpenWebMath, a curated dataset of mathematical problem-solution pairs extracted and filtered from Common Crawl. Instead of generic internet text, they trained on math-heavy content.</p>
       <p>The result: a 7-billion model competing with much larger models on math benchmarks, because domain reasoning data outweighs parameter count. The lesson generalizes: gathering, verifying, and curating domain data — the hard, unglamorous work we saw collapse your small model at epoch 3 — is the real bottleneck in building reasoning agents. Scale the data; scale the reasoning.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Curated verified datasets beat generic text</h2>
+      <div class="essay">
+      <p>Math assistants like DeepSeek Math mine curated mathematical problem-solution pairs from web archives, then train on those instead of generic internet text. Coding assistants use verified code solutions from benchmarks. Reasoning models like o1 and Claude synthesize domain-specific reasoning traces from strong verifiers and build training datasets from those traces. Each system treats the hard work—gathering correct examples in the target domain—as the real bottleneck, not model size.</p>
+      <p>The mechanism: a weak model is fed many correct step-by-step solutions for problems it will later see. It observes patterns repeated across correct solutions: how to structure an equation, when to verify intermediate results, how to recognize a dead end. The model allocates its capacity to these recurrent patterns. Training happens in multiple passes through the same curated set, with early stopping once gains plateau. The model learns what right reasoning looks like in that domain because every example shown to it displays correct reasoning.</p>
+      <div class="insight">The payoff is lopsided: a small model trained on domain data outperforms a much larger model trained on generic text in that domain.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="test-time-compute.html">test-time compute and sampling</a> · <a href="self-improvement-loop.html">the self-improvement loop</a> · <a href="verifier-selection-gap.html">verifier and selection</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a></p></section>

@@ -43,7 +43,7 @@
       <p class="eyebrow">self-improving agents · first principles · look before you leap</p>
       <h1>Planning as search — why the best next step walks you into a wall</h1>
       <p class="lede">An agent that always takes the action that looks best right now can march straight into a dead end. Planning means searching over whole sequences of actions, not grading one move at a time. Here is the idea, a real run where a greedy agent gets stuck and search finds the way, why moving away from the goal is sometimes the only way to reach it, what search costs, and where it reappears as tree-of-thoughts and game-playing search.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why search wins</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="planning-as-search.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why search wins</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="planning-as-search.html">Atlas card</a></div>
     </section>
 
     <section class="fp" id="problem">
@@ -86,6 +86,14 @@
       <div class="essay">
       <p>The move from &lsquo;best next step&rsquo; to &lsquo;search over sequences&rsquo; is one of the oldest ideas in AI and it keeps coming back. When a reasoning model explores several branches of thought and backs out of dead ends, that is <strong>tree-of-thoughts</strong> — search over reasoning steps instead of grid cells. When a game agent imagines many move sequences and keeps the promising ones, that is <strong>Monte-Carlo tree search</strong>, the engine behind superhuman Go and chess. When an agent drafts a multi-step plan, tries it, and revises, it is searching the space of plans.</p>
       <p>And it composes with everything else in the course: search needs a way to score partial paths (a verifier or value estimate), and the compute it spends is exactly the test-time compute other pages describe. Planning is search; the rest is how to search well.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Look ahead before committing to the next step</h2>
+      <div class="essay">
+      <p>Tree-of-thoughts reasoning samples multiple branches of thought and backs out of dead ends, exploring a tree of reasoning paths instead of committing to the first best-looking step. Monte-Carlo tree search powers game-playing agents that imagine many move sequences. Agentic coding tools explore multiple refactoring paths and selects the most promising. Each system treats planning as search: lay out possible sequences and pick the path that reaches the goal, not the move that looks best alone.</p>
+      <p>The mechanism: expand candidate partial plans outward from the current state. Score each partial plan (using a verifier or value estimate) to decide which to expand next. Stop when one path reaches the goal. The search is allowed to explore steps that temporarily make things worse, because it judges whole routes, not single moves. A heuristic guides which branches to expand—expand the most promising ones first to avoid exploring everything.</p>
+      <div class="insight">The cost is real: search expands many states and times out on large spaces, which is why intelligent prioritization of branches is essential.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="trajectory-optimization.html">trajectory optimization for agents</a> · <a href="test-time-compute.html">test-time compute</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="agent-loop.html">the agent loop</a></p></section>

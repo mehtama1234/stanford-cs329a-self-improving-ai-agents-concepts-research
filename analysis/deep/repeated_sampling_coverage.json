@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -176,6 +180,24 @@
         {
           "t": "para",
           "html": "And it needs no training at all — it is the cheapest, first thing to reach for when a fixed model underperforms. It is also the raw material every heavier method feeds on: a verifier picks from these samples, and reinforcement learning rewards the good ones. Get many tries first; everything else is about choosing among them."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Many tries plus voting beats one careful answer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Self-consistency is how o1, Llama-Reasoner, and smaller models handle uncertainty on hard problems: sample the same question many times with randomness enabled, extract the final answer from each trace, and vote. If the right answer surfaces on even a few paths, the vote tends to find it. This is used in production math graders, coding evaluators, and any system where you can afford to ask the model the same question multiple times and aggregate the results. Pass@k metrics measure this directly: did the right answer appear in any of your k independent tries?"
+        },
+        {
+          "t": "para",
+          "html": "The mechanics are simple: draw independent samples at high temperature to explore different reasoning paths, then tally which final answer appears most often. Wrong answers scatter across many different wrong numbers; right answers cluster. This makes voting robust when the model has the capability to solve the problem but is being noisy. The vote exploits the fact that consensus usually points to correctness, especially when wrong answers disagree with each other."
+        },
+        {
+          "t": "insight",
+          "html": "Voting hits a hard ceiling: if the right answer never appears in any path, no amount of voting can conjure it, and the gains flatten as you discover the model's full reachable space."
         }
       ]
     }

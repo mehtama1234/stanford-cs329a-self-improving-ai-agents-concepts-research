@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -56,6 +60,10 @@
         {
           "t": "para",
           "html": "A model trained to score reasoning steps is called a <em>process reward model</em>. It turns one sparse, final reward into many dense, step-level rewards. An algorithm trained with per-step scores can tell which steps were worth keeping and which were dead ends — because each step says something about itself, not just the landing."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is a score on every intermediate step, not just the final answer — a per-step signal that says which parts of the reasoning were worth keeping."
         }
       ]
     },
@@ -188,6 +196,24 @@
           "html": "This reappears not just in reasoning but in any long-chain task: code generation (reward each subroutine independently), scientific discovery (score the hypothesis before the experiment), search and planning (score each candidate expansion). Anywhere a single final grade is too late and too coarse, a process that scores the steps is the fix. The reason these methods exist is exactly what you see in the numbers above: 50% to 15%, reasoning collapsing into guesses. Process reward models are how you stop it."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Score each step, not just the final answer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reasoning models like o1, DeepSeek-R1, and Claude train a separate process reward model that grades each intermediate step of a reasoning trace as correct or incorrect. During reinforcement learning, this step-level signal trains the base model to produce good solutions. Automated theorem provers use similar idea: score each proof step, not just 'did we reach the theorem.' Code-generation systems score each generated function, not just 'did the full program run.'"
+        },
+        {
+          "t": "para",
+          "html": "The mechanism: as the generator produces a reasoning trace, the process reward model watches each step and assigns a score. Training receives dense feedback—each step is evaluated independently—instead of a single final grade. Reinforcement learning uses these step scores as the reward signal. An algorithm can now tell which steps the model should keep and which are dead ends. The model is incentivized to produce steps that score well, which correlates with correct reasoning."
+        },
+        {
+          "t": "insight",
+          "html": "The fix works because step-level scores reveal where the chain broke; a final-only reward cannot see shortcuts hiding in the middle steps."
+        }
+      ]
     }
   ],
   "related": [
@@ -212,5 +238,13 @@
     "summary": "Qwen3-0.6B on 20 GSM8K grade-school math problems, Colab T4/L4 GPU, GRPO reinforcement learning. Single reward signal: 1 for correct final answer (careful boxed-answer grading), 0 for wrong. Training for 9000 steps. Checkpoints at 0 / 500 / 3000 / 9000 steps. Measured accuracy and average tokens per answer.",
     "eq": "for problem in 20_problems:\n  initial_output = model(problem)  # base: 5% accurate\n  # RL training: reward R = 1 if correct_answer, else 0\n  # checkpoint step 500: 50% accurate, avg 236 tokens\n  # checkpoint step 3000: 15% accurate, avg 8 tokens\n  # checkpoint step 9000: 15% accurate, avg 7 tokens\n  # typical final answer: just \"\\boxed{540}\"",
     "note": "From the companion reasoning-from-scratch lab (Session 6, naive GRPO without KL regularization). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "stanford",
+      "id": "reward",
+      "label": "reward",
+      "note": "Where a single reward is gameable, a per-step reward is the fix."
+    }
+  ]
 }
