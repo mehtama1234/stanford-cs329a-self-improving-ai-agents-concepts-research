@@ -126,7 +126,7 @@ def render(spec: dict) -> str:
         out.append("      </div>")
         out.append("    </section>")
     if spec.get("connects"):
-        BASES = {"stanford": "http://localhost:8015/concepts/", "cs329a": "http://localhost:8016/concepts/", "llm-lab": "http://localhost:8017/", "reasoning-lab": "http://localhost:8018/"}
+        BASES = {"stanford": "https://mehtama1234.github.io/stanford-course-concepts-research/concepts/", "cs329a": "https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/", "llm-lab": "https://mehtama1234.github.io/build-an-llm-lab/", "reasoning-lab": "https://mehtama1234.github.io/build-a-reasoning-lab/"}
         SUFFIX = {"stanford": "-deep.html", "cs329a": "-deep.html", "llm-lab": ".html", "reasoning-lab": ".html"}
         CLABEL = {"stanford": "Build · Stanford LLM", "cs329a": "Reason · CS329A", "llm-lab": "LLM-from-scratch lab", "reasoning-lab": "Reasoning-from-scratch lab"}
         items = ""
