@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Process Supervision (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="process-supervision.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · grade the steps, not just the answer</p>
+      <h1>Process supervision — why grading the answer hides the broken step</h1>
+      <p class="lede">A final answer can be right for the wrong reason, or wrong because of a single bad step in the middle. Grading only the answer gives a garbled signal: it can't tell you which step failed. Here is the idea, a real run where four different ways of reading the final answer give four wildly different scores, why that matters, what you lose without step-level feedback, and where this reappears as process reward models.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">Why outcome-only grades lie</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="process-supervision.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — a lucky wrong-method answer looks identical to a sound one</h2>
+      <div class="essay">
+      <p>Consider a student working through a multi-step word problem. Step 1 is correct — they set up the equation right. Step 2 is also correct. Step 3: a small mistake creeps in, a wrong operation or a skipped constraint. Step 4 somehow recovers and reaches the right final number anyway, by luck. When you grade only the final answer, you mark it correct. But the student's reasoning has a broken link in the middle — one you cannot see.</p>
+      <p>The deeper problem: a model that reaches the right answer the wrong way is indistinguishable from a model that solved it soundly. If you reward both the same way, you train the wrong behaviour. The model learns 'if the final number looks right, you win' instead of 'here is how to think through it.' Over time, the model stops learning to reason; it learns to imitate the look of a final answer.</p>
+      <p>So the honest question is: <strong>How do you know which step in a chain of reasoning actually works, and which one is a hidden mistake?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — grade the steps themselves, not just the finish line</h2>
+      <div class="essay">
+      <p>Instead of labeling only the final answer as right or wrong, label each intermediate step. Step 1: correct. Step 2: correct. Step 3: incorrect — it violates a constraint. Step 4: correct, but built on a wrong foundation. Now the model sees exactly where the chain broke. It learns not just 'the answer was wrong' but 'this specific step was the pivot that sent you off track.'</p>
+      <p>In the language of machine learning, this is called <em>process supervision</em> — you supervise the process (the reasoning steps), not just the outcome (the final answer). The alternative, which only grades the endpoint, is called <em>outcome supervision</em>. Outcome is cheaper to do — you only label one thing per problem. Process is more expensive — you label many steps per problem. But process gives you richer information.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — four different graders, four wildly different scores</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so its reasoning is visible and imperfect) on 25 grade-school math word problems. Each problem was solved by the model, producing a trace of steps and a final answer. Then we graded the same 25 traces using four different rules — four different ways of deciding whether the answer was correct. Every number here is measured.</p>
+      <div class="tw"><table><tr><th>grading rule</th><th>accuracy on 25 traces</th></tr><tr><td>exact string match (must equal the gold answer exactly, character for character)</td><td>0 / 25 = 0%</td></tr><tr><td>the right number appears anywhere in the text</td><td>16 / 25 = 64%</td></tr><tr><td>the last number mentioned in the entire trace</td><td>10 / 25 = 40%</td></tr><tr><td>the final boxed answer, read and checked carefully</td><td>11 / 25 = 44%</td></tr></table></div><figcaption>One model. Same 25 traces. Four different outcome-only graders. Four different scores: 0%, 64%, 40%, 44%.</figcaption>
+      <p>Notice: 14 of the 25 traces ended in a clean boxed final answer. The other 11 either rambled or gave no clear final number. That structure is what the graders are searching for.</p>
+      <div class="insight"><strong>The discovered fact: outcome-only grading is unstable and gameable. The exact same reasoning, read by four different final-answer rules, scores 0%, 64%, 40%, and 44%. A lenient grader ('the number appears somewhere') is easy to fool: 64% credit for work that might be meaningless. A strict grader ('exact match') is harsh but unforgiving. And the 'careful boxed answer' grader (44%) is trusted, but it depends entirely on format.</strong></div>
+      </div>
+    </section>
+    <section class="fp" id="insight">
+      <h2>4 · Why outcome-only grades lie — and what you lose</h2>
+      <div class="essay">
+      <p>When you grade only the final answer, you are averaging across everything that led to it. A model might have solved steps 1–3 perfectly, made a critical error in step 4, but then fixed it by accident in step 5. You award full credit because the final number is right. The model learns nothing about step 4. It never learns that 'here is where the chain broke.'</p>
+      <p>Process supervision fixes this: you label step 4 as incorrect. The model now sees the error at the point where it happened. It learns not 'my final answer was wrong' (which is useless feedback if multiple paths lead to the wrong answer), but 'this specific algebraic move violated a constraint.'</p>
+      <p>Another loss: outcome-only grading creates <em>Goodhart's Law</em> — when a measure becomes a target, it ceases to be a good measure. If you reward the model for 'getting a high number anywhere in the text,' the model learns to scatter many numbers. If you reward 'exact string match,' the model learns to memorize expected phrasings instead of solving the problem. Process supervision measures the quality of reasoning itself, not the format of its conclusion.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — who labels the steps?</h2>
+      <div class="essay">
+      <p>Process supervision is more data-intensive than outcome supervision. For each problem, instead of one label ('right' or 'wrong'), you need many labels — one per step. If your step labels are wrong, your signal is worse than outcome-only. An automated labeler might mark step 4 as correct because it 'looks algebraically sound,' but miss that it violates a subtle constraint. A non-expert human might do the same.</p>
+      <p>There is also a risk of <em>process reward model gaming</em>: once you train a model that scores steps, the generator learns to produce steps that score highly without actually advancing toward the solution. The steps read correctly, but the reasoning is hollow. Detecting this requires checking end-to-end accuracy, not just step scores.</p>
+      <p>And every step label costs time and money. If you hire human experts to label steps for millions of problems, that is expensive. The trade-off is real: richer signal per problem, but higher cost per problem.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — process reward models and the self-improving agent</h2>
+      <div class="essay">
+      <p>Process supervision is not just an idea — it is the foundation of <em>process reward models</em>, sometimes called PRMs. A process reward model is a neural network that learns to score each step of a reasoning trace as correct or incorrect. At test time, you sample many candidate solutions, and the PRM scores each step in each solution. The solutions with the highest step-level scores are the ones to trust.</p>
+      <p>This is where self-improving agents live. A generator produces many candidate solutions (sampling). A process reward model scores the steps (process supervision). A reinforcement learning algorithm learns to produce solutions that score well according to the PRM. Each round, the agent gets better — not by the PRM being perfect, but by it catching enough of the broken steps that the next round avoids them.</p>
+      <p>The big win over outcome-only methods: a PRM sees the step-level mistake as it happens. An outcome grader only knows the final answer was wrong, and cannot tell why. Process supervision is dense, local feedback; outcome supervision is sparse, global feedback. Dense feedback trains better reasoning — it is why every serious reasoning model now includes process reward models or step-level annotations.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Label the reasoning, not just the result</h2>
+      <div class="essay">
+      <p>Researchers train verifiers on datasets where each intermediate step of a solution is labeled correct or incorrect, not just the final answer. This process supervision trains a model to recognize broken reasoning at the point it happens. OpenAI's work on mathematical reasoning used step-level annotations. Modern RL training for reasoning agents uses these step labels to guide learning. Systems like o1 training use step-level feedback from automated verifiers.</p>
+      <p>The mechanism: during labeling, humans or strong automated verifiers examine each step independently and mark it as correct or incorrect based on whether it follows a valid rule in the domain. A model trained on these step labels learns local, dense feedback—it sees exactly which step caused a failure. In contrast, outcome-only labels (right or wrong answer) only reveal the final result, leaving ambiguity about where reasoning broke. Process supervision closes the loop: the labeler's judgment reaches the model as step-level credit or blame.</p>
+      <div class="insight">The tradeoff is explicit: process supervision is more expensive to create but generates much richer learning signals than outcome-only grading.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="verifier-robustness.html">verifier robustness</a> · <a href="process-reward-models.html">process reward models</a> · <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="self-improvement-loop.html">the self-improvement loop</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 25 GSM8K grade-school math problems, Colab T4 GPU. For each problem: run model, extract final answer and full trace. Grade the same 25 traces with four different outcome-only rules: (1) exact string match to gold; (2) right number appears anywhere; (3) last number in text; (4) final boxed answer, carefully read. All numbers measured.</p>
+      <div class="eq">for each trace in 25 problems:
+  accuracy_exact = 1 if answer == gold else 0
+  accuracy_anywhere = 1 if gold_number in trace_text else 0
+  accuracy_last_num = 1 if extract_last_number(trace) == gold else 0
+  accuracy_boxed = 1 if extract_boxed_final(trace) == gold else 0
+# Results: [0%, 64%, 40%, 44%]</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 5: verifiers). Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Process Supervision deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

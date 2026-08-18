@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search-Space Curation (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="search-space-curation.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · redundancy and diversity</p>
+      <h1>Search-space curation — why more samples fail to help once the space is mapped</h1>
+      <p class="lede">When you sample many answers, the model's outputs repeat themselves. Most tries are redundant re-draws of ideas you have already seen. The real work is not drawing more — it is curating what you draw: filtering, deduplicating, and ranking the candidates so that the rare right answer stands out. Here is the problem, the reframe, a real run where redundancy kills the benefit of more tries, why it happens, where it breaks, and where this idea reappears in production systems.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#redundancy">Why redundancy hits a wall</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="search-space-curation.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — more samples only help if they are different</h2>
+      <div class="essay">
+      <p>Draw many answers and you should be able to find good ones, right? But models have habits. The model tends to use the same reasoning steps over and over. If you sample 100 answers, you might get 5 fundamentally different ideas for how to solve the problem — and 95 copies or tiny variations of those 5. When you vote or rank those 100 answers, you are really just voting on the same 5 ideas, with the duplicates drowning out anything new.</p>
+      <p>The honest problem is this: <strong>more samples only widen your options if they explore new territory. If they retrace the same ground, you are paying compute for no new insight.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — curate, do not just sample more</h2>
+      <div class="essay">
+      <p>Instead of sampling blindly and hoping randomness finds new paths, actively curate the search space: deduplicate answers to collapse identical reasoning into one group, filter out candidates that fail basic checks (like logic errors or wrong format), rank the survivors by quality signals (does a verifier trust this answer? does it solve the test case?), and keep only the diverse top contenders. The goal is to shrink your candidate pile to the <em>non-redundant</em> solutions, so the vote or the pick lands on a genuinely different idea when it finds a new one.</p>
+      <p>This is the opposite of 'more'. It is 'better'. Curating the search space means asking: which candidates add something new, and which are just echoes?</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — redundancy kills the upside at path 6</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B, small on purpose) on 14 grade-school math problems. For each we drew 8 sampled answers at high temperature — eight different tries, supposedly exploring the space. Then we counted votes at each step: after 1 path, after 2 paths, and so on up to 8. The coverage (the percentage of problems that have the right answer somewhere in the pile) should keep growing — but does it?</p>
+      <figure><div class="barrow"><span class="lab">1 path</span><div class="bar" style="width:64px"></div><span class="val">42.9%</span></div><div class="barrow"><span class="lab">2 paths</span><div class="bar" style="width:64px"></div><span class="val">42.9%</span></div><div class="barrow"><span class="lab">3 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">4 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">5 paths</span><div class="bar" style="width:75px"></div><span class="val">50.0%</span></div><div class="barrow"><span class="lab">6 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><div class="barrow"><span class="lab">7 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><div class="barrow"><span class="lab">8 paths</span><div class="bar" style="width:86px"></div><span class="val">57.1%</span></div><figcaption>Majority-vote accuracy grows from 1 path to 6 paths, then stops. Paths 7 and 8 add nothing.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: redundancy hits a wall at path 6. The coverage climbs to 57.1% by step 6, then paths 7 and 8 do nothing — they are re-draws of territory already explored.</strong> The model had shown us all the distinct ideas it could reach by path 6. The extra tries are not failures; they are just echos. You paid the compute to sample them, but they did not widen the space.</div>
+      </div>
+    </section>
+    <section class="fp" id="redundancy">
+      <h2>4 · Why redundancy hits a wall — the model runs out of novel paths</h2>
+      <div class="essay">
+      <p>A language model is not a random number generator that explores new ideas forever. It is a pattern-completion machine with habits and favorite moves. When you ask it a question and turn up the randomness (high temperature), it does explore a bit — but it explores the same neighborhoods over and over.</p>
+      <p>The model's reasoning space is the set of possible solution strategies. The first few samples land on high peaks (good reasoning) or low valleys (bad reasoning). But by the time you have drawn a handful of tries, you have visited the main neighborhoods. Drawing more just re-visits what you already know. The <em>diversity budget</em> of the model on this problem is limited — it ran out by path 6. The curve flattens not because randomness ran out, but because the model had shown you everything it could think of. A smarter model might explore further, but this one is done.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — curating wrong answers can drown right ones</h2>
+      <div class="essay">
+      <p>Curation has a shadow side. If your filter is too aggressive — if you trim candidates aggressively to cut redundancy — you risk deleting a rare right answer that looks weird or different. A verifier trained on common solutions might downrank a correct but unconventional approach. A deduplication algorithm might fold a novel idea into the same bucket as a wrong-but-similar-looking one.</p>
+      <p>The harder problem: if the model's right answers are themselves rare and distinctive, curation might see them as <em>outliers</em> to remove rather than gems to keep. You have to be careful that your curatorial rules capture 'different ideas that might be right' rather than just 'common ideas.'</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is how AlphaCode and competitive programming systems work</h2>
+      <div class="essay">
+      <p>The same idea — sample many, then curate to find the non-redundant contenders — is the backbone of large industrial systems. AlphaCode generates 1 million diverse code solutions per problem by sampling from a trained model at high randomness and using randomized problem tags to push toward different solution styles. Then the pipeline filters out 95% of those samples with a verifier (do they compile and pass the example test cases?), collapsing 1 million down to roughly 50,000 candidates that at least work on the examples.</p>
+      <p>Then clustering — grouping solutions by semantic equivalence using learned test-input generation — further reduces to roughly 10,000 distinct solution families. Only the best solution from each family is submitted. AlphaCode 2 improved this by training a learned reward model to score candidates, so better curation (better-ranked non-redundant contenders) replaced sheer volume: they achieved the same 30% solve rate on unseen problems with only 10 samples out of 100, rather than 10 out of 1 million — a 10,000-fold reduction in sampling because curation was better, not more.</p>
+      <p>The working insight is the same: <strong>you do not win by drawing more of the same. You win by drawing once and then curating like your life depends on it.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Filtering redundancy instead of sampling blindly</h2>
+      <div class="essay">
+      <p>AlphaCode uses this: sample a million code solutions, then use a verifier to filter to the thousands that pass basic tests, cluster semantic duplicates, and keep one representative from each family. Competitive programming systems apply curation to reduce from thousands of candidates down to a handful of truly distinct ideas. Math assistants deduplicate reasoning paths so that voting works on novel strategies, not echoes. The key is recognizing that more samples only help if they explore new territory; beyond that point, extra samples are wasted compute.</p>
+      <p>Instead of sampling blindly hoping randomness finds new ideas, actively curate: deduplicate answers by semantic equivalence, filter out candidates that fail basic logic or format checks, rank survivors by quality signals (does a verifier trust this? does it solve test cases?), and keep only the diverse top contenders. This shrinks the candidate pile to non-redundant solutions so each distinct idea has a fair chance in voting or selection. The goal is not more candidates, but smarter candidates.</p>
+      <div class="insight">Curation risks deleting rare right answers if filters are too aggressive; a correct but unconventional solution can look like an outlier to be removed.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="repeated-sampling-coverage.html">repeated sampling and coverage</a> · <a href="verifier-selection-gap.html">the verifier selection gap</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 14 GSM8K grade-school math problems, Colab L4 GPU. For each problem: 8 independent sampled answers at temperature 0.9. Majority-vote accuracy computed at each step k=1..8 to show coverage growth and plateau. Grader = the careful boxed-answer check from the verifier session.</p>
+      <div class="eq">for each problem:
+  samples[1..8]  = model(question, temperature=0.9)   # 8 independent tries
+  for k in 1..8:
+    vote[k]      = most_common(final_number(s) for s in samples[1..k])
+# coverage by k: [0.429, 0.429, 0.500, 0.500, 0.500, 0.571, 0.571, 0.571]
+# coverage plateaus at k=6; paths 7,8 are redundant re-draws</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 3). Numbers are the run's output verbatim. Data point: accuracy on 14 problems, measured coverage at each path count, observed plateau at path 6 showing redundancy saturation.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Search-Space Curation deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

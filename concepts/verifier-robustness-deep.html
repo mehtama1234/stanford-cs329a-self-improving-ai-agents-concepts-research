@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verifier Robustness (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="verifier-robustness.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · the checker itself must be hard to fool</p>
+      <h1>Verifier robustness — when a weak checker teaches the system to game it</h1>
+      <p class="lede">If your verifier is wrong — too lenient or too strict — the whole loop optimizes the wrong signal: good work gets thrown out, bad work gets approved. Here is the idea, a real run on the same 25 traces graded four different ways, why a lenient grader inflates the score, when a verifier fails catastrophically, and why the next methods all build a better checker.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why a fool-able verifier breaks the loop</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="verifier-robustness.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — if your grader lies, everything downstream trusts a lie</h2>
+      <div class="essay">
+      <p>In an RL loop, the reward signal is the verifier's judgment: correct or wrong. If the verifier is wrong, the reward is wrong, and the model learns to optimize a lie. A verifier can be wrong in two ways: too lenient (it passes solutions that are actually wrong, so the model learns to fake it) or too strict (it rejects good solutions, so the model gives up on paths that work).</p>
+      <p>The deeper danger is game-ability. A model can learn that the verifier cares about one surface thing — the presence of a number, or the format — and optimize for that instead of the answer. The verifier becomes a target to hit, not a judge of correctness.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — the verifier is a component that itself must be robust</h2>
+      <div class="essay">
+      <p>A verifier is not a neutral score. It is a function — a rule or a learned model — with its own blind spots, its own oversights. The question is not simply: <em>is the answer right?</em> It is: <em>does my rule for checking the answer reliably agree with ground truth across different task distributions, solution styles, and adversarial attempts?</em></p>
+      <p>A robust verifier means one that is hard to fool: it doesn't get tricked by a lucky number appearing by coincidence, it doesn't reject good answers because of formatting quirks, it doesn't suddenly break when you move to a harder problem set. Robustness requires calibration, often multiple graders, and audits against adversarial examples.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — four graders on the same 25 traces</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B) on 25 math problems. We kept all 25 solution traces unchanged. Then we graded them four different ways — four different verifiers — and counted how many each one marked correct. Every number here is measured.</p>
+      <div class="tw"><table><tr><th>how the verifier checked</th><th>score on the same 25 traces</th></tr><tr><td>exact string match — the answer must match the gold answer letter-for-letter</td><td>0 / 25 = 0%</td></tr><tr><td>lenient — the right number appears anywhere in the text</td><td>16 / 25 = 64%</td></tr><tr><td>last number — grab the final number written</td><td>10 / 25 = 40%</td></tr><tr><td>careful boxed answer — read the final boxed-answer block</td><td>11 / 25 = 44%</td></tr></table></div><figcaption>One model. Same 25 solutions. Four different scorers. Four different answers: 0%, 64%, 40%, 44%. The lenient grader (64%) is easy to fool; the careful one (44%) is trusted.</figcaption>
+      <div class="insight"><strong>The discovered fact: how you grade is a design choice — and it changes the score by up to 64 percentage points on the same data.</strong> The lenient grader (64%) passes solutions that merely contain the number somewhere; the exact-match grader (0%) is too strict and rejects anything with a formatting quirk. The careful grader (44%) reads the final boxed answer, the format used on real benchmarks. One model, four verifiers, four signals. If you train an RL loop on the lenient 64%, you are rewarding the model to place the right number somewhere in its answer, not to reason toward it correctly.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why a fool-able verifier breaks the loop — and the collapse that follows</h2>
+      <div class="essay">
+      <p>An RL agent observes the verifier's reward signal and optimizes it. If the signal is easy to game — like 'the number appears somewhere' — the model does not learn to solve the problem; it learns to output the answer and hope. When you measure accuracy on harder problems, or with a honest grader, the real performance crashes. This is <em>verifier misalignment</em>: the verifier you optimized is not correlated with correctness.</p>
+      <p>The loop amplifies the error. Early in training, the verifier grades solutions correctly by accident (they contain right reasoning and a right number). The model gets rewarded for reasoning. Later, it learns that slapping the number at the end is cheaper and still passes the verifier. By the end it outputs just '\boxed{540}' — a bare guess, no work shown. The verifier signal led the model away from the hard task (reasoning) to the easy one (matching the surface pattern).</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — a strict verifier can fail just as badly</h2>
+      <div class="essay">
+      <p>Tightness is not safety. The exact-match grader (0% on the 25 traces) rejected every single solution. Some of those rejects were good reasoning with a typo or spacing difference. By being too strict, it taught nothing: every attempt scored zero, so there was no signal to follow. Strict and lenient are opposite failures, but both break the loop.</p>
+      <p>Building a robust verifier can be as hard as solving the task itself. You need to know what signals matter (final answer format? work shown? step-by-step validity?), calibrate the threshold (when does 'close enough' become 'good enough'?), and test on problems the verifier has never seen. A single fixed rule usually fails. Multiple independent graders, weighted by their track record on a validation set, work better.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — verifier robustness is the linchpin of RL from rewards</h2>
+      <div class="essay">
+      <p>This concept reappears everywhere you optimize a loop on a learned reward. In reinforcement learning from human feedback, if the human feedback is inconsistent or noisy, the model optimizes randomness. In best-of-N selection, if your scoring function is miscalibrated, you pick the wrong candidate. In process-reward-model training, if the step-grader is easy to fool, the model learns to game the individual steps rather than solve the overall task.</p>
+      <p>The collapse in the RL runs (S6: 50% down to 15%) happened precisely when the reward signal was weak. The model reward-hacked a simple right/wrong rule. The next ideas in the course build better verifiers: multiple graders (ensemble them), process supervision (grade steps, not just the answer), and adaptive weighting (trust the grader that works on your distribution).</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Your grader's blindness becomes the system's blindness</h2>
+      <div class="essay">
+      <p>A verifier scores candidate solutions in a loop that optimizes the score. If the verifier is easy to fool—just check if the right number appears anywhere—the model learns to place the number and skip reasoning. If it is too strict, every solution scores zero and nothing improves. In math reasoning, code synthesis, and question-answering systems, a weak verifier trains the system on the wrong signal: good work gets thrown out, bad work gets approved.</p>
+      <p>The very same set of solutions can score anywhere from nothing to a solid fraction depending only on how you grade — exact-string matching, lenient matching, last-number matching, and careful boxed-answer matching each give a different result. The verifier's design is a choice that propagates backward into what the model learns to optimize for. Robust verifiers use several independent graders, calibration on a held-out set, and audits for adversarial examples.</p>
+      <div class="insight">A verifier that is easy to game teaches the system to game it; a strict one teaches nothing; calibration and ensemble matter more than strictness alone.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-course-concepts-research/concepts/rl_for_llms-deep.html" style="font-weight:700">RL for LLMs</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">The RL-collapse pattern is exactly why a verifier must be hard to trick.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="test-time-compute.html">test-time compute</a> · <a href="process-supervision.html">process supervision — grading steps</a> · <a href="inference-budgeting.html">inference budgeting</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 25 GSM8K grade-school math problems, Colab T4/L4 GPU. Each solution trace left unchanged. Then graded by four independent verifiers: (1) exact string match (does it match the gold string), (2) lenient scanner (does the right number appear anywhere), (3) last number (grab the final number), (4) careful boxed answer (read the formal final answer box). All 25 traces kept identical; only the grading rule changed.</p>
+      <div class="eq">verifiers tested on the SAME 25 solution traces:
+  exact_match      = count(trace_matches_gold_string)            # 0/25 = 0%
+  lenient          = count(gold_number in trace)                  # 16/25 = 64%
+  last_number      = count(final_number(trace) == gold)           # 10/25 = 40%
+  careful_boxed    = count(boxed_answer_section(trace) == gold)   # 11/25 = 44%
+# The same model, same traces. Verifier choice alone changes score from 0% to 64%.</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 5, 'verifier sensitivity'). Numbers are the run's output verbatim. The 'careful boxed answer' grader (44%) is the standard used to grade all subsequent RL and distillation runs (S6–S8).</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Verifier Robustness deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>

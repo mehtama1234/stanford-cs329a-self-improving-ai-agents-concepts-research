@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reasoning Traces (deep) · CS329A Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--panel)}
+    .arc a:hover{text-decoration:none;border-color:var(--accent)}
+    .fp{border-top:1px solid var(--line);padding:22px 0 4px}
+    .fp h2{font-size:22px;margin:0 0 10px}
+    .kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+    .essay p{max-width:76ch;font-size:16px;color:#24262a;margin:10px 0}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:140px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:#0b57d0}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#fff7f5;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    details.math{border:1px solid var(--line);border-radius:8px;background:#fff;margin:14px 0}
+    details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+    details.math > div{border-top:1px solid var(--line);padding:4px 14px 12px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">CS329A Concept Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="../deep-track.html">Deep track</a>
+      <a href="reasoning-traces.html">Atlas card</a>
+      <a href="../evidence.html">Evidence</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <p class="eyebrow">self-improving agents · first principles · visible steps beat silent answers</p>
+      <h1>Reasoning traces — when you need to see the steps, not just the answer</h1>
+      <p class="lede">Hard problems are not one-step jumps. If a model lands on the answer without showing its work, you cannot see where it went wrong or fix it. The fix is to make the model write out the intermediate steps — the trace. Here is the idea, a real run on a small model where writing things down rescued four wrong answers with no regression, why visible steps matter, the real weakness, and where this reappears in bigger methods.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why steps matter</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="reasoning-traces.html">Atlas card</a></div>
+    </section>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — silent answers hide the fault</h2>
+      <div class="essay">
+      <p>Ask a model a hard question and it returns just the final answer: a number, a decision, a sentence. If that answer is wrong, you have no idea which piece of reasoning broke. Was it the first step? A forgotten detail? A slip halfway through? All you can see is: input in, wrong answer out.</p>
+      <p>And if the model is unsure — if it gets the problem right sometimes and wrong other times — a silent final answer gives you no material to work with. You cannot score how the model is thinking. You cannot tell a trace that went the wrong way from one that went right until the very end, when it is too late to steer.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — ask the model to write the steps, one at a time</h2>
+      <div class="essay">
+      <p>Instead of jumping to the answer, ask the model to work out loud. Show each calculation, each decision, each check. Before it commits to a final answer, make it lay out the intermediate steps. This visible path is called a <em>reasoning trace</em> — and the technique of asking for it is <em>chain-of-thought</em>.</p>
+      <p>Now when the model is right, you can see a sensible chain: step 1 → step 2 → step 3 → answer. When it is wrong, you can point to which step failed. And if the model has the capability to solve the problem but was being sloppy, asking it to slow down and write things down sometimes coaxes that capability out.</p>
+      <p>The hidden quantity is how many thinking tokens the model spends before answering — and whether those tokens converge on an answer or just wander, which is what separates real reasoning from confident rambling.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — 14 right, then 18 right with no regression</h2>
+      <div class="essay">
+      <p>We ran a real 0.6-billion-parameter model (Qwen3-0.6B — small on purpose, so reasoning mistakes are visible and real) on 30 grade-school math word problems from the GSM8K benchmark. Every problem was solved two ways: once asking for just the answer (direct), and once asking the model to write out the reasoning steps first (chain-of-thought). Every number here is measured from the actual run.</p>
+      <div class="tw"><table><tr><th>how we asked</th><th>correct answers out of 30</th></tr><tr><td>direct: 'give the final answer'</td><td>14 / 30 = 47%</td></tr><tr><td>chain-of-thought: 'write your reasoning then answer'</td><td>18 / 30 = 60%</td></tr></table></div><figcaption>Same model, same problems. One asks for steps; one does not. The step version picked up four problems the silent version missed.</figcaption>
+      <p>Those four rescued problems had no cost: no answer that was right the first way became wrong the second way. The model's longer, visible reasoning path fixed mistakes without breaking anything else.</p>
+      <p>But there is a catch: 12 out of the 30 chains-of-thought hit the token limit (2048 tokens) without finishing. The direct answer was terse — on average 226 tokens. The reasoning version was much longer — on average 1449 tokens. On the hardest problems, thinking was still sloppy: the model rambled, repeated itself, and ran out of room before settling on a final answer.</p>
+      <div class="insight"><strong>The discovered fact: making the model write out reasoning steps lifted accuracy from 47% to 60% on the same set of problems, recovered four mistakes with zero regressions, but 12 out of 30 traces rambled to the token limit.</strong> Visible reasoning is powerful but imperfect. The model now writes down enough to be checked — but on hard problems, it can still think in circles and waste its allocated space.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why visible steps matter — and why they cannot solve everything alone</h2>
+      <div class="essay">
+      <p>When a model writes a long chain of reasoning, it has to commit each step before moving to the next. That commitment is a forcing function. A silent answer can contradict itself and hide the contradiction. But a step-by-step trace — if it breaks — makes the break visible.</p>
+      <p>More importantly: intermediate steps become <em>supervisionable</em>. A verifier, a human, or a later system can grade each step independently. If you know which step was wrong, you can learn not to do that. If you can only grade the final answer, all you know is that something went bad somewhere.</p>
+      <p>But writing is not thinking. A model can write out plausible-sounding steps that feel like reasoning but are actually confabulation — post-hoc justification wrapped in confident language. And longer is not wiser: on the hardest problems in this run, the extra text was rambling, not illumination. The model wrote more tokens but not better tokens.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — traces can ramble and waste tokens</h2>
+      <div class="essay">
+      <p>Look at the numbers: 12 out of 30 traces (40%) hit the token ceiling without settling. On those problems, the model never finished its chain of thought. It tried to think through the problem, wrote more and more intermediate steps, and ran out of room.</p>
+      <p>This is especially true on hard problems. The model's solution length grew from an average of 226 tokens (direct) to 1449 tokens (chain-of-thought). That is a 6.4x cost for each problem, for a 13-point accuracy gain (47% to 60%). On a large model answering billions of problems, that cost compounds: you need longer context, more memory, more time.</p>
+      <p>And rambling to the limit does not mean the model is thinking better. It often means the model is stuck in a loop, repeating the same calculation, uncertain whether it is right. The visible reasoning trace exposes the thinking — but sometimes what it exposes is sloppy, circular thinking with no clear bottom.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is the foundation of verifiers, voting, and reasoning models</h2>
+      <div class="essay">
+      <p>Traces are not an end in themselves. They are the raw material everything else builds on.</p>
+      <p>The next step in the course is self-consistency: take many chains of thought, extract the final answer from each, and let them vote. If the right answer appears on even one of the traces, voting can find it. No trace, nothing to vote on.</p>
+      <p>The step after that is a verifier: a small network trained to grade each reasoning step as it is written. Instead of trusting the most popular answer, you trust the path that was graded best. No trace to grade, the verifier is blind.</p>
+      <p>And reinforcement learning: you feed reasoning traces to a reward model that scores each step. You keep the traces the model got right and downweight the ones it got wrong. No step-by-step reasoning, no signal to learn from.</p>
+      <p>Modern reasoning models are trained by distillation from larger teachers or by reinforcement learning that rewards each step. But both start with a reasoning trace. The trace is the unit of improvement: step-level supervision, step-level voting, step-level reward. You cannot improve what you cannot see. Making the model write its reasoning down is the first move — not because writing is thinking, but because it creates something downstream systems can work with.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Making the model write its steps before answering</h2>
+      <div class="essay">
+      <p>Chain-of-thought is now standard in every production reasoning system: o1 and DeepSeek-R1 show their work for hard problems. Math assistants use it to make mistakes visible. Coding tools use it to justify each refactoring step. Theorem provers ask for step-by-step justifications so each lemma can be verified independently. Even smaller local models use reasoning traces when deployed in applications where accuracy matters more than latency.</p>
+      <p>Instead of jumping to the answer, the model writes out intermediate steps, turning a silent final result into a visible chain. Each step becomes a checkpoint that can be graded, interrupted, or verified. Downstream systems (verifiers, human reviewers, other agents) can now see where the reasoning broke rather than only seeing the final error. If a step is correct, the next step has a firmer foundation. If a step is wrong, it is caught early and flagged before it corrupts the whole answer.</p>
+      <div class="insight">Visible reasoning enables supervision at each step, but the cost is real: traces are often several times times longer than direct answers, and not all longer traces are wiser ones.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-course-concepts-research/concepts/attention-deep.html" style="font-weight:700">attention</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">The written trace is the externalised form of the focus attention learns.</div></li><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-course-concepts-research/concepts/tokenization-deep.html" style="font-weight:700">tokenization</a> <span class="muted" style="font-size:13px">· Build · Stanford LLM</span><div style="font-size:14.5px;margin-top:3px">Traces are written in the very tokens tokenization defines.</div></li></ul></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Qwen3-0.6B on 30 GSM8K grade-school math problems, Colab T4/L4 GPU. For each problem: one direct-answer run at temperature 0; one chain-of-thought run at temperature 0. Graded by checking the final numeric answer against the gold solution.</p>
+      <div class="eq">for each problem:
+  direct    = model(question, temperature=0)
+              # extract and check final numeric answer
+  thinking  = model(question, system_prompt='Think through this step by step, then give your final answer.', temperature=0)
+              # extract and check final numeric answer
+# direct: 14/30=47%, avg_tokens=226
+# thinking: 18/30=60%, avg_tokens=1449, 12/30 hit 2048 token limit
+# rescued 4 (direct→thinking), broke 0</div>
+      <p class="muted">From the companion reasoning-from-scratch lab (Session 2). Numbers are the run's output verbatim.</p>
+    </div></details>
+    <footer style="color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding:22px 0 60px;margin-top:20px">CS329A · Reasoning Traces deep dive · every quantity on a real run is measured, not asserted.</footer>
+  </main>
+</body>
+</html>
